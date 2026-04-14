@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Test Scripts - RGAA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav><ul><li><a href="index.html">Retour</a></li></ul></nav>
+    <main>
+        <h1>Test des composants dynamiques (RGAA Thématique 7)</h1>
+
+        <!-- ERREUR RGAA 7.1 : Bouton simulé par une div, non focusable au clavier (pas de tabindex="0") et sans rôle -->
+        <div class="fake-button" id="fake-btn">Je suis un faux bouton</div>
+
+        <br><br>
+
+        <!-- Modale -->
+        <button onclick="openModal()" id="open-modal-btn">Ouvrir la modale (inaccessible)</button>
+
+        <!-- ERREUR RGAA 7 : La modale ne piège pas le focus, pas de role="dialog", pas de aria-modal -->
+        <div id="bad-modal">
+            <h2>Modale</h2>
+            <p>Le focus peut toujours aller en arrière-plan (Tab).</p>
+            <p>Echap ne ferme pas la modale.</p>
+            <!-- ERREUR : Bouton de fermeture sans texte explicite (ex: un simple X sans aria-label) -->
+            <button onclick="closeModal()">X</button>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

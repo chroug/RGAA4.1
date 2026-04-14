@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Test Images - RGAA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <ul><li><a href="index.html">Retour</a></li></ul>
+    </nav>
+    <main>
+        <h1>Test des images (RGAA Thématique 1)</h1>
+
+        <!-- ERREUR RGAA 1.1 : Image porteuse d'information sans attribut alt -->
+        <img src="https://via.placeholder.com/150" id="img-no-alt">
+
+        <!-- ERREUR RGAA 1.2 : Image avec un attribut alt non pertinent -->
+        <img src="https://via.placeholder.com/150" alt="image1.jpg" id="img-bad-alt">
+
+        <!-- CONFORME : Alternative correcte pour comparaison -->
+        <img src="https://via.placeholder.com/150" alt="Exemple d'image placeholder grise" id="img-good">
+
+        <!-- ERREUR RGAA 1.2 : Image décorative qui n'a pas alt="" -->
+        <img src="https://via.placeholder.com/150" alt="trait de séparation" aria-hidden="true" id="img-deco-bad">
+    </main>
+</body>
+</html>

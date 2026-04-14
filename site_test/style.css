@@ -1,0 +1,61 @@
+/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ERREUR RGAA 10.7 : Suppression du contour de focus sans alternative */
+* {
+    outline: none !important; 
+}
+
+/* ERREUR RGAA 3.2 : Contraste insuffisant */
+.low-contrast {
+    color: #999999;
+    background-color: #ffffff;
+}
+
+/* Navigation basique */
+nav ul {
+    list-style: none;
+    padding: 10px;
+    background: #333;
+    display: flex;
+    gap: 15px;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Faux bouton (Div) */
+.fake-button {
+    display: inline-block;
+    padding: 10px;
+    background: blue;
+    color: white;
+    cursor: pointer;
+}
+
+/* Modale inaccessible */
+#bad-modal {
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 30%;
+    background: white;
+    border: 2px solid black;
+    padding: 20px;
+    z-index: 10;
+}
+
+/* Menu déroulant inaccessible au clavier */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+}
+.dropdown:hover .dropdown-content {
+    display: block; /* S'affiche uniquement à la souris */
+}

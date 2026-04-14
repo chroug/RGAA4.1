@@ -1,0 +1,104 @@
+<!-- ERREUR RGAA 8.1 : Pas de DOCTYPE -->
+
+<!-- ERREUR RGAA 8.3 : Pas d'attribut lang -->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- ERREUR RGAA 8.5 : Pas de balise <title> -->
+</head>
+
+<!-- ERREUR RGAA 10.1 : Attribut de présentation bgcolor -->
+<body bgcolor="#f4f4f4">
+
+    <!-- ERREUR RGAA 8.9 et 10.1 : Balises obsolètes et de présentation (center, font, i, b) -->
+    <center>
+        <font size="6" color="red">Page de test</font>
+        <br>
+        <i>Texte de présentation visuelle uniquement</i>
+    </center>
+
+    <!-- ERREUR RGAA 3.2 : Contraste insuffisant -->
+    <p style="color: #bbbbbb; background-color: #cccccc;">
+        Ce texte a un contraste catastrophique.
+    </p>
+
+    <!-- ERREUR RGAA 2.1 : Iframe sans title -->
+    <iframe src="about:blank" width="200" height="100"></iframe>
+
+    <!-- ERREUR RGAA 9.3 : Liste mal structurée (texte orphelin dans ul et li en dehors) -->
+    <ul>
+        Texte interdit directement dans un ul.
+        <li>Vrai élément de liste</li>
+    </ul>
+    <li>Élément orphelin sans ul parent</li>
+
+    <!-- ERREUR RGAA 9.4 : Citations mal balisées (utilisation visuelle de blockquote pour indenter) -->
+    <!-- Axe-core ou tes règles customs vont détecter l'usage abusif de blockquote et l'absence de balise sémantique pour les guillemets -->
+    <blockquote>
+        Texte indenté via blockquote mais ce n'est pas une citation.
+    </blockquote>
+    <q cite="">Citation avec un attribut cite vide ou invalide</q>
+
+    <!-- ERREUR RGAA 10.8 : Éléments cachés focusables et conflits ARIA -->
+    <div aria-hidden="true">
+        <button>Bouton masqué aux lecteurs d'écran mais accessible au clavier</button>
+    </div>
+
+    <hr>
+
+    <!-- ========================================== -->
+    <!-- 🔥 ERREURS TABLEAUX (Critère 5.6) 🔥        -->
+    <!-- ========================================== -->
+    <h2>Test Tableau</h2>
+    <!-- Tableau de données SANS attributs scope sur les th -->
+    <table border="1" id="bad-table">
+        <tr>
+            <th>Nom de l'employé</th>
+            <th>Poste</th>
+        </tr>
+        <tr>
+            <!-- Ce th est utilisé comme une cellule de ligne sans scope="row" -->
+            <th>Martin Dupont</th>
+            <td>Développeur</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <!-- ========================================== -->
+    <!-- 🔥 ERREURS FORMULAIRES (Critères 11.x) 🔥   -->
+    <!-- ========================================== -->
+    <h2>Test Formulaire</h2>
+    <form>
+        <!-- ERREUR RGAA 11.1 : Champ sans label associé (id manquant) -->
+        <input type="text" placeholder="Entrez votre nom">
+        
+        <!-- ERREUR RGAA 11.1 : Label sans attribut "for" -->
+        <label>Votre âge :</label>
+        <input type="text">
+
+        <!-- ERREUR RGAA 11.6 : Fieldset SANS balise legend -->
+        <fieldset>
+            <label><input type="radio" name="choix" value="1"> Oui</label>
+            <label><input type="radio" name="choix" value="2"> Non</label>
+        </fieldset>
+
+        <!-- ERREUR RGAA 11.8 : Select utilisant des options désactivées comme fausses catégories (au lieu de <optgroup>) -->
+        <label for="menu-select">Votre menu :</label>
+        <select id="menu-select">
+            <option disabled>--- Entrées ---</option>
+            <option value="salade">Salade</option>
+            <option disabled>--- Plats ---</option>
+            <option value="pates">Pâtes</option>
+        </select>
+
+        <br><br>
+
+        <!-- ERREUR RGAA 11.9 : Boutons d'action SANS nom accessible -->
+        <button></button> <!-- Bouton vide -->
+        <input type="submit" value=""> <!-- Submit vide -->
+        <button><img src="https://via.placeholder.com/20" alt=""></button> <!-- Image décorative dans un bouton sans texte -->
+    </form>
+
+</body>
+</html>

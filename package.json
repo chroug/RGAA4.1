@@ -1,0 +1,15 @@
+{
+  "name": "rgaa-playwright-audit",
+  "version": "1.0.0",
+  "description": "Script d'audit automatique RGAA 4.1 basé sur Playwright et Axe-core",
+  "main": "audit.js",
+  "type": "module",
+  "scripts": {
+    "audit": "node audit.js"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.8.5",
+    "franc": "^6.2.0",
+    "playwright": "^1.42.1"
+  }
+}

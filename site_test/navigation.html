@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Test Navigation - RGAA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav><ul><li><a href="index.html">Retour</a></li></ul></nav>
+    <main>
+        <h1>Test de la Navigation (RGAA Thématique 12)</h1>
+
+        <!-- ERREUR RGAA 12.8 : Mauvais ordre de tabulation -->
+        <p>Ordre de tabulation forcé (tabindex positif) :</p>
+        <button tabindex="3">Troisième</button>
+        <button tabindex="1">Premier</button>
+        <button tabindex="2">Deuxième</button>
+
+        <br><br>
+
+        <!-- ERREUR RGAA 7.1 / 12.2 : Menu déroulant accessible uniquement au survol de la souris -->
+        <div class="dropdown">
+            <span style="border: 1px solid black; padding: 5px;">Survolez-moi (Souris uniquement)</span>
+            <div class="dropdown-content">
+                <a href="#">Lien 1</a>
+                <a href="#">Lien 2</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
