@@ -1,0 +1,490 @@
+[
+  {
+    "id_critere": "1.3",
+    "thematique": "Images",
+    "titre": "Pour chaque image porteuse d'information ayant une alternative textuelle, cette alternative est-elle pertinente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Un humain doit évaluer si le texte de remplacement décrit correctement le contexte et le sens de l'image."
+  },
+  {
+    "id_critere": "1.4",
+    "thematique": "Images",
+    "titre": "Pour chaque image utilisée comme CAPTCHA, une solution alternative d'accès est-elle présente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "La vérification de l'existence et de l'utilisabilité d'une alternative au CAPTCHA nécessite un test cognitif."
+  },
+  {
+    "id_critere": "1.5",
+    "thematique": "Images",
+    "titre": "Pour chaque image utilisée comme CAPTCHA, l'alternative textuelle permet-elle d'identifier la nature du CAPTCHA ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification manuelle de la clarté de l'alternative du CAPTCHA."
+  },
+  {
+    "id_critere": "1.7",
+    "thematique": "Images",
+    "titre": "Pour chaque image porteuse d'information nécessitant une description détaillée, celle-ci est-elle pertinente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "L'évaluation de la pertinence d'une description longue (ex: graphique complexe) relève de l'analyse humaine."
+  },
+  {
+    "id_critere": "1.8",
+    "thematique": "Images",
+    "titre": "Chaque image de texte porteuse d'information est-elle remplaçable par du texte stylisé ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Un humain doit juger s'il était techniquement possible d'utiliser du CSS plutôt qu'une image contenant du texte."
+  },
+  {
+    "id_critere": "2.2",
+    "thematique": "Cadres",
+    "titre": "Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "L'outil détecte la présence du titre (title), mais un humain doit vérifier s'il résume bien le contenu embarqué."
+  },
+  {
+    "id_critere": "3.1",
+    "thematique": "Couleurs",
+    "titre": "Dans chaque page web, l'information ne doit pas être donnée uniquement par la couleur. Cette règle est-elle respectée ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Analyse visuelle et cognitive requise pour vérifier qu'aucune instruction ne repose que sur la couleur (ex: 'cliquez sur le bouton rouge')."
+  },
+  {
+    "id_critere": "4.1",
+    "thematique": "Multimédia",
+    "titre": "Chaque média temporel pré-enregistré a-t-il une transcription textuelle ou une audiodescription ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Nécessite de visionner/écouter le média pour vérifier la présence d'une alternative."
+  },
+  {
+    "id_critere": "4.2",
+    "thematique": "Multimédia",
+    "titre": "Pour chaque média temporel pré-enregistré, la transcription textuelle ou l'audiodescription est-elle pertinente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification humaine de la synchronicité et de l'exactitude des informations transcrites."
+  },
+  {
+    "id_critere": "4.4",
+    "thematique": "Multimédia",
+    "titre": "Pour chaque média temporel synchronisé pré-enregistré, les sous-titres sont-ils pertinents ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Nécessite de lire les sous-titres en visionnant la vidéo pour valider leur exactitude."
+  },
+  {
+    "id_critere": "4.5",
+    "thematique": "Multimédia",
+    "titre": "Chaque média temporel synchronisé pré-enregistré a-t-il une audiodescription synchronisée pertinente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test manuel indispensable pour vérifier si l'audiodescription couvre bien les actions visuelles importantes."
+  },
+  {
+    "id_critere": "4.6",
+    "thematique": "Multimédia",
+    "titre": "Pour chaque média temporel synchronisé pré-enregistré, l'audiodescription synchronisée est-elle pertinente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Évaluation cognitive de la qualité de l'audiodescription."
+  },
+  {
+    "id_critere": "4.7",
+    "thematique": "Multimédia",
+    "titre": "Chaque média temporel synchronisé en direct a-t-il des sous-titres ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification manuelle sur les flux en direct."
+  },
+  {
+    "id_critere": "4.8",
+    "thematique": "Multimédia",
+    "titre": "Chaque média non temporel a-t-il une alternative pertinente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Validation humaine de l'alternative pour les animations non temporelles."
+  },
+  {
+    "id_critere": "4.9",
+    "thematique": "Multimédia",
+    "titre": "Pour chaque média non temporel, l'alternative est-elle pertinente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Évaluation cognitive requise."
+  },
+  {
+    "id_critere": "4.10",
+    "thematique": "Multimédia",
+    "titre": "Chaque son déclenché automatiquement est-il contrôlable par l'utilisateur ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test auditif et fonctionnel requis pour stopper ou baisser le volume d'un son automatique."
+  },
+  {
+    "id_critere": "4.11",
+    "thematique": "Multimédia",
+    "titre": "La consultation de chaque page web est-elle possible sans flashs lumineux ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Contrôle visuel (ou outil spécialisé externe) pour s'assurer qu'aucun élément ne clignote plus de 3 fois par seconde."
+  },
+  {
+    "id_critere": "4.12",
+    "thematique": "Multimédia",
+    "titre": "La consultation de chaque page web est-elle possible sans clignotements ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Nécessite de vérifier visuellement si le clignotement peut être arrêté."
+  },
+  {
+    "id_critere": "5.2",
+    "thematique": "Tableaux",
+    "titre": "Pour chaque tableau de données complexe, le résumé est-il pertinent ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Seul un humain peut juger si la balise <caption> ou l'attribut summary décrit correctement la structure complexe."
+  },
+  {
+    "id_critere": "5.3",
+    "thematique": "Tableaux",
+    "titre": "Pour chaque tableau de mise en page, le contenu linéarisé reste-t-il compréhensible ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Nécessite de lire la page sans CSS (linéarisée) pour vérifier la cohérence du sens de lecture."
+  },
+  {
+    "id_critere": "5.5",
+    "thematique": "Tableaux",
+    "titre": "Pour chaque tableau de données ayant un titre, le titre est-il pertinent ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Évaluation éditoriale du titre du tableau."
+  },
+  {
+    "id_critere": "6.1",
+    "thematique": "Liens",
+    "titre": "Chaque lien est-il explicite ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Seul un humain peut comprendre si le texte du lien (ex: 'En savoir plus') est clair grâce à son contexte sémantique immédiat."
+  },
+  {
+    "id_critere": "7.2",
+    "thematique": "Scripts",
+    "titre": "Pour chaque script, le composant est-il contrôlable par le clavier et par tout dispositif de pointage ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Nécessite une navigation physique au clavier (touches Tab, Flèches, Espace, Entrée) pour détecter les pièges au focus."
+  },
+  {
+    "id_critere": "7.3",
+    "thematique": "Scripts",
+    "titre": "Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification fonctionnelle manuelle des événements interactifs."
+  },
+  {
+    "id_critere": "7.4",
+    "thematique": "Scripts",
+    "titre": "Pour chaque script qui initie un changement de contexte, l'utilisateur est-il averti ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test ergonomique pour s'assurer que l'utilisateur est prévenu avant une redirection ou une soumission dynamique."
+  },
+  {
+    "id_critere": "8.6",
+    "thematique": "Obligatoires",
+    "titre": "Pour chaque page web ayant un titre de page, ce titre est-il pertinent ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Le robot vérifie la présence de la balise <title>, mais l'humain doit valider si ce titre décrit bien la page en cours."
+  },
+  {
+    "id_critere": "8.8",
+    "thematique": "Obligatoires",
+    "titre": "Le code de langue de chaque changement de langue est-il valide et pertinent ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification humaine de la pertinence de la langue indiquée par rapport au texte réellement affiché."
+  },
+  {
+    "id_critere": "10.2",
+    "thematique": "Présentation",
+    "titre": "Le contenu visible reste-t-il compréhensible lorsque les feuilles de styles sont désactivées ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test visuel indispensable : désactiver le CSS via un outil et vérifier la lisibilité et l'ordre de l'information."
+  },
+  {
+    "id_critere": "10.3",
+    "thematique": "Présentation",
+    "titre": "Dans chaque page web, l'information reste-t-il compréhensible lorsque les feuilles de styles sont désactivées ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Contrôle manuel de la linéarisation de l'information."
+  },
+  {
+    "id_critere": "10.4",
+    "thematique": "Présentation",
+    "titre": "Dans chaque page web, le texte reste-t-il lisible avec un zoom à 200 % ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Utiliser le zoom du navigateur à 200% et vérifier manuellement qu'il n'y a pas de perte d'information ou de chevauchement."
+  },
+  {
+    "id_critere": "10.9",
+    "thematique": "Présentation",
+    "titre": "Dans chaque page web, l'information ne doit pas être donnée uniquement par la forme, taille ou position.",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Évaluation cognitive pour s'assurer qu'on ne dit jamais 'utilisez le menu de gauche' sans autre précision."
+  },
+  {
+    "id_critere": "10.10",
+    "thematique": "Présentation",
+    "titre": "Dans chaque page web, l'information n'est pas donnée par la forme, la taille ou la position. Cette règle est-elle respectée ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification manuelle des instructions visuelles."
+  },
+  {
+    "id_critere": "10.11",
+    "thematique": "Présentation",
+    "titre": "Les contenus peuvent-ils être présentés sans perte d'information pour une largeur de 320 px ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test de Responsive Design manuel : réduire la fenêtre à 320px et vérifier qu'aucun défilement horizontal n'est forcé (hors exceptions prévues)."
+  },
+  {
+    "id_critere": "10.12",
+    "thematique": "Présentation",
+    "titre": "Les propriétés d'espacement du texte peuvent-elles être redéfinies par l'utilisateur ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Nécessite l'utilisation d'un bookmarklet pour forcer l'espacement des lignes et des lettres et vérifier que le texte ne se superpose pas."
+  },
+  {
+    "id_critere": "10.13",
+    "thematique": "Présentation",
+    "titre": "Les contenus additionnels apparaissant au survol, à la prise de focus ou à l'activation sont-ils contrôlables ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test à la souris requis : vérifier si on peut déplacer la souris sur le tooltip sans qu'il ne disparaisse (hoverable) et si on peut le fermer (Echap)."
+  },
+  {
+    "id_critere": "10.14",
+    "thematique": "Présentation",
+    "titre": "Dans chaque page web, les contenus additionnels apparaissant au survol peuvent-ils être fermés ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test manuel avec la touche Échap (Escape)."
+  },
+  {
+    "id_critere": "11.2",
+    "thematique": "Formulaires",
+    "titre": "Chaque étiquette associée à un champ de formulaire est-elle pertinente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Validation éditoriale : le robot sait que le label existe, mais l'humain doit vérifier si le texte du label correspond bien à l'information demandée."
+  },
+  {
+    "id_critere": "11.3",
+    "thematique": "Formulaires",
+    "titre": "Dans chaque formulaire, chaque étiquette est-elle accolée au champ de formulaire correspondant ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test visuel pour s'assurer que pour un utilisateur utilisant une loupe d'écran, le champ et son étiquette ne sont pas séparés par un grand vide."
+  },
+  {
+    "id_critere": "11.4",
+    "thematique": "Formulaires",
+    "titre": "Dans chaque formulaire, chaque étiquette de champ et son champ associé sont-ils accolés ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification visuelle de la proximité spatiale."
+  },
+  {
+    "id_critere": "11.7",
+    "thematique": "Formulaires",
+    "titre": "Dans chaque formulaire, chaque regroupement de champs a-t-il une légende pertinente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Le robot valide la structure <fieldset>/<legend>, mais l'humain juge la pertinence du texte de la légende."
+  },
+  {
+    "id_critere": "11.11",
+    "thematique": "Formulaires",
+    "titre": "Dans chaque formulaire, le contrôle de saisie donne-t-il des suggestions pour corriger les erreurs ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Déclencher volontairement une erreur et vérifier que le message est clair (ex: 'Format attendu: JJ/MM/AAAA' plutôt que 'Erreur')."
+  },
+  {
+    "id_critere": "11.12",
+    "thematique": "Formulaires",
+    "titre": "Pour chaque formulaire qui modifie des données financières ou juridiques, les données peuvent-elles être modifiées ou annulées ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Nécessite un test de parcours complet (tunnel d'achat ou d'inscription) pour vérifier les étapes de confirmation."
+  },
+  {
+    "id_critere": "12.1",
+    "thematique": "Navigation",
+    "titre": "Chaque ensemble de liens de navigation est-il structuré par une liste ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification de la sémantique de la structure de navigation globale de la page."
+  },
+  {
+    "id_critere": "12.2",
+    "thematique": "Navigation",
+    "titre": "Dans chaque page web, le menu de navigation est-il toujours à la même place ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Navigation d'une page à l'autre pour vérifier la cohérence visuelle de la position des menus."
+  },
+  {
+    "id_critere": "12.3",
+    "thematique": "Navigation",
+    "titre": "La page 'plan du site' est-elle pertinente ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification éditoriale que les liens du plan du site reflètent bien l'architecture réelle."
+  },
+  {
+    "id_critere": "12.4",
+    "thematique": "Navigation",
+    "titre": "Dans chaque page web, les mécanismes de navigation sont-ils cohérents ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification globale de la cohérence de l'expérience utilisateur."
+  },
+  {
+    "id_critere": "12.5",
+    "thematique": "Navigation",
+    "titre": "Dans chaque page web, les systèmes de navigation sont-ils toujours à la même place ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Contrôle visuel sur plusieurs pages."
+  },
+  {
+    "id_critere": "12.8",
+    "thematique": "Navigation",
+    "titre": "L'ordre de tabulation est-il cohérent ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test exclusif au clavier : appuyer sur Tab et s'assurer que le focus suit un ordre visuel logique de gauche à droite et de haut en bas."
+  },
+  {
+    "id_critere": "12.9",
+    "thematique": "Navigation",
+    "titre": "La navigation au sein de chaque page web ne doit pas contenir de piège au clavier.",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "S'assurer manuellement que l'on peut toujours ressortir d'un élément (comme une modale ou un widget complexe) avec le clavier."
+  },
+  {
+    "id_critere": "12.10",
+    "thematique": "Navigation",
+    "titre": "Dans chaque page web, les groupes de liens importants (menu, moteur de recherche...) sont-ils atteignables au clavier ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification de l'accès clavier pour les blocs essentiels."
+  },
+  {
+    "id_critere": "12.11",
+    "thematique": "Navigation",
+    "titre": "Dans chaque page web, y a-t-il des liens d'évitement ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Le robot peut détecter le lien, mais l'humain doit tester s'il déplace effectivement le focus au bon endroit."
+  },
+  {
+    "id_critere": "13.1",
+    "thematique": "Consultation",
+    "titre": "Pour chaque page web, l'utilisateur a-t-il le contrôle des limites de temps ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérifier si un message prévient l'utilisateur avant la déconnexion automatique (ex: sessions bancaires) et propose de prolonger."
+  },
+  {
+    "id_critere": "13.3",
+    "thematique": "Consultation",
+    "titre": "Dans chaque page web, en cas de limite de temps, l'utilisateur a-t-il le moyen de l'allonger ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test fonctionnel du mécanisme de prolongation de session."
+  },
+  {
+    "id_critere": "13.4",
+    "thematique": "Consultation",
+    "titre": "Pour chaque document bureautique en téléchargement, s'il n'est pas accessible, une alternative accessible est-elle fournie ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Les PDF et documents Word doivent être ouverts et audités séparément avec des outils bureautiques."
+  },
+  {
+    "id_critere": "13.5",
+    "thematique": "Consultation",
+    "titre": "Chaque document bureautique téléchargeable possède-t-il une version accessible ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification manuelle des fichiers attachés."
+  },
+  {
+    "id_critere": "13.6",
+    "thematique": "Consultation",
+    "titre": "Chaque document bureautique téléchargeable est-il accessible ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "L'audit de PDF requiert Adobe Acrobat Pro ou un lecteur d'écran."
+  },
+  {
+    "id_critere": "13.8",
+    "thematique": "Consultation",
+    "titre": "Dans chaque page web, un contenu en mouvement déclenché par l'utilisateur peut-il être arrêté ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérification des interactions avec les animations (carrousels, gifs, etc.)."
+  },
+  {
+    "id_critere": "13.9",
+    "thematique": "Consultation",
+    "titre": "La page web est-elle consultable quelle que soit l'orientation de l'écran ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Test sur mobile ou émulateur : forcer la rotation de l'écran en paysage/portrait et vérifier qu'aucun message d'erreur ne bloque l'écran."
+  },
+  {
+    "id_critere": "13.10",
+    "thematique": "Consultation",
+    "titre": "Dans chaque page web, les fonctionnalités qui nécessitent un geste complexe peuvent-elles être effectuées avec un geste simple ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérifier que les actions nécessitant plusieurs doigts (pincer pour zoomer) ou un glisser-déposer (drag&drop) ont une alternative par de simples clics."
+  },
+  {
+    "id_critere": "13.11",
+    "thematique": "Consultation",
+    "titre": "Dans chaque page web, les actions déclenchées par un mouvement de l'appareil ont-elles une alternative simple ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérifier que secouer le smartphone pour annuler, par exemple, a un bouton équivalent à l'écran."
+  },
+  {
+    "id_critere": "13.12",
+    "thematique": "Consultation",
+    "titre": "L'annulation d'une action déclenchée au pointage est-elle possible ?",
+    "statut": "NON_TESTE",
+    "type_evaluation": "100% Manuel",
+    "avertissement": "Vérifier que si on clique par erreur en maintenant le bouton de la souris enfoncé (mousedown), relâcher le clic hors de la zone (mouseup) annule l'action."
+  }
+]
