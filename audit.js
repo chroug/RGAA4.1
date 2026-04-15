@@ -70,16 +70,12 @@ async function runAudit(url) {
 
         const locatorsMap = await page.evaluate((targets) => {
             
-            // XPath PUREMENT positionnel (Le plus robuste, ignore les classes)
             function getAbsoluteXPath(el) {
                 let path =[];
                 let current = el;
                 while (current && current.nodeType === Node.ELEMENT_NODE) {
                     let tag = current.tagName.toLowerCase();
-                    if (tag === 'html') {
-                        path.unshift('html');
-                        break;
-                    }
+                    if (tag === 'html') { path.unshift('html'); break; }
                     let index = 1;
                     let sibling = current.previousElementSibling;
                     while (sibling) {
@@ -92,24 +88,13 @@ async function runAudit(url) {
                 return '/' + path.join('/');
             }
 
-            // CSS Sélecteur (S'arrête au premier ID trouvé pour être court et précis)
             function getAbsoluteCSS(el) {
                 let path =[];
                 let current = el;
                 while (current && current.nodeType === Node.ELEMENT_NODE) {
                     let tag = current.tagName.toLowerCase();
-                    
-                    // Si on trouve un ID (qui ne commence pas par un chiffre), on l'utilise et on s'arrête
-                    if (current.id && !/^[0-9]/.test(current.id)) {
-                        path.unshift(`#${current.id}`);
-                        break;
-                    }
-                    
-                    if (tag === 'html') {
-                        path.unshift('html');
-                        break;
-                    }
-
+                    if (current.id && !/^[0-9]/.test(current.id)) { path.unshift(`#${current.id}`); break; }
+                    if (tag === 'html') { path.unshift('html'); break; }
                     let index = 1;
                     let sibling = current.previousElementSibling;
                     while (sibling) {
@@ -123,36 +108,43 @@ async function runAudit(url) {
             }
 
             const map = {};
-            
             targets.forEach(sel => {
                 try {
                     const el = document.querySelector(sel);
-                    if (el) {
-                        map[sel] = { xpath: getAbsoluteXPath(el), css: getAbsoluteCSS(el) };
-                    } else {
-                        map[sel] = { xpath: "N/A", css: sel };
-                    }
+                    if (el) map[sel] = { xpath: getAbsoluteXPath(el), css: getAbsoluteCSS(el) };
+                    else map[sel] = { xpath: "N/A", css: sel };
                 } catch(e) { map[sel] = { xpath: "Erreur", css: sel }; }
             });
 
-            // --- VÉRIFICATIONS CUSTOM PLAYWRIGHT --- //
             const getCustomElementData = (el) => ({
-                html: el.outerHTML.substring(0, 100) + '...',
-                locators: {
-                    xpath: getAbsoluteXPath(el),
-                    css: getAbsoluteCSS(el)
-                }
+                html: el.outerHTML.substring(0, 100).replace(/\n/g, '') + '...',
+                locators: { xpath: getAbsoluteXPath(el), css: getAbsoluteCSS(el) }
             });
 
+            // --- NOUVELLES VÉRIFICATIONS CUSTOM POUR 5.6, 9.4 et 11.8 --- //
             const hasValidDoctype = document.doctype !== null && document.doctype.name.toLowerCase() === 'html';
             const balisesPresentation = Array.from(document.querySelectorAll('b, i, u, s')).map(getCustomElementData);
             const balisesObsoletes = Array.from(document.querySelectorAll('font, center, marquee, blink, strike, tt, big')).map(getCustomElementData);
             const fieldsetsInvalides = Array.from(document.querySelectorAll('fieldset')).filter(f => !f.querySelector('legend')).map(getCustomElementData);
-            const selectsNonGroupes = Array.from(document.querySelectorAll('select')).filter(s => s.options.length > 4 && !s.querySelector('optgroup')).map(getCustomElementData);
+            
+            // 5.6 : Tableaux sans attribut Scope sur les <th>
+            const thSansScope = Array.from(document.querySelectorAll('th:not([scope]):not([id])')).map(getCustomElementData);
+
+            // 9.4 : Citations avec attribut "cite" vide
+            const citationsInvalides = Array.from(document.querySelectorAll('q[cite=""], blockquote[cite=""]')).map(getCustomElementData);
+
+            // 11.8 : Select sans Optgroup (On détecte si on utilise des fausses catégories avec "disabled" ou >= 4 options)
+            const selectsNonGroupes = Array.from(document.querySelectorAll('select')).filter(s => {
+                const hasFakeCategory = Array.from(s.options).some(o => o.disabled && o.value === "");
+                return !s.querySelector('optgroup') && (s.options.length >= 4 || hasFakeCategory);
+            }).map(getCustomElementData);
 
             return {
                 axeMap: map,
-                customErrors: { hasValidDoctype, balisesPresentation, balisesObsoletes, fieldsetsInvalides, selectsNonGroupes }
+                customErrors: { 
+                    hasValidDoctype, balisesPresentation, balisesObsoletes, 
+                    fieldsetsInvalides, thSansScope, citationsInvalides, selectsNonGroupes 
+                }
             };
 
         }, axeTargets);
@@ -170,10 +162,7 @@ async function runAudit(url) {
                     description: violation.help,
                     elements_fautifs: violation.nodes.map(node => {
                         const axeTarget = node.target[0];
-                        return {
-                            code_html: node.html,
-                            copier_coller_inspecteur: locatorsMap.axeMap[axeTarget]
-                        };
+                        return { code_html: node.html.replace(/\n/g, ''), copier_coller_inspecteur: locatorsMap.axeMap[axeTarget] };
                     })
                 });
             }
@@ -182,13 +171,13 @@ async function runAudit(url) {
         const custom = locatorsMap.customErrors;
 
         if (!custom.hasValidDoctype) {
-            resultats_automatiques['critere_8.1'].statut = "❌ Non conforme";
+            resultats_automatiques['critere_8.1'].statut = "❌ Non conforme (Vérification Custom)";
             resultats_automatiques['critere_8.1'].violations.push({ regle: "custom-doctype", description: "Le DOCTYPE est absent ou invalide", elements_fautifs:[] });
         }
 
         const addCustomErrors = (critere, regle, desc, elements) => {
             if (elements.length > 0) {
-                resultats_automatiques[`critere_${critere}`].statut = "❌ Non conforme";
+                resultats_automatiques[`critere_${critere}`].statut = "❌ Non conforme (Vérification Custom)";
                 resultats_automatiques[`critere_${critere}`].violations.push({
                     regle: regle, description: desc,
                     elements_fautifs: elements.map(e => ({ code_html: e.html, copier_coller_inspecteur: e.locators }))
@@ -196,15 +185,14 @@ async function runAudit(url) {
             }
         };
 
-        addCustomErrors('8.9', "custom-presentation", "Utilisation de balises de présentation (b, i, u, s)", custom.balisesPresentation);
-        addCustomErrors('10.1', "custom-obsolete", "Balises obsolètes (font, center, marquee...)", custom.balisesObsoletes);
-        addCustomErrors('11.6', "custom-fieldset", "Balise <fieldset> utilisée sans <legend>", custom.fieldsetsInvalides);
-        addCustomErrors('11.8', "custom-select", "Balise <select> longue sans <optgroup>", custom.selectsNonGroupes);
+        // On injecte nos règles Custom !
+        addCustomErrors('5.6', "custom-th-scope", "Balise <th> utilisée sans attribut 'scope' (col/row) ou id.", custom.thSansScope);
+        addCustomErrors('8.9', "custom-presentation", "Utilisation de balises de présentation pure (b, i, u, s).", custom.balisesPresentation);
+        addCustomErrors('9.4', "custom-citation", "Attribut 'cite' présent mais vide sur une balise de citation (q, blockquote).", custom.citationsInvalides);
+        addCustomErrors('10.1', "custom-obsolete", "Utilisation de balises HTML obsolètes (font, center, marquee...).", custom.balisesObsoletes);
+        addCustomErrors('11.6', "custom-fieldset", "Balise <fieldset> utilisée sans balise <legend>.", custom.fieldsetsInvalides);
+        addCustomErrors('11.8', "custom-select", "Balise <select> longue ou contenant de fausses catégories sans <optgroup>.", custom.selectsNonGroupes);
 
-        // ====================================================================
-        // AFFICHAGE FINAL
-        // ====================================================================
-        
         const rapportFinal = {
             url_auditee: url,
             date_audit: new Date().toISOString(),
