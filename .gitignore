@@ -1,0 +1,51 @@
+# ==============================
+# 1. Dépendances Node.js (VITAL)
+# ==============================
+node_modules/
+
+# ==============================
+# 2. Fichiers de logs et d'erreurs
+# ==============================
+logs/
+*.log
+npm-debug.log*
+
+# ==============================
+# 3. Fichiers d'environnement (Sécurité)
+# ==============================
+.env
+.env.local
+
+# ==============================
+# 4. Playwright (Tests & Navigateurs)
+# ==============================
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# ==============================
+# 5. Fichiers générés par ton Audit (À adapter)
+# ==============================
+# Ignore les dossiers où tu sauvegardes les JSON ou les captures d'écran
+# (Modifie ces noms selon les dossiers que ton script va créer)
+rapports/
+screenshots/
+output/
+
+# ==============================
+# 6. Fichiers Système (Windows / Mac)
+# ==============================
+.DS_Store
+Thumbs.db
+
+
+# ==============================
+# 7. Rapports JSON (Si tu en génères)
+# ==============================
+rapport.json
+
+# ==============================
+# 8. Fichiers text
+# ==============================
+*.txt
