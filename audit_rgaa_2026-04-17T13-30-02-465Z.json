@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "url_auditee": "https://chroug.github.io/portfolio/",
+    "date_audit": "2026-04-17T13:30:02.468Z"
+  },
+  "resultats_semi_automatiques": {
+    "critere_5.1": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.10": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    },
+    "critere_13.2": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    },
+    "critere_7.5": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.5": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.13": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    },
+    "critere_5.7": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_12.7": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    }
+  }
+}

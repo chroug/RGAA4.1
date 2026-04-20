@@ -1,7 +1,12 @@
 import { chromium } from 'playwright';
 import { runAutomatique } from './src/automatique/index.js';
-//import { runSemiAuto } from './src/semi_auto/index.js';
+import { runSemiAuto } from './src/semi_auto/index.js';
 import { getManuelle } from './src/manuelle/index.js';
+
+// 🔥 NOUVEAUX IMPORTS POUR GÉRER LES FICHIERS 🔥
+import fs from 'fs';
+import path from 'path';
+
 
 async function runAudit(url) {
     if (!url) {
@@ -20,11 +25,11 @@ async function runAudit(url) {
 
         // Appel des 3 modules métier
         const blocAutomatique = await runAutomatique(page);
-        //const blocSemiAuto = await runSemiAuto(page);
+        const blocSemiAuto = await runSemiAuto(page);
         const blocManuel = getManuelle();
 
 
-// ====================================================================
+        // ====================================================================
         // CALCUL DES STATISTIQUES ET DU SCORE RGAA
         // ====================================================================
         
@@ -83,10 +88,18 @@ async function runAudit(url) {
             },
             resultats: {
                 automatique: blocAutomatique,
-                semi_automatique: "En attente d'implémentation IA",
-                manuelle: blocManuel
+                semi_automatique: blocSemiAuto,
+                //manuelle: blocManuel
             }
         };
+
+        // ====================================================================
+        // 🔥 SAUVEGARDE DU FICHIER JSON 🔥
+        // ====================================================================
+        const dir = './rapports';
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
 
         // Affichage standard du JSON
         console.log(JSON.stringify(rapportFinal, null, 2));
@@ -99,5 +112,5 @@ async function runAudit(url) {
 }
 
 // Lancement
-const targetUrl = process.argv[2];
+const targetUrl = process.argv[2] || 'http://localhost:3001';
 runAudit(targetUrl);

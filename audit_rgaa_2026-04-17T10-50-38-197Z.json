@@ -1,0 +1,78 @@
+{
+  "metadata": {
+    "url_auditee": "http://localhost:3001/",
+    "date_audit": "2026-04-17T10:50:38.199Z"
+  },
+  "resultats_semi_automatiques": {
+    "critere_5.1": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.10": {
+      "statut": "❌ Non Conforme (NC)",
+      "violations": [
+        {
+          "regle": "ia-analyse-11.10_formulaires",
+          "description": "L'label ne contient aucun élément d'indication visuelle des champs obligatoires.",
+          "elements_fautifs": [
+            {
+              "code_html": "<label for=\"num-secu\">Numéro de sécurité sociale :</label>"
+            }
+          ]
+        }
+      ]
+    },
+    "critere_13.2": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_7.5": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.5": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.13": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_5.7": {
+      "statut": "❌ Non Conforme (NC)",
+      "violations": [
+        {
+          "regle": "algo-analyse-5.7_table_headers",
+          "description": "La balise <th> ne possède aucun attribut pour la relier aux données (scope, id ou role manquant).",
+          "elements_fautifs": [
+            {
+              "code_html": "<th><img src=\"https://via.placeholder.com/50\" alt=\"Icone 1\"></th>"
+            }
+          ]
+        },
+        {
+          "regle": "algo-analyse-5.7_table_headers",
+          "description": "La balise <th> ne possède aucun attribut pour la relier aux données (scope, id ou role manquant).",
+          "elements_fautifs": [
+            {
+              "code_html": "<th>Nom</th>"
+            }
+          ]
+        },
+        {
+          "regle": "algo-analyse-5.7_table_headers",
+          "description": "La balise <th> ne possède aucun attribut pour la relier aux données (scope, id ou role manquant).",
+          "elements_fautifs": [
+            {
+              "code_html": "<th>Âge</th>"
+            }
+          ]
+        }
+      ]
+    },
+    "critere_12.7": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    }
+  }
+}

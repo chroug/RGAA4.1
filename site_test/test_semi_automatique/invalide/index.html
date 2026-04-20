@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandbox RGAA - 100% Erreurs Semi-Automatiques</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: auto; padding: 20px; background-color: white !important; color: black !important; }
+        section { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
+        
+        /* 3.3 Couleurs : Contraste d'interface catastrophique (< 3:1) */
+        .bad-contrast-btn { background-color: #cccccc; color: #ffffff; border: 1px solid #bbbbbb; padding: 10px; cursor: pointer; }
+        .bad-input { border: 1px solid #e0e0e0; background-color: #f9f9f9; } /* Bordure invisible */
+        
+        /* 10.6 Liens : Lien sans soulignement, distinguable uniquement par une légère couleur (inaccessible daltoniens) */
+        .bad-link { text-decoration: none; color: #333333; font-weight: normal; } /* Presque comme le texte normal */
+        
+        /* 10.7 Focus : Suppression sauvage de l'outline natif (Piège au clavier total) */
+        button:focus, a:focus, input:focus { outline: none !important; box-shadow: none !important; border-color: inherit; }
+        
+        /* 5. Tableaux de mise en page : Utilisation de CSS pour cacher la structure, mais le HTML est sémantiquement faux */
+        .layout-table { width: 100%; border: none; }
+        .layout-table th, .layout-table td { padding: 10px; }
+        
+        /* 12.7 Lien d'évitement : Présent dans le DOM mais non fonctionnel visuellement (ne prend pas le focus) */
+        .skip-link { position: absolute; left: -9999px; } 
+        /* Oubli volontaire du :focus pour le rendre visible */
+        
+        /* 13.7 Contenu animé : Animation infinie sans bouton pause */
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+        .flashing-text { animation: blink 0.5s infinite; color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <a href="#erreur" class="skip-link">Aller au contenu principal (Faux lien)</a>
+
+    <div id="faux-menu">
+        <ul>
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#">Services</a></li>
+        </ul>
+    </div>
+
+    <div id="main-content">
+        <h6>Laboratoire de tests RGAA - CAUCHEMAR</h6> <h3>Sous-titre déconnecté</h3>
+
+        <section id="theme-1">
+            <h2>1. Images (1.1, 1.2, 1.6, 1.9)</h2>
+            <p>Logo de l'entreprise :</p>
+            <img src="https://via.placeholder.com/150/0000FF/808080?text=Logo+Important" alt="image.jpg" id="img-bad-alt">
+            
+            <p>Séparateur décoratif :</p>
+            <img src="https://via.placeholder.com/200x10/cccccc/cccccc" alt="Ligne grise horizontale" id="img-deco-noise">
+
+            <p>Graphique des ventes annuelles :</p>
+            <img src="https://via.placeholder.com/300x200/FF0000/FFFFFF?text=Graphique+Tres+Complexe" alt="Graphique des ventes" id="img-complex-missing-desc">
+            
+            <div>
+                <img src="https://via.placeholder.com/150" alt="Notre équipe en 2026">
+                <p><i>Ci-dessus : Photo de groupe de l'équipe de direction.</i></p>
+            </div>
+        </section>
+
+        <section id="theme-3">
+            <h2>3. Couleurs (3.3)</h2>
+            <button class="bad-contrast-btn" id="btn-contrast">Valider (Invisible)</button>
+            <input type="text" class="bad-input" placeholder="Saisie (Bordure invisible)">
+        </section>
+
+        <section id="theme-4">
+            <h2>4. Multimédia (4.3, 4.13)</h2>
+            <video width="320" height="240" autoplay id="video-test-bad">
+                <source src="fake-movie.mp4" type="video/mp4">
+            </video>
+        </section>
+
+        <section id="theme-5">
+            <h2>5. Tableaux (5.1, 5.4, 5.7, 5.8)</h2>
+            <table class="layout-table" id="table-layout-bad" summary="Tableau pour aligner les images">
+                <caption>Titre caché du tableau de mise en page</caption>
+                <tr>
+                    <th><img src="https://via.placeholder.com/50" alt="Icone 1"></th>
+                    <td>Texte aligné à côté de l'icone</td>
+                </tr>
+            </table>
+
+            <table border="1" id="table-data-bad">
+                <tr>
+                    <th>Nom</th>
+                    <th>Âge</th>
+                </tr>
+                <tr>
+                    <td headers="h-prenom">Dupont</td> <td headers="h-age">45</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="theme-6">
+            <h2>6. Liens (6.2)</h2>
+            <p>Pour télécharger le rapport financier complet de l'année 2025 au format PDF, <a href="/rapport.pdf" id="link-bad-context">cliquez ici</a> ou <a href="/autre.pdf">en savoir plus</a>.</p>
+        </section>
+
+        <section id="theme-7">
+            <h2>7. Scripts (7.1, 7.5)</h2>
+            <div id="accordeon-bad" onclick="this.innerHTML='Contenu révélé (mais lecteur écran muet)'">Afficher les détails</div>
+            
+            <div id="error-message" style="color:red; display:none;">Mot de passe incorrect (Non vocalisé)</div>
+        </section>
+
+        <section id="theme-8">
+            <h2>8. Obligatoires (8.2, 8.4, 8.7, 8.10)</h2>
+            <p>Comme on dit souvent en Espagne : Hasta la vista, baby !</p>
+            
+            <p>مرحبا بك في موقعنا</p>
+        </section>
+
+        <section id="theme-10">
+            <h2>10. Présentation (10.5, 10.6, 10.7)</h2>
+            <p>Veuillez lire attentivement nos <a href="#" class="bad-link" id="link-color-only">Conditions Générales de Vente</a> avant de poursuivre votre commande sur la plateforme.</p>
+            
+            <button id="btn-no-focus">Essayez de me focus au clavier</button>
+        </section>
+
+        <section id="theme-11">
+            <h2>11. Formulaires (11.5, 11.10, 11.13)</h2>
+            <form action="#">
+                <p>Choisissez votre couleur :</p>
+                <input type="radio" name="color" value="red" id="c-red"> <label for="c-red">Rouge</label>
+                <input type="radio" name="color" value="blue" id="c-blue"> <label for="c-blue">Bleu</label>
+
+                <br><br>
+
+                <label for="num-secu">Numéro de sécurité sociale :</label>
+                <input type="text" id="num-secu" required pattern="[1-2][0-9]{14}"> <br><br>
+
+                <label for="user-email">Votre adresse électronique :</label>
+                <input type="email" id="user-email">
+            </form>
+        </section>
+
+        <section id="theme-13">
+            <h2>13. Consultation (13.2, 13.7)</h2>
+            <a href="https://example.com" target="_blank" id="link-blank-bad">Aller sur le site partenaire</a>
+
+            <br><br>
+
+            <p class="flashing-text">PROMOTION EXCEPTIONNELLE - CLIQUEZ VITE !</p>
+        </section>
+
+    </div>
+</body>
+</html>

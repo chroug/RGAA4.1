@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "url_auditee": "https://chroug.github.io/portfolio/",
+    "date_audit": "2026-04-17T14:19:49.651Z"
+  },
+  "resultats_semi_automatiques": {
+    "critere_5.1": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.10": {
+      "statut": "❌ Non Conforme (NC)",
+      "violations": [
+        {
+          "regle": "ia-analyse-11.10_formulaires",
+          "description": "L'label ne contient aucun élément d'indication visuelle des champs obligatoires.",
+          "elements_fautifs": [
+            {
+              "code_html": "<label for=\"prenom\" class=\"font-mono text-xs uppercase tracking-wider\">Prénom</label>"
+            }
+          ]
+        },
+        {
+          "regle": "ia-analyse-11.10_formulaires",
+          "description": "L'label ne contient aucun indicateur de champ obligatoire.",
+          "elements_fautifs": [
+            {
+              "code_html": "<label for=\"nom\" class=\"font-mono text-xs uppercase tracking-wider\">Nom</label>"
+            }
+          ]
+        },
+        {
+          "regle": "ia-analyse-11.10_formulaires",
+          "description": "La balise <label> ne contient aucun élément d'indication visuelle des champs obligatoires.",
+          "elements_fautifs": [
+            {
+              "code_html": "<label for=\"email\" class=\"font-mono text-xs uppercase tracking-wider\">Email</label>"
+            }
+          ]
+        },
+        {
+          "regle": "ia-analyse-11.10_formulaires",
+          "description": "La balise <label> ne contient aucun indicateur visuel de champ obligatoire.",
+          "elements_fautifs": [
+            {
+              "code_html": "<label for=\"message\" class=\"font-mono text-xs uppercase tracking-wider\">Message</label>"
+            }
+          ]
+        },
+        {
+          "regle": "ia-analyse-11.10_formulaires",
+          "description": "Le code HTML fourni ne contient aucun élément indiquant visuellement qu'il s'agit d'un champ obligatoire.",
+          "elements_fautifs": [
+            {
+              "code_html": "<label for=\"rgpd\" class=\"text-xs text-muted leading-tight\">                                    J'accepte que ces données soient utilisées pour être recontacté.                                </label>"
+            }
+          ]
+        }
+      ]
+    },
+    "critere_13.2": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    },
+    "critere_7.5": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.5": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.13": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    },
+    "critere_5.7": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_12.7": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    }
+  }
+}

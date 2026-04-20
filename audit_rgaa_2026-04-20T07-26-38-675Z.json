@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "url_auditee": "https://auth.service-public.gouv.fr/realms/service-public/protocol/openid-connect/auth?response_type=code&client_id=spclient&scope=address%20phone%20openid%20profile%20email&state=npRkJfr_tAjD2amRO5PXEqZhSZ6_pGQvxAkb3cB9kQE%3D&redirect_uri=https://www.service-public.gouv.fr/openid_connect_login&nonce=41_GVFvaYbpNWUOwCMQrvO5CmseglkEQ8y8taUCeeXA",
+    "date_audit": "2026-04-20T07:26:38.677Z"
+  },
+  "resultats_semi_automatiques": {
+    "critere_5.1": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.10": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    },
+    "critere_13.2": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    },
+    "critere_7.5": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    },
+    "critere_11.5": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_11.13": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    },
+    "critere_5.7": {
+      "statut": "➖ Non Applicable (NA)",
+      "violations": []
+    },
+    "critere_12.7": {
+      "statut": "✅ Conforme (C)",
+      "violations": []
+    }
+  }
+}
