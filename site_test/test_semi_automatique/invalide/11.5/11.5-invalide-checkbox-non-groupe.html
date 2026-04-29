@@ -1,0 +1,22 @@
+<!-- Le piège : Des cases à cocher logiquement liées sont placées dans une balise <div> basique sans rôle.
+
+Ce que ça teste : Ton outil vérifie-t-il l'absence de <fieldset> ou de role="group" pour des champs de même nature (comme les checkboxes) ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 11.5 - Checkbox non groupées</title>
+</head>
+<body>
+    <form>
+        <p>Choisissez vos options de repas :</p>
+        <div>
+            <input type="checkbox" id="opt-vegan" name="repas">
+            <label for="opt-vegan">Végétalien</label><br>
+            
+            <input type="checkbox" id="opt-sans-gluten" name="repas">
+            <label for="opt-sans-gluten">Sans gluten</label>
+        </div>
+    </form>
+</body>
+</html>

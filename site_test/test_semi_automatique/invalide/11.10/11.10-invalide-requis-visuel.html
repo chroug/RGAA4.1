@@ -1,0 +1,14 @@
+<!-- Le piège : Le champ possède l'attribut technique required (pour les non-voyants), mais il n'y a aucune étoile (*) ni mention "obligatoire" à l'écran.
+
+Ce que ça teste : Ton outil vérifie-t-il qu'une indication visuelle accompagne obligatoirement l'attribut technique ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Invalide 11.10 - Requis visuel manquant</title></head>
+<body>
+    <form>
+        <label for="nom">Nom :</label>
+        <input type="text" id="nom" name="nom" required>
+        <button type="submit">Envoyer</button>
+    </form>
+</body>
+</html>

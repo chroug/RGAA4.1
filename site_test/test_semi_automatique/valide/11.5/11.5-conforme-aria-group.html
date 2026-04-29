@@ -1,0 +1,26 @@
+<!-- Le piège : Les champs (ici, une date découpée en 3 champs textes) ne sont pas dans un <fieldset>, mais dans une <div> avec l'attribut role="group".
+
+Ce que ça teste : Ton outil accepte-t-il bien l'attribut WAI-ARIA role="group" comme une alternative totalement valide au <fieldset> ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 11.5 - Role Group</title>
+</head>
+<body>
+    <form>
+        <div role="group" aria-labelledby="date-naissance">
+            <p id="date-naissance">Date de naissance :</p>
+            
+            <label for="jour">Jour</label>
+            <input type="text" id="jour" name="jour" size="2">
+            
+            <label for="mois">Mois</label>
+            <input type="text" id="mois" name="mois" size="2">
+            
+            <label for="annee">Année</label>
+            <input type="text" id="annee" name="annee" size="4">
+        </div>
+    </form>
+</body>
+</html>

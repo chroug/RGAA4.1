@@ -1,0 +1,23 @@
+<!-- Le piège : La page contient bien un window.open(), mais il est rangé proprement derrière le clic d'un bouton.
+
+Ce que ça teste : Ton outil est-il assez intelligent pour faire la différence entre une ouverture automatique (interdite) et une ouverture manuelle déclenchée par l'utilisateur (autorisée) ? -->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 13.2 - Pop-up au clic</title>
+</head>
+<body>
+    <h1>Test Valide 13.2 (Action utilisateur)</h1>
+    <p>Une fenêtre peut s'ouvrir, mais uniquement si vous cliquez sur ce bouton.</p>
+
+    <button onclick="ouvrirFenetre()">Ouvrir la pop-up</button>
+
+    <script>
+        function ouvrirFenetre() {
+            window.open('https://example.com', '_blank', 'width=400,height=400');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!-- Le piège : Les boutons radio sont groupés par un role="radiogroup", une pratique très courante sur les sites modernes (React, Vue.js...).
+
+Ce que ça teste : Ton outil reconnaît-il cet attribut ARIA spécifique aux boutons radio comme une méthode de validation correcte ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 11.5 - Role Radiogroup</title>
+</head>
+<body>
+    <form>
+        <div role="radiogroup" aria-labelledby="choix-couleur">
+            <p id="choix-couleur">Choisissez votre couleur préférée :</p>
+            
+            <input type="radio" id="couleur-bleu" name="couleur" value="bleu">
+            <label for="couleur-bleu">Bleu</label><br>
+            
+            <input type="radio" id="couleur-rouge" name="couleur" value="rouge">
+            <label for="couleur-rouge">Rouge</label>
+        </div>
+    </form>
+</body>
+</html>

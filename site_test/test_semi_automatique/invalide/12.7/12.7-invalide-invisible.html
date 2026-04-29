@@ -1,0 +1,33 @@
+<!-- 
+Le piège : Le lien est correct, mais il est caché avec display: none;.
+Ce que ça teste : Ton outil lit-il le CSS pour détecter que le lien ne pourra jamais recevoir le focus clavier ? 
+-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 12.7 - Lien invisible</title>
+    <style>
+        .skip-link {
+            display: none; /* INVALIDE : Empêche totalement la prise de focus */
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+    
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Lien 1</a></li>
+                <li><a href="#">Lien 2</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <h1>Contenu Principal</h1>
+        <p>Le critère 12.7 est invalide car le lien ne peut jamais être affiché ou utilisé.</p>
+    </main>
+</body>
+</html>

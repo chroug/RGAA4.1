@@ -49,3 +49,6 @@ rapport.json
 # 8. Fichiers text
 # ==============================
 *.txt
+
+
+.env

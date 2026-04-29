@@ -1,0 +1,15 @@
+<!-- Le piège : L'attribut est présent, mais la valeur est fausse (ex: on met autocomplete="email" sur un champ de numéro de téléphone).
+
+Ce que ça teste : Ton IA ou ton outil lit-il le contexte (le label) pour vérifier que la valeur HTML5 est pertinente par rapport à ce qui est demandé ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Invalide 11.13 - Autocomplete faux</title></head>
+<body>
+    <form>
+        <p>Vos coordonnées :</p>
+
+        <label for="telephone">Numéro de téléphone :</label>
+        <input type="text" id="telephone" name="telephone" autocomplete="organization">
+    </form>
+</body>
+</html>

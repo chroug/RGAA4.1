@@ -1,0 +1,26 @@
+<!--
+Le piège : Il n'y a tout simplement aucun lien d'évitement dans le code.
+Ce que ça teste : Ton outil détecte-t-il l'absence totale de l'élément pour faire échouer le test directement ? 
+-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 12.7 - Absence de lien</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Accueil</a></li>
+                <li><a href="#">Actualités</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="contenu">
+        <h1>Contenu Principal</h1>
+        <p>Le critère 12.7 est invalide car le test 12.7.1 échoue (absence totale de lien).</p>
+    </main>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!-- Le piège : Un script JavaScript lance un window.open() dès le chargement de la page, sans rien demander à l'utilisateur.
+
+Ce que ça teste : Ton outil détecte-t-il l'exécution d'une ouverture de fenêtre non sollicitée au chargement (souvent via un event listener load ou directement dans le script) ? -->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 13.2 - Pop-up automatique</title>
+</head>
+<body>
+    <h1>Test Invalide 13.2</h1>
+    <p>Attention, une pop-up va s'ouvrir toute seule dans 1 seconde !</p>
+
+    <script>
+        // Mauvaise pratique RGAA : ouverture sans action utilisateur
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.open('https://example.com', '_blank', 'width=400,height=400');
+            }, 1000); // Délai de 1s pour laisser le temps à Playwright d'arriver
+        });
+    </script>
+</body>
+</html>

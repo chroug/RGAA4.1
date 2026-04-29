@@ -1,0 +1,14 @@
+<!-- Le piège : Simule une erreur de saisie. Le champ passe en aria-invalid="true" et le message rouge est lié par aria-describedby.
+
+Ce que ça teste : Ton outil comprend-il la mécanique technique de remontée d'erreur pour valider le test 11.10.4 ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Valide 11.10 - Erreur gérée</title></head>
+<body>
+    <form>
+        <label for="tel">Téléphone * :</label>
+        <input type="tel" id="tel" name="tel" required aria-invalid="true" aria-describedby="erreur-tel">
+        <span id="erreur-tel" style="color:red;">Erreur : Le format du téléphone est invalide.</span>
+    </form>
+</body>
+</html>

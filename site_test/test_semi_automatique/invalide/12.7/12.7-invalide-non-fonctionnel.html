@@ -1,0 +1,40 @@
+<!-- 
+Le piège : Le lien est bien là, mais il pointe vers une cible qui n'existe pas (href="#vide").
+Ce que ça teste : Ton outil vérifie-t-il que l'ancre est valide dans le DOM ? 
+-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 12.7 - Lien non fonctionnel</title>
+    <style>
+        .skip-link {
+            position: absolute;
+            left: -10000px;
+        }
+        .skip-link:focus {
+            left: 0;
+            background: #d9534f;
+            color: white;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#id-qui-n-existe-pas" class="skip-link">Aller au contenu principal</a>
+    
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Rubrique A</a></li>
+                <li><a href="#">Rubrique B</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="contenu-principal" tabindex="-1">
+        <h1>Contenu Principal</h1>
+        <p>Le critère 12.7 est invalide car bien que le lien s'affiche au focus, appuyer sur Entrée ne mène nulle part (échec 12.7.2).</p>
+    </main>
+</body>
+</html>

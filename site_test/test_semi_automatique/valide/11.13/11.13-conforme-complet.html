@@ -1,0 +1,24 @@
+<!-- Le piège : Aucun. Les valeurs sont exactes (given-name, family-name, email).
+
+Ce que ça teste : Ton outil reconnait-il un formulaire de création de compte 100% conforme à la norme HTML5 exigée par le RGAA ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Valide 11.13 - Autocomplete parfait</title></head>
+<body>
+    <form>
+        <p>Remplissez vos informations de livraison :</p>
+
+        <label for="prenom">Prénom :</label>
+        <input type="text" id="prenom" name="prenom" autocomplete="given-name"><br>
+
+        <label for="nom">Nom :</label>
+        <input type="text" id="nom" name="nom" autocomplete="family-name"><br>
+        
+        <label for="adresse">Adresse postale :</label>
+        <input type="text" id="adresse" name="adresse" autocomplete="street-address"><br>
+
+        <label for="tel">Téléphone mobile :</label>
+        <input type="tel" id="tel" name="tel" autocomplete="tel">
+    </form>
+</body>
+</html>

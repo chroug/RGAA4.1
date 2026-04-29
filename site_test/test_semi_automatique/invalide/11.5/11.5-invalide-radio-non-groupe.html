@@ -1,0 +1,20 @@
+<!-- Le piège : Des boutons radio (<input type="radio">) de même nom sont posés directement dans le formulaire sans conteneur sémantique.
+
+Ce que ça teste : Ton outil détecte-t-il qu'il manque un <fieldset> ou un role="radiogroup" autour de ces radios ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 11.5 - Radio non groupé</title>
+</head>
+<body>
+    <form>
+        <p>Avez-vous le permis de conduire ?</p>
+        <input type="radio" id="permis-oui" name="permis" value="oui">
+        <label for="permis-oui">Oui</label><br>
+        
+        <input type="radio" id="permis-non" name="permis" value="non">
+        <label for="permis-non">Non</label>
+    </form>
+</body>
+</html>

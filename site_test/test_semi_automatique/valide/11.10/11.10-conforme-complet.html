@@ -1,0 +1,15 @@
+<!-- Le piège : Aucun, c'est le cas d'école parfait.
+
+Ce que ça teste : Ton outil sait-il valider un champ qui combine indication visuelle, attribut required, et instruction de format correctement reliée (aria-describedby) ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Valide 11.10 - Champ parfait</title></head>
+<body>
+    <form>
+        <label for="pseudo">Pseudonyme (obligatoire) :</label>
+        <input type="text" id="pseudo" name="pseudo" required aria-describedby="format-pseudo">
+        <span id="format-pseudo">Doit contenir au moins 8 caractères.</span>
+        <button type="submit">Envoyer</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!-- Le piège : L'instruction "Format: JJ/MM/AAAA" est écrite à côté du champ, mais n'est ni dans le <label>, ni reliée par un aria-describedby.
+
+Ce que ça teste : Ton outil s'assure-t-il que les instructions de format sont "reliées informatiquement" au champ pour les technologies d'assistance ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Invalide 11.10 - Format non lié</title></head>
+<body>
+    <form>
+        <label for="date">Date de naissance :</label>
+        <input type="text" id="date" name="date" required>
+        <span>Format attendu : JJ/MM/AAAA</span>
+        <button type="submit">Envoyer</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!-- Le piège : Aucun. Les boutons radio sont correctement entourés par une balise HTML <fieldset>.
+
+Ce que ça teste : Ton outil reconnaît-il la méthode HTML standard et native pour valider le critère ? -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 11.5 - Fieldset classique</title>
+</head>
+<body>
+    <form>
+        <fieldset>
+            <legend>Mode de livraison</legend>
+            
+            <input type="radio" id="liv-domicile" name="livraison" value="domicile">
+            <label for="liv-domicile">À domicile</label><br>
+            
+            <input type="radio" id="liv-relais" name="livraison" value="relais">
+            <label for="liv-relais">Point relais</label>
+        </fieldset>
+    </form>
+</body>
+</html>

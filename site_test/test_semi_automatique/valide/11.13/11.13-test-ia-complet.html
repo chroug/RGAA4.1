@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test IA 11.13 - Cas complexes et ambigus</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 800px; }
+        fieldset { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; }
+        legend { font-weight: bold; background: #eee; padding: 5px 10px; }
+        div.champ { margin-bottom: 10px; }
+        label { display: inline-block; width: 250px; }
+    </style>
+</head>
+<body>
+    <h1>Création de votre profil complet</h1>
+    <form>
+
+        <fieldset>
+            <legend>1. Identité (Contextes ambigus)</legend>
+            
+            <div class="champ">
+                <label for="id1">Nom :</label>
+                <input type="text" id="id1" name="nom" autocomplete="family-name">
+            </div>
+
+            <div class="champ">
+                <label for="id2">Raison sociale :</label>
+                <input type="text" id="id2" name="orga" autocomplete="organization">
+            </div>
+
+            <div class="champ">
+                <label for="id3">Votre pseudo de joueur :</label>
+                <input type="text" id="id3" name="pseudo" autocomplete="nickname">
+            </div>
+
+            <div class="champ">
+                <label for="id4">Avatar / Pseudo :</label>
+                <input type="text" id="id4" name="avatar" autocomplete="family-name">
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>2. Sécurité & Authentification</legend>
+
+            <div class="champ">
+                <label for="sec1">Identifiant de connexion :</label>
+                <input type="text" id="sec1" name="login" autocomplete="username">
+            </div>
+
+            <div class="champ">
+                <label for="sec2">Choisissez un mot de passe :</label>
+                <input type="password" id="sec2" name="pass" autocomplete="new-password">
+            </div>
+
+            <div class="champ">
+                <label for="sec3">Saisissez l'ancien pass :</label>
+                <input type="password" id="sec3" name="oldpass" autocomplete="current-password">
+            </div>
+
+            <div class="champ">
+                <label for="sec4">Code secret reçu par SMS :</label>
+                <input type="text" id="sec4" name="sms" autocomplete="one-time-code">
+            </div>
+
+            <div class="champ">
+                <label for="sec5">Votre mot de passe :</label>
+                <input type="password" id="sec5" name="err_pass" autocomplete="username">
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>3. Localisation (Sans utiliser les mots clés de l'algo)</legend>
+
+            <div class="champ">
+                <label for="loc1">N°, Rue, Avenue :</label>
+                <input type="text" id="loc1" name="rue" autocomplete="address-line1">
+            </div>
+
+            <div class="champ">
+                <label for="loc2">Bâtiment, Étage, Lieu-dit :</label>
+                <input type="text" id="loc2" name="bat" autocomplete="address-line2">
+            </div>
+
+            <div class="champ">
+                <label for="loc3">Région ou Département :</label>
+                <input type="text" id="loc3" name="region" autocomplete="address-level1">
+            </div>
+
+            <div class="champ">
+                <label for="loc4">Adresse de livraison complète :</label>
+                <textarea id="loc4" name="livraison" autocomplete="shipping street-address"></textarea>
+            </div>
+
+            <div class="champ">
+                <label for="loc5">Adresse :</label>
+                <input type="text" id="loc5" name="err_adr" autocomplete="country">
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>4. Divers (Profil)</legend>
+
+            <div class="champ">
+                <label for="div1">Anniversaire :</label>
+                <input type="date" id="div1" name="anniv" autocomplete="bday">
+            </div>
+
+            <div class="champ">
+                <label for="div2">Genre :</label>
+                <select id="div2" name="genre" autocomplete="sex">
+                    <option>Homme</option><option>Femme</option><option>Autre</option>
+                </select>
+            </div>
+
+            <div class="champ">
+                <label for="div3">Langue parlée :</label>
+                <input type="text" id="div3" name="lang" autocomplete="language">
+            </div>
+            
+            <div class="champ">
+                <label for="div4">Skype / WhatsApp (URL) :</label>
+                <input type="url" id="div4" name="chat" autocomplete="impp">
+            </div>
+
+            <div class="champ">
+                <label for="div5">Anniversaire :</label>
+                <input type="text" id="div5" name="err_div" autocomplete="email">
+            </div>
+        </fieldset>
+
+        <button type="submit">Valider mon profil</button>
+    </form>
+</body>
+</html>
