@@ -8,7 +8,7 @@ export default async function testerCritere11_13(champsPersos) {
     resultat.statut = "✅ Conforme (C)";
     const items = champsPersos;
 
-    // 📚 DICTIONNAIRE RÉDUIT (Uniquement les cas 100% sans ambiguïté)
+    // 📚 DICTIONNAIRE RÉDUIT (Sûr à 100%)
     const reglesAutomatiques = [
         { motsCles: ["e-mail", "email", "courriel"], attendu: "email" },
         { motsCles: ["téléphone", "telephone", "mobile", "portable", "tél", "tel"], attendu: "tel" },
@@ -19,43 +19,31 @@ export default async function testerCritere11_13(champsPersos) {
     for (let i = 0; i < items.length; i++) {
         const donneesChamp = items[i].toLowerCase();
         
-        // CORRECTION : On isole et on nettoie le texte du Label (on enlève les : et les *)
         let labelSeul = donneesChamp.split('| html:')[0]; 
         const labelNettoye = labelSeul.replace(/[:*]/g, '').trim();
 
-        // Extraction propre de la valeur de l'autocomplete via Regex
-        const matchAutocomplete = donneesChamp.match(/autocomplete="([^"]+)"/);
+        // Extraction (tolère les simples et doubles guillemets)
+        const matchAutocomplete = donneesChamp.match(/autocomplete=['"]([^'"]+)['"]/i);
         const valeurTrouvee = matchAutocomplete ? matchAutocomplete[1] : null;
 
-        // 1. Coupe-circuit Algo : Attribut totalement absent (Sûr à 100%)
-        if (!valeurTrouvee) {
-            console.log(`   ⚡ Algo [critere_11.13] Analyse ${i + 1}/${items.length}... ❌ Non Conforme (Absent)`);
-            resultat.statut = "❌ Non Conforme (NC)";
-            resultat.violations.push({ 
-                description: "L'attribut 'autocomplete' est totalement absent sur un champ personnel.", 
-                html: items[i].replace(/\n/g, ' | ') 
-            });
-            continue; 
-        }
-
-        // 2. Moteur Algorithmique ULTRA-STRICT (Sûr à 100% uniquement)
+        // ⚡ Moteur Algorithmique
         let resoluParAlgo = false;
 
         for (const regle of reglesAutomatiques) {
-            // NOUVEAU : Correspondance EXACTE requise. 
-            // Si le label est "votre email", ça ira à l'IA. Si c'est juste "email", l'algo le gère.
             const correspondanceExacte = regle.motsCles.some(mot => labelNettoye === mot);
 
             if (correspondanceExacte) {
-                resoluParAlgo = true; // L'algo est sûr à 100%, il prend le relais
+                resoluParAlgo = true; 
 
-                if (valeurTrouvee.includes(regle.attendu)) {
+                // L'algo SAIT que c'est une donnée personnelle. On vérifie maintenant l'autocomplete.
+                if (valeurTrouvee && valeurTrouvee.includes(regle.attendu)) {
                     console.log(`   ⚡ Algo [critere_11.13] Analyse ${i + 1}/${items.length}... ✅ Conforme (${regle.attendu})`);
                 } else {
-                    console.log(`   ⚡ Algo [critere_11.13] Analyse ${i + 1}/${items.length}... ❌ Non Conforme (Erreur : attendu ${regle.attendu}, trouvé ${valeurTrouvee})`);
+                    const raison = !valeurTrouvee ? "Attribut totalement absent" : `Mauvaise valeur (attendu ${regle.attendu}, trouvé ${valeurTrouvee})`;
+                    console.log(`   ⚡ Algo [critere_11.13] Analyse ${i + 1}/${items.length}... ❌ Non Conforme (${raison})`);
                     resultat.statut = "❌ Non Conforme (NC)";
                     resultat.violations.push({ 
-                        description: `Valeur autocomplete incorrecte. Attendu : "${regle.attendu}", Trouvé : "${valeurTrouvee}".`, 
+                        description: `Le champ "${labelNettoye}" exige un autocomplete="${regle.attendu}". Erreur : ${raison}.`, 
                         html: items[i].replace(/\n/g, ' | ') 
                     });
                 }
@@ -63,9 +51,9 @@ export default async function testerCritere11_13(champsPersos) {
             }
         }
 
-        if (resoluParAlgo) continue; // Si l'algo a géré (car c'était un match parfait), on passe au champ suivant !
+        if (resoluParAlgo) continue;
 
-        // 3. Fallback IA (Pour la majorité des champs : phrases, contextes ambigus, etc.)
+        // 🧠 Fallback IA (Si l'algo ne connait pas le champ, l'IA décide s'il faut un autocomplete ou non)
         process.stdout.write(`   🧠 [critere_11.13] Analyse IA ${i + 1}/${items.length}... `);
         
         const resIA = await askGemma(promptAutocomplete(items[i]));

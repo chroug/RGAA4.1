@@ -32,8 +32,8 @@ Ta réponse doit STRICTEMENT être un objet JSON valide, sans AUCUN texte avant 
 RÉPONSE :`;
 
 
-export const promptAutocomplete = (donneesChamp) => `Tu es un auditeur RGAA 4.1 strict et logique.
-Ta mission est de vérifier si l'attribut 'autocomplete' du HTML correspond logiquement au 'Label visible'.
+export const promptAutocomplete = (donneesChamp) => `Tu es un auditeur RGAA 4.1 strict.
+Le critère 11.13 stipule que l'attribut 'autocomplete' est OBLIGATOIRE, MAIS UNIQUEMENT pour les champs qui demandent une donnée personnelle listée ci-dessous.
 
 DICTIONNAIRE DE CORRESPONDANCE :
 - Prénom = given-name
@@ -41,34 +41,31 @@ DICTIONNAIRE DE CORRESPONDANCE :
 - Pseudo, Avatar = nickname
 - E-mail, Email = email
 - Téléphone, Mobile = tel
-- Date de naissance, Anniversaire = bday
+- Date de naissance = bday
 - Genre, Sexe = sex
-- Langue = language
-- Messagerie, Skype = impp
 - Adresse complète = street-address
 - N°, Rue = address-line1
-- Bâtiment, Étage = address-line2
 - Code postal = postal-code
-- Ville, Localité = address-level2
-- Région, Département = address-level1
-- Entreprise, Raison sociale = organization
+- Ville = address-level2
+- Entreprise = organization
 - Identifiant, Login = username
-- Mot de passe (connexion) = current-password
-- Mot de passe (création) = new-password
-- Code SMS, 2FA = one-time-code
+- Mot de passe = current-password ou new-password
 
-DONNÉES DU CHAMP :
+DONNÉES DU CHAMP À TESTER :
 ${donneesChamp}
 
 RÈGLES D'ÉVALUATION :
-Si le HTML contient la bonne valeur selon le dictionnaire (même avec un préfixe), c'est CONFORME. Sinon, c'est NON_CONFORME.
+1. Si le champ NE DEMANDE PAS une donnée de ce dictionnaire (ex: Sujet, Message, Commentaire, Recherche, Champ caché), il N'A PAS BESOIN d'autocomplete. Le résultat est donc "CONFORME".
+2. Si le champ DEMANDE une donnée de ce dictionnaire (ex: c'est un champ "Prénom") :
+   - Et qu'il a le bon 'autocomplete' -> "CONFORME".
+   - Et que l'attribut est ABSENT ou contient une mauvaise valeur -> "NON_CONFORME".
 
-EXEMPLE DE RÉPONSE ATTENDUE :
+EXEMPLE DE RÉPONSE ATTENDUE (pour un champ "Votre message") :
 {
   "statut": "CONFORME",
-  "explication": "Le label demande un E-mail et l'attribut autocomplete est bien défini sur email."
+  "explication": "Le champ demande un message, ce n'est pas une donnée personnelle. L'autocomplete n'est pas requis."
 }
 
-Ta réponse doit STRICTEMENT être un objet JSON valide, sans AUCUNE réflexion étape par étape, sans texte avant ou après.
+Ta réponse doit STRICTEMENT être un objet JSON valide, sans aucun texte avant ou après.
 
 RÉPONSE :`;
