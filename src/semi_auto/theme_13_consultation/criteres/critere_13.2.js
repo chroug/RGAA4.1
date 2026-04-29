@@ -1,7 +1,7 @@
 export default async function testerCritere13_2(popupAutomatiqueDetectee) {
     let resultat = { statut: "✅ Conforme (C)", violations: [] };
 
-    process.stdout.write(`   🧠 [critere_13.2] Vérification des pop-ups automatiques... `);
+    process.stdout.write(`   ⚡ [critere_13.2] Vérification des pop-ups automatiques... `);
 
     if (popupAutomatiqueDetectee) {
         console.log(`❌ Non Conforme`);
