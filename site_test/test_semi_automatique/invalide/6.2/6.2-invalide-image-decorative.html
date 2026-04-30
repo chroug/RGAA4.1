@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 6.2 - Lien avec image vide</title>
+</head>
+<body>
+    <main>
+        <h1>Erreur : Image avec alt vide dans un lien</h1>
+        <!-- TEST ALGO ⚡ : Le lien contient une image, mais l'attribut alt est vide (décoratif). 
+             Comme il n'y a pas d'autre texte, le lien n'a aucun intitulé vocal pour un lecteur d'écran. -> NON_CONFORME -->
+        <a href="/facebook">
+            <img src="icon-fb.svg" alt="">
+        </a>
+
+        <!-- TEST ALGO ⚡ : Le lien a une image sans aucun attribut alt. 
+             C'est une double erreur (RGAA 1.1 et 6.2). -> NON_CONFORME -->
+        <a href="/twitter">
+            <img src="icon-tw.svg">
+        </a>
+    </main>
+</body>
+</html>

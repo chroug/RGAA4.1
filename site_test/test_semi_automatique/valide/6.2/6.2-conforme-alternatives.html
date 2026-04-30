@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 6.2 - Liens avec alternatives (Aria / Alt)</title>
+</head>
+<body>
+    <main>
+        <h1>Liens avec alternatives</h1>
+        <!-- TEST ALGO ⚡ : Le lien n'a pas de texte visible, mais une image avec un 'alt' valide. -> CONFORME -->
+        <a href="/home">
+            <img src="logo.png" alt="Retour à l'accueil">
+        </a>
+
+        <!-- TEST ALGO ⚡ : Le lien est vide (ex: une icône CSS), mais possède un aria-label. -> CONFORME -->
+        <a href="/settings" class="icon-cog" aria-label="Paramètres de l'utilisateur"></a>
+
+        <!-- TEST ALGO ⚡ : Le lien utilise aria-labelledby pour lier un texte ailleurs. -> CONFORME -->
+        <span id="titre-lien">Lire la suite de l'article</span>
+        <a href="/article" aria-labelledby="titre-lien" class="icon-arrow-right"></a>
+    </main>
+</body>
+</html>
