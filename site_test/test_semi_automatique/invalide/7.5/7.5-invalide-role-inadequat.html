@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 7.5 - Mauvais rôle pour une erreur</title>
+</head>
+<body>
+    <main>
+        <h1>Paiement</h1>
+        <button type="button" onclick="processPayment()">Payer</button>
+
+        <!-- TEST IA 🧠 : L'algo détecte role="status". 
+             Mais l'IA lit le contenu : "Votre carte a été refusée". 
+             Une erreur critique nécessite role="alert" (ou aria-live="assertive"), pas un simple status. -> NON_CONFORME -->
+        <div id="payment-message"></div>
+    </main>
+
+    <script>
+        function processPayment() {
+            const container = document.getElementById('payment-message');
+            container.innerHTML = '<p role="status" style="color: red; font-weight: bold;">Erreur : Votre carte a été refusée. Le paiement a échoué.</p>';
+        }
+        
+        setTimeout(processPayment, 1000);
+    </script>
+</body>
+</html>

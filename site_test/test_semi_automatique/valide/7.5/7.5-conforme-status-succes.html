@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 7.5 - Message de statut de réussite</title>
+</head>
+<body>
+    <main>
+        <h1>Profil Utilisateur</h1>
+        <form>
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" id="username" name="username" value="JeanDupont">
+            <button type="button" onclick="showSuccess()">Enregistrer</button>
+        </form>
+
+        <!-- TEST IA 🧠 : L'algo détecte l'apparition de ce bloc avec role="status". 
+             L'IA lit "Modifications enregistrées" et confirme que c'est un message de réussite, 
+             donc role="status" est pertinent. -> CONFORME -->
+        <div id="message-container"></div>
+    </main>
+
+    <script>
+        function showSuccess() {
+            const container = document.getElementById('message-container');
+            container.innerHTML = '<p role="status" class="success-msg">Modifications enregistrées avec succès.</p>';
+        }
+        
+        // Simule l'action après un court délai pour que le script de test le capte
+        setTimeout(showSuccess, 1000); 
+    </script>
+</body>
+</html>

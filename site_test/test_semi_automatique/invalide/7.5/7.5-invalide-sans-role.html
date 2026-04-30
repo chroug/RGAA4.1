@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 7.5 - Message dynamique sans rôle ARIA</title>
+</head>
+<body>
+    <main>
+        <h1>Panier d'achat</h1>
+        <button type="button" onclick="addItem()">Ajouter au panier</button>
+
+        <!-- TEST ALGO/IA ⚡🧠 : Un message apparait dynamiquement informant d'un résultat d'action.
+             Cependant, le conteneur n'a ni role="status" ni aria-live. 
+             Les technologies d'assistance ne le liront pas. -> NON_CONFORME -->
+        <div id="notification-area"></div>
+    </main>
+
+    <script>
+        function addItem() {
+            const area = document.getElementById('notification-area');
+            const msg = document.createElement('p');
+            msg.textContent = 'Article ajouté à votre panier.';
+            msg.className = 'notice';
+            area.appendChild(msg);
+        }
+        
+        setTimeout(addItem, 1000);
+    </script>
+</body>
+</html>

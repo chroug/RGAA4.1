@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 7.5 - Message d'alerte (Erreur)</title>
+</head>
+<body>
+    <main>
+        <h1>Connexion</h1>
+        <form>
+            <label for="login">Identifiant</label>
+            <input type="text" id="login">
+            <button type="button" onclick="showError()">Se connecter</button>
+        </form>
+
+        <!-- TEST IA 🧠 : L'algo détecte l'attribut aria-live="assertive". 
+             L'IA lit "Identifiant incorrect" et confirme que c'est une erreur, 
+             donc l'équivalent de role="alert" est pertinent. -> CONFORME -->
+        <div id="error-container" aria-live="assertive" aria-atomic="true"></div>
+    </main>
+
+    <script>
+        function showError() {
+            const container = document.getElementById('error-container');
+            container.innerHTML = '<p>Identifiant incorrect. Veuillez réessayer.</p>';
+        }
+        
+        setTimeout(showError, 1000);
+    </script>
+</body>
+</html>
