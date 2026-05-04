@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 3.3 - Composants et graphiques conformes</title>
+    <style>
+        body { background-color: #FFFFFF; } /* Fond blanc */
+        
+        /* 3.3.1 : Composant d'interface avec bon contraste */
+        /* Bordure foncée (#595959) sur fond blanc = Ratio 4.6:1 (Supérieur à 3:1) */
+        .input-custom {
+            border: 2px solid #595959;
+            padding: 8px;
+            background-color: transparent;
+        }
+
+        /* Bouton custom avec bon contraste */
+        /* Fond #005A9C (bleu foncé) sur fond blanc = Ratio 7.1:1 */
+        .btn-custom {
+            background-color: #005A9C;
+            border: none;
+            padding: 10px 20px;
+            color: white; /* Le texte c'est le 3.2, mais on le met propre quand même */
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Bons contrastes</h1>
+        
+        <h2>Composants (Test 3.3.1)</h2>
+        <input type="text" class="input-custom" aria-label="Recherche">
+        <button class="btn-custom">Envoyer</button>
+
+        <h2>Élément graphique (Tests 3.3.2 et 3.3.3)</h2>
+        <!-- Icône SVG avec un remplissage #333333 (gris très foncé) sur fond blanc = Ratio 9.5:1 -->
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-label="Icône utilisateur" role="img">
+            <circle cx="12" cy="8" r="4" fill="#333333" />
+            <path d="M4 20c0-4 4-7 8-7s8 3 8 7" fill="#333333" />
+        </svg>
+    </main>
+</body>
+</html>

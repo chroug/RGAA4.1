@@ -27,14 +27,14 @@ export async function runSemiAuto(page) {
     // On passe la page ET le carnet de notes. Le thème se débrouille !
     // await runTheme1(page, resultats_globaux);
 
-    // console.log("\n📊 [Thème 3] Analyse contrastes...");
-    // await runTheme3(page, resultats_globaux);
+    console.log("\n📊 [Thème 3] Analyse contrastes...");
+    await runTheme3(page, resultats_globaux);
 
     // console.log("\n📊 [Thème 5] Analyse des Tableaux...");
     // await runTheme5(page, resultats_globaux);
 
-    console.log("\n🔗 [Thème 6] Analyse des Liens...");
-    await runTheme6(page, resultats_globaux);
+    // console.log("\n🔗 [Thème 6] Analyse des Liens...");
+    // await runTheme6(page, resultats_globaux);
     
     // console.log("\n⚙️ [Thème 7] Analyse des Scripts (Statuts)...");
     // await runTheme7(page, resultats_globaux);

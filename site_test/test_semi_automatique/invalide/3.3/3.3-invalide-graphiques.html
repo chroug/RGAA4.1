@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 3.3 - Graphiques illisibles</title>
+    <style>
+        body { background-color: #FFFFFF; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Éléments graphiques avec mauvais contraste</h1>
+        
+        <h2>Icône isolée (Test 3.3.2 ❌)</h2>
+        <!-- Icône grise claire (#D3D3D3) sur fond blanc. Ratio 1.4:1 (Il faut 3:1) -->
+        <button aria-label="Paramètres" style="background:none; border:none;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#D3D3D3">
+                <path d="M19.4 13c0-2-1.6-3.6-3.6-3.6s-3.6 1.6-3.6 3.6 1.6 3.6 3.6 3.6 3.6-1.6 3.6-3.6zm-10.8 0c0-2-1.6-3.6-3.6-3.6s-3.6 1.6-3.6 3.6 1.6 3.6 3.6 3.6 3.6-1.6 3.6-3.6z"/>
+            </svg>
+        </button>
+
+        <h2>Graphique SVG complexe (Test 3.3.3 ❌)</h2>
+        <!-- Graphique "camembert" où deux couleurs porteuses de sens se touchent sans contraste suffisant -->
+        <!-- Rouge clair (#FF9999) et Orange clair (#FFCC99). Le ratio entre ces deux couleurs contiguës est < 3:1 -->
+        <!-- Sans bordure contrastée pour les séparer, un utilisateur daltonien ou malvoyant ne verra qu'un seul bloc -->
+        <svg width="100" height="100" viewBox="0 0 32 32" aria-label="Répartition des ventes">
+            <!-- Part 1 -->
+            <circle r="16" cx="16" cy="16" fill="#FF9999" stroke-dasharray="100 100" />
+            <!-- Part 2 -->
+            <circle r="16" cx="16" cy="16" fill="#FFCC99" stroke-dasharray="30 100" />
+        </svg>
+        <p>Légende : <span style="color:#FF9999">En boutique</span> | <span style="color:#FFCC99">En ligne</span></p>
+    </main>
+</body>
+</html>

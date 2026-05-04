@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 3.3 - Exceptions (Non Applicable)</title>
+    <style>
+        body { background-color: #FFFFFF; }
+        
+        /* Bouton désactivé avec un contraste faible (#D3D3D3 sur Blanc = 1.4:1) */
+        /* C'est AUTORISÉ par le RGAA car l'élément est inactif (disabled) */
+        .btn-disabled {
+            background-color: #D3D3D3;
+            border: 1px solid #CCCCCC;
+            color: #888888;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Cas particuliers (Tolérances)</h1>
+        
+        <h2>1. Composant inactif</h2>
+        <button class="btn-disabled" disabled>Action impossible</button>
+
+        <h2>2. Composant natif du navigateur</h2>
+        <!-- Checkbox native sans CSS modifié : l'auteur n'est pas responsable du contraste -->
+        <label><input type="checkbox"> Option native</label>
+
+        <h2>3. Logo de marque</h2>
+        <!-- Les logos sont exemptés des règles de contraste (même si le jaune sur blanc est illisible) -->
+        <svg width="100" height="50" aria-label="Logo de l'entreprise SunCorp" role="img">
+            <rect width="100" height="50" fill="#FFFFCC" /> <!-- Jaune très clair -->
+            <text x="10" y="30" fill="#FFE600">SunCorp</text>
+        </svg>
+    </main>
+</body>
+</html>

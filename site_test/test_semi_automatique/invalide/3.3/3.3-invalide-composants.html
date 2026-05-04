@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 3.3 - Composants illisibles</title>
+    <style>
+        body { background-color: #FFFFFF; }
+        
+        /* TEST 3.3.1 ❌ : Bordure #E0E0E0 (gris très clair) sur fond blanc = Ratio ~1.3:1 (Il faut 3:1 minimum) */
+        /* L'utilisateur malvoyant ne verra pas où est le champ de saisie */
+        .input-bad {
+            border: 2px solid #E0E0E0;
+            padding: 8px;
+            background-color: transparent;
+        }
+
+        /* TEST 3.3.1 ❌ : Bouton avec fond #ADD8E6 (bleu clair) sur fond blanc = Ratio ~1.5:1 */
+        /* On ne distingue pas les limites du bouton */
+        .btn-bad {
+            background-color: #ADD8E6;
+            border: none;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Composants avec mauvais contraste</h1>
+        
+        <label for="search">Recherche :</label>
+        <input type="text" id="search" class="input-bad">
+        
+        <button class="btn-bad">Valider</button>
+    </main>
+</body>
+</html>
