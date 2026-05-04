@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 5.7 - Scopes inversés</title>
+</head>
+<body>
+    <main>
+        <table summary="Ce tableau liste le matériel informatique fourni aux employés.">
+            <caption>Dotation Matériel</caption>
+            <thead>
+                <tr>
+                    <td></td>
+                    <!-- TEST IA ❌ : Un en-tête horizontal (colonne) utilise scope="row". C'est illogique. -->
+                    <th scope="row">Ordinateur</th>
+                    <th scope="row">Écran</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <!-- TEST IA ❌ : Un en-tête vertical (ligne) utilise scope="col". C'est illogique. -->
+                    <th scope="col">Pack Standard</th>
+                    <td>13 pouces</td>
+                    <td>24 pouces</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

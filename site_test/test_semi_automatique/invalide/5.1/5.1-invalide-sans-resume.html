@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 5.1 - Tableau complexe sans aucun résumé</title>
+</head>
+<body>
+    <main>
+        <h1>Données brutes</h1>
+        
+        <!-- TEST ALGO ⚡ : C'est un tableau complexe (colspan="2" dans les th). 
+             Cependant, il n'y a ni attribut 'summary', ni balise 'caption', ni 'aria-describedby'. 
+             Un utilisateur aveugle sera perdu dans cette structure. -> NON_CONFORME -->
+        <table>
+            <thead>
+                <tr>
+                    <td rowspan="2"></td>
+                    <th colspan="2" scope="colgroup">Produits A</th>
+                    <th colspan="2" scope="colgroup">Produits B</th>
+                </tr>
+                <tr>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Prix</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Prix</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Boutique 1</th>
+                    <td>10</td>
+                    <td>5€</td>
+                    <td>20</td>
+                    <td>15€</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

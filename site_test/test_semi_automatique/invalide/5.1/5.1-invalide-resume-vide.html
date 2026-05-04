@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 5.1 - Tableau complexe avec résumé vide</title>
+</head>
+<body>
+    <main>
+        <h1>Données avec attribut vide</h1>
+        
+        <!-- TEST ALGO ⚡ : Le tableau est complexe. L'attribut 'summary' est bien présent, 
+             mais il est vide (ou ne contient que des espaces). Ce n'est pas un résumé valide. -> NON_CONFORME -->
+        <table summary="">
+            <thead>
+                <tr>
+                    <td rowspan="2"></td>
+                    <th colspan="3" scope="colgroup">Trimestre 1</th>
+                </tr>
+                <tr>
+                    <th scope="col">Jan</th>
+                    <th scope="col">Fev</th>
+                    <th scope="col">Mar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">CA</th>
+                    <td>100</td>
+                    <td>150</td>
+                    <td>120</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

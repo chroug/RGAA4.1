@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 5.7 - Tableaux avec scopes corrects</title>
+</head>
+<body>
+    <main>
+        <!-- Un résumé pertinent pour passer les critères 5.1 et 5.2 -->
+        <table summary="Tarifs des abonnements internet. Les colonnes présentent les offres, les lignes les caractéristiques.">
+            <caption>Tarifs des abonnements 2024</caption>
+            <thead>
+                <tr>
+                    <td></td>
+                    <!-- TEST ALGO/IA ✅ : Les en-têtes de colonnes ont bien scope="col" -->
+                    <th scope="col">Fibre Standard</th>
+                    <th scope="col">Fibre Premium</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <!-- TEST ALGO/IA ✅ : L'en-tête de ligne a bien scope="row" -->
+                    <th scope="row">Prix mensuel</th>
+                    <td>30 €</td>
+                    <td>50 €</td>
+                </tr>
+                <tr>
+                    <th scope="row">Débit max</th>
+                    <td>500 Mbps</td>
+                    <td>2 Gbps</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

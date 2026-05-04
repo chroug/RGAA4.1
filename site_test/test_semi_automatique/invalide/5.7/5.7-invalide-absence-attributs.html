@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 5.7 - Absence d'attributs sur tableau complexe</title>
+</head>
+<body>
+    <main>
+        <table summary="Répartition des ventes par trimestre et par région.">
+            <caption>Ventes Trimestrielles</caption>
+            <thead>
+                <tr>
+                    <td rowspan="2"></td>
+                    <!-- TEST ALGO/IA ❌ : C'est un tableau complexe (double entrée avec des fusions). 
+                         Pourtant, aucun <th> n'a de scope ou d'id. -->
+                    <th colspan="2">Trimestre 1</th>
+                </tr>
+                <tr>
+                    <th>Nord</th>
+                    <th>Sud</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Objectif</th>
+                    <td>10k</td>
+                    <td>15k</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

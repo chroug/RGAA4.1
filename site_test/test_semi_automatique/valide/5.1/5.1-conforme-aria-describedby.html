@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 5.1 - Tableau complexe lié avec aria-describedby</title>
+</head>
+<body>
+    <main>
+        <h1>Horaires des trains</h1>
+        
+        <!-- Le résumé est écrit en dur dans la page, hors du tableau -->
+        <p id="resume-trains">Ce tableau présente les horaires des trains. Les lignes correspondent aux gares, et les en-têtes de colonnes sont divisés entre les trains du matin et de l'après-midi.</p>
+
+        <!-- TEST ALGO ⚡ : Tableau complexe. L'attribut aria-describedby 
+             pointe vers l'ID du paragraphe ci-dessus. -> CONFORME -->
+        <table aria-describedby="resume-trains">
+            <thead>
+                <tr>
+                    <td rowspan="2"></td>
+                    <th colspan="2" scope="colgroup">Matin</th>
+                    <th colspan="2" scope="colgroup">Après-midi</th>
+                </tr>
+                <tr>
+                    <th scope="col">Départ</th>
+                    <th scope="col">Arrivée</th>
+                    <th scope="col">Départ</th>
+                    <th scope="col">Arrivée</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Gare du Nord</th>
+                    <td>08:00</td>
+                    <td>09:30</td>
+                    <td>14:00</td>
+                    <td>15:30</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

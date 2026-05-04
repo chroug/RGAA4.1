@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 5.7 - Tableau complexe avec id et headers</title>
+</head>
+<body>
+    <main>
+        <table summary="Pluviométrie et températures par ville. Les colonnes sont divisées par ville puis par type de mesure.">
+            <caption>Météo de Janvier</caption>
+            <thead>
+                <tr>
+                    <td rowspan="2"></td>
+                    <!-- En-têtes principaux -->
+                    <th colspan="2" id="paris">Paris</th>
+                    <th colspan="2" id="lyon">Lyon</th>
+                </tr>
+                <tr>
+                    <!-- TEST ALGO/IA ✅ : Sous-en-têtes. Selon 5.7.3, ils NE DOIVENT PAS avoir de scope, 
+                         mais DOIVENT avoir un ID. C'est parfaitement respecté ici. -->
+                    <th id="p_pluie">Pluie (mm)</th>
+                    <th id="p_temp">Temp (°C)</th>
+                    <th id="l_pluie">Pluie (mm)</th>
+                    <th id="l_temp">Temp (°C)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th id="semaine1">Semaine 1</th>
+                    <!-- TEST ALGO/IA ✅ : Les cellules appellent les bons IDs dans le bon ordre logique (5.7.4) -->
+                    <td headers="paris p_pluie semaine1">12</td>
+                    <td headers="paris p_temp semaine1">5</td>
+                    <td headers="lyon l_pluie semaine1">8</td>
+                    <td headers="lyon l_temp semaine1">7</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

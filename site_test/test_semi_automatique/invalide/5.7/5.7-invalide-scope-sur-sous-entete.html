@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalide 5.7 - Scope interdit sur sous-en-tête</title>
+</head>
+<body>
+    <main>
+        <table summary="Statistiques des joueurs professionnels.">
+            <caption>Stats Joueurs</caption>
+            <thead>
+                <tr>
+                    <td rowspan="2"></td>
+                    <th colspan="2" id="attaquants">Attaquants</th>
+                </tr>
+                <tr>
+                    <!-- TEST IA ❌ : C'est un sous-en-tête (il ne s'applique pas à toute la colonne, 
+                         seulement au groupe "Attaquants"). Le RGAA interdit formellement d'utiliser 
+                         un scope ici (règle 5.7.3). Il faut utiliser id/headers. -->
+                    <th scope="col">Buts</th>
+                    <th scope="col">Passes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th id="j1">Joueur A</th>
+                    <td headers="attaquants j1">15</td>
+                    <td headers="attaquants j1">5</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

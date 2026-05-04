@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valide 5.1 - Tableau complexe avec caption</title>
+</head>
+<body>
+    <main>
+        <h1>Statistiques de la population</h1>
+        
+        <!-- TEST ALGO ⚡ : C'est un tableau complexe. 
+             Il possède une balise <caption> qui fait office de résumé et de titre. -> CONFORME -->
+        <table>
+            <caption>Répartition de la population par âge et par sexe en 2023. Les colonnes sont divisées par tranche d'âge, puis sous-divisées par sexe.</caption>
+            <thead>
+                <tr>
+                    <td rowspan="2"></td>
+                    <th colspan="2" scope="colgroup">0-18 ans</th>
+                    <th colspan="2" scope="colgroup">19-64 ans</th>
+                </tr>
+                <tr>
+                    <th scope="col">Hommes</th>
+                    <th scope="col">Femmes</th>
+                    <th scope="col">Hommes</th>
+                    <th scope="col">Femmes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Ville A</th>
+                    <td>500</td>
+                    <td>520</td>
+                    <td>1500</td>
+                    <td>1550</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
