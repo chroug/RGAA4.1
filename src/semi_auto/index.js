@@ -3,6 +3,7 @@ import path from 'path';
 
 // IMPORTS
 import runTheme1 from './theme_1_images/index.js';
+import runTheme2 from './theme_2_cadres/index.js';
 import runTheme3 from './theme_3_couleurs/index.js';
 import runTheme5 from './theme_5_tableaux/index.js';
 import runTheme6 from './theme_6_liens/index.js';
@@ -23,12 +24,14 @@ export async function runSemiAuto(page) {
     // ==========================================
     // 📸 THÈME 1 : IMAGES
     // ==========================================
-    // console.log("\n📸 [Thème 1] Analyse des Images...");
-    // On passe la page ET le carnet de notes. Le thème se débrouille !
-    // await runTheme1(page, resultats_globaux);
+    console.log("\n📸 [Thème 1] Analyse des Images...");
+    await runTheme1(page, resultats_globaux);
 
-    console.log("\n📊 [Thème 3] Analyse contrastes...");
-    await runTheme3(page, resultats_globaux);
+    console.log("\n🖼️ [Thème 2] Analyse des Cadres...");
+    await runTheme2(page, resultats_globaux);
+
+    // console.log("\n📊 [Thème 3] Analyse contrastes...");
+    // await runTheme3(page, resultats_globaux);
 
     // console.log("\n📊 [Thème 5] Analyse des Tableaux...");
     // await runTheme5(page, resultats_globaux);

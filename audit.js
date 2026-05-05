@@ -16,14 +16,43 @@ async function runAudit(url) {
     console.log(`\n🚀 Lancement de l'audit RGAA sur : ${url}...`);
 
     const browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext();
+    const context = await browser.newContext({
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+        viewport: { width: 1280, height: 800 },
+        extraHTTPHeaders: {
+            'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
+        }
+    });
     const page = await context.newPage();
 
     await page.setViewportSize({ width: 1280, height: 800 });
 
     try {
         await page.goto(url, { waitUntil: 'load', timeout: 60000 }); 
-// J'ai aussi passé le timeout à 60s pour laisser le temps aux fausses images de s'afficher
+
+        // ====================================================================
+        // 🍪 GESTION DES BANDEAUX DE COOKIES (POUR DÉBLOQUER LES IFRAMES)
+        // ====================================================================
+        console.log("🍪 Tentative d'acceptation forcée des cookies (API & Clics)...");
+        await page.evaluate(() => {
+            // 1. Si le site utilise Tarteaucitron (comme 90% des mairies), on force l'API native
+            if (typeof tarteaucitron !== 'undefined' && tarteaucitron.userInterface) {
+                try { tarteaucitron.userInterface.respondAll(true); } catch(e) {}
+            }
+            // 2. Si le site utilise Axeptio
+            if (typeof window._axcb !== 'undefined') {
+                try { window.axeptioSDK.requestConsent('all'); } catch(e) {}
+            }
+            // 3. Fallback : On cherche tous les boutons et on clique sur celui qui dit "accepter"
+            const buttons = Array.from(document.querySelectorAll('button, a, [role="button"]'));
+            const acceptBtn = buttons.find(b => /tout accepter|accepter tout|j'accepte|autoriser/i.test(b.innerText));
+            if (acceptBtn) {
+                try { acceptBtn.click(); } catch(e) {}
+            }
+        });
+        
+        // On laisse généreusement 3 secondes au site pour injecter ses iframes après l'acceptation
+        await page.waitForTimeout(3000);
 
         // 🔥 FORCER LE CHARGEMENT DES IMAGES LAZY
         console.log(`⏬ Défilement de la page pour charger les images cachées...`);
