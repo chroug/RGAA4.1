@@ -18,12 +18,6 @@ export default async function testerCritere2_2(page) {
     // 🔥 DEBUG : On force une grosse pause de 5 secondes pour être sûr à 100% que tout a chargé
     await page.waitForTimeout(5000); 
 
-    // 📸 DEBUG VISUEL : On prend une photo de TOUTE la page telle que le robot la voit
-    try {
-        await page.screenshot({ path: 'DEBUG_VUE_ROBOT.jpeg', fullPage: true });
-        console.log("   📸 DEBUG : J'ai pris une photo de la page dans 'DEBUG_VUE_ROBOT.jpeg'. Ouvre-la !");
-    } catch(e) {}
-
     // 🔎 DEBUG TECHNIQUE : On compte absolument TOUS les cadres, avec ou sans titre
     const totalFrames = await page.locator('iframe, frame').count();
     console.log(`   🔎 DEBUG : J'ai trouvé ${totalFrames} cadre(s) AU TOTAL dans le code source de cette page.`);

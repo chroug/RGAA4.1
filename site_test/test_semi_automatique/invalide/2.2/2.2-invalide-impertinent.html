@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Invalide - Critère 2.2 RGAA</title>
+</head>
+<body>
+    <h1>Exemples de cadres avec titres NON pertinents</h1>
+    
+    <!-- Titre générique non pertinent -->
+    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="iframe" width="560" height="315"></iframe>
+
+    <!-- Titre vide (bien que cela relève aussi du 2.1, si un title est vide ou composé d'espaces, il n'est pas pertinent) -->
+    <iframe src="carte.html" title="  " width="600" height="450"></iframe>
+
+    <!-- Titre ne correspondant pas au contenu (ex: indique une pub alors que c'est une carte) -->
+    <iframe src="https://www.google.com/maps/embed?pb=..." title="Publicité pour des chaussures" width="600" height="450"></iframe>
+</body>
+</html>

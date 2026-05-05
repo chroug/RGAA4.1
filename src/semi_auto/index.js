@@ -27,8 +27,8 @@ export async function runSemiAuto(page) {
     console.log("\n📸 [Thème 1] Analyse des Images...");
     await runTheme1(page, resultats_globaux);
 
-    console.log("\n🖼️ [Thème 2] Analyse des Cadres...");
-    await runTheme2(page, resultats_globaux);
+    // console.log("\n🖼️ [Thème 2] Analyse des Cadres...");
+    // await runTheme2(page, resultats_globaux);
 
     // console.log("\n📊 [Thème 3] Analyse contrastes...");
     // await runTheme3(page, resultats_globaux);
