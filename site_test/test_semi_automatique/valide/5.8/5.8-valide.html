@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 5.8 - Cas Valides</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test-case { border-left: 5px solid #28a745; background-color: #f4fff5; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .layout-table { width: 100%; border: none; }
+        .layout-table td { padding: 10px; vertical-align: top; }
+    </style>
+</head>
+<body>
+
+    <h1>Critère 5.8 : Exemples CONFORMES (Tableaux de mise en forme)</h1>
+
+    <div class="test-case">
+        <h2>Cas 1 : Tableau de présentation simple et propre</h2>
+        <p><em>Utilisation stricte de table, tr et td. Aucun attribut interdit.</em></p>
+        <table class="layout-table" role="presentation">
+            <tr>
+                <td style="width: 50%;">Colonne gauche (Menu)</td>
+                <td style="width: 50%;">Colonne droite (Contenu)</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Cas 2 : Attribut summary présent mais vide</h2>
+        <p><em>Le RGAA autorise explicitement la présence de l'attribut summary sur un tableau de présentation UNIQUEMENT si celui-ci est strictement vide (summary="").</em></p>
+        <table class="layout-table" role="presentation" summary="">
+            <tr>
+                <td>Logo de l'entreprise</td>
+                <td>Barre de recherche</td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>

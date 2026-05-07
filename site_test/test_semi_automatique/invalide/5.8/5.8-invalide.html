@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 5.8 - Cas Invalides</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test-case { border-left: 5px solid #dc3545; background-color: #fff4f4; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .layout-table { width: 100%; border: none; }
+        .layout-table td, .layout-table th { padding: 10px; vertical-align: top; border: 1px dashed #ccc; }
+    </style>
+</head>
+<body>
+
+    <h1>Critère 5.8 : Exemples NON CONFORMES (Éléments interdits)</h1>
+
+    <div class="test-case">
+        <h2>Erreur 1 : Utilisation de la balise &lt;th&gt;</h2>
+        <p><em>Un tableau de présentation ne doit contenir que des &lt;td&gt;, jamais d'en-têtes &lt;th&gt;.</em></p>
+        <table class="layout-table" role="presentation">
+            <tr>
+                <th>Menu Navigation</th>
+                <td>Accueil | Contact | À propos</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 2 : Présence d'un &lt;caption&gt;</h2>
+        <p><em>Un tableau de mise en forme ne peut pas avoir de titre sémantique.</em></p>
+        <table class="layout-table" role="presentation">
+            <caption>Mise en page de la section droite</caption>
+            <tr>
+                <td>Publicité 1</td>
+                <td>Publicité 2</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 3 : Attribut summary rempli</h2>
+        <p><em>Le summary est strictement réservé aux tableaux de données.</em></p>
+        <table class="layout-table" role="presentation" summary="Ce tableau sert à aligner les éléments du pied de page.">
+            <tr>
+                <td>Mentions légales</td>
+                <td>Plan du site</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 4 : Utilisation de &lt;thead&gt; ou &lt;tfoot&gt;</h2>
+        <p><em>La structuration par section est interdite pour la mise en forme.</em></p>
+        <table class="layout-table" role="presentation">
+            <thead>
+                <tr><td>En-tête visuel du site</td></tr>
+            </thead>
+            <tbody>
+                <tr><td>Corps de la page</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 5 : Attribut scope sur un &lt;td&gt;</h2>
+        <p><em>L'attribut scope sert à lier des données, il n'a rien à faire ici.</em></p>
+        <table class="layout-table" role="presentation">
+            <tr>
+                <td scope="col">Option 1</td>
+                <td>Option 2</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 6 : Attribut ARIA de données (role="rowheader")</h2>
+        <p><em>Même sans utiliser la balise &lt;th&gt;, forcer un rôle d'en-tête de données via ARIA est interdit.</em></p>
+        <table class="layout-table" role="presentation">
+            <tr>
+                <td role="rowheader">Titre visuel</td>
+                <td>Contenu aligné</td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>

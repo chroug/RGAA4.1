@@ -175,3 +175,30 @@ Réponds STRICTEMENT avec ce format JSON RAW (sans balises markdown) :
   "statut": "CONFORME" ou "NON_CONFORME",
   "explication": "Explication courte."
 }`;
+
+// ==========================================
+// PROMPT POUR LE CRITÈRE 5.3 (LINÉARISATION)
+// ==========================================
+export const prompt53_Linearisation = (texteLinearise, htmlTableau) => `Tu es un expert RGAA 4.1.
+MISSION : Vérifier le Critère 5.3 (Le contenu linéarisé d'un tableau de mise en forme doit rester compréhensible).
+
+Voici le texte "linéarisé" du tableau (c'est-à-dire le texte lu cellule par cellule de gauche à droite, de haut en bas, exactement comme le lirait un lecteur d'écran pour aveugle) :
+"${texteLinearise}"
+
+CODE HTML DU TABLEAU (pour contexte) :
+\`\`\`html
+${htmlTableau.substring(0, 500)}...
+\`\`\`
+
+RÈGLES D'ÉVALUATION :
+1. Lis la phrase "linéarisée". A-t-elle un sens logique et naturel en français ?
+2. ❌ NON_CONFORME (Charabia) : Si la phrase est du charabia, si des mots sont coupés ou mélangés de manière absurde (ex: "L'accessibilité numérique sont essentielles pour et la qualité web...").
+3. ❌ NON_CONFORME (Formulaire cassé) : S'il s'agit d'un formulaire et que l'ordre lu mélange les labels et les champs (ex: "Ville Code Postal [champ] [champ]"). L'ordre logique d'un formulaire est "Label -> Champ -> Label -> Champ".
+4. ✅ CONFORME : Si la lecture est fluide et logique (ex: un texte qui s'enchaîne bien, un menu de navigation, un label suivi de son champ).
+5. ✅ CONFORME : Si le texte linéarisé est vide (tableau contenant uniquement des images ignorées).
+
+Réponds STRICTEMENT avec ce format JSON RAW (sans balises markdown) :
+{
+  "statut": "CONFORME" ou "NON_CONFORME",
+  "explication": "Explication courte de pourquoi la lecture a du sens ou non."
+}`;

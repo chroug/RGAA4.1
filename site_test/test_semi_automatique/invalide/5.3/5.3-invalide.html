@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 5.3 - Cas Invalides</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test-case { border-left: 5px solid #dc3545; background-color: #fff4f4; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .layout-table { width: 100%; border: none; }
+        .layout-table td { padding: 10px; vertical-align: top; border: 1px dashed #ccc;}
+    </style>
+</head>
+<body>
+
+    <h1>Critère 5.3 : Exemples NON CONFORMES (Tableaux de mise en forme)</h1>
+
+    <div class="test-case">
+        <h2>Erreur 1 : Attribut role="presentation" manquant</h2>
+        <p><em>Ce tableau sert de mise en page (une colonne menu, une colonne texte), mais il n'a pas l'attribut WAI-ARIA requis. Un lecteur d'écran annoncera "Tableau, 1 ligne, 2 colonnes", ce qui induit l'utilisateur en erreur.</em></p>
+        
+        <!-- Oubli du role="presentation" -->
+        <table class="layout-table">
+            <tr>
+                <td style="width: 200px; background: #eee;">
+                    <ul>
+                        <li><a href="#">Accueil</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </td>
+                <td>
+                    <p>Contenu principal de la page. C'est ici que le texte s'affiche.</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 2 : Perte de sens à la linéarisation (Le cauchemar des lecteurs d'écran)</h2>
+        <p><em>Le développeur a coupé une phrase en deux pour faire deux colonnes visuelles. Visuellement, on lit la colonne 1, puis la colonne 2. Mais le code HTML lit Ligne 1 (Col A + Col B), puis Ligne 2. La phrase lue sera absurde.</em></p>
+        
+        <table class="layout-table" role="presentation">
+            <!-- 
+            Visuellement :
+            "La politique d'accessibilité    est une priorité absolue"
+            "de notre entreprise             pour tous nos clients."
+            
+            Linéarisation (ce que l'IA va recevoir) : 
+            "La politique d'accessibilité est une priorité absolue de notre entreprise pour tous nos clients."
+            Wait... This actually makes sense in HTML reading order if typed wrong!
+            Let's make a real linearization failure.
+            -->
+            
+            <tr>
+                <td>L'accessibilité numérique</td>
+                <td>sont essentielles pour</td>
+            </tr>
+            <tr>
+                <td>et la qualité web</td>
+                <td>garantir un accès pour tous.</td>
+            </tr>
+            <!-- 
+            Résultat lu de gauche à droite : 
+            "L'accessibilité numérique sont essentielles pour et la qualité web garantir un accès pour tous."
+            C'est du charabia ! L'IA va le détecter tout de suite.
+            -->
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 3 : Ordre d'un formulaire brisé</h2>
+        <p><em>Le développeur a mis tous les labels dans la première ligne, et tous les champs dans la deuxième ligne. Le lecteur d'écran va lire "Nom", puis "Prénom", et ENSUITE il arrivera sur les champs sans savoir lequel est lequel.</em></p>
+        
+        <table class="layout-table" role="presentation">
+            <tr>
+                <td><label for="ville">Ville :</label></td>
+                <td><label for="cp">Code Postal :</label></td>
+            </tr>
+            <tr>
+                <td><input type="text" id="ville"></td>
+                <td><input type="text" id="cp"></td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>

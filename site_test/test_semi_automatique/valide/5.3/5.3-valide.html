@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 5.3 - Cas Valides</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test-case { border-left: 5px solid #28a745; background-color: #f4fff5; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .layout-table { width: 100%; border: none; }
+        .layout-table td { padding: 10px; vertical-align: top; }
+    </style>
+</head>
+<body>
+
+    <h1>Critère 5.3 : Exemples CONFORMES (Tableaux de mise en forme)</h1>
+
+    <div class="test-case">
+        <h2>Cas 1 : Image et texte alignés (Linéarisation logique)</h2>
+        <p><em>Le tableau a bien le role="presentation". À la lecture, on entendra d'abord l'image (si elle a un alt), puis le texte d'explication. C'est parfaitement compréhensible.</em></p>
+        
+        <table class="layout-table" role="presentation">
+            <tr>
+                <td style="width: 80px;">
+                    <!-- Image décorative ignorée -->
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="" style="width:50px; height:50px; background:blue;">
+                </td>
+                <td>
+                    <h3>Bienvenue sur notre espace</h3>
+                    <p>Découvrez tous nos services en ligne dédiés à l'accessibilité numérique. Naviguez à travers nos différentes rubriques pour en savoir plus.</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Cas 2 : Formulaire aligné (Linéarisation logique)</h2>
+        <p><em>Le tableau sert à aligner les labels et les champs. La lecture (Label -> Champ) est l'ordre naturel d'un formulaire.</em></p>
+        
+        <table class="layout-table" role="presentation">
+            <tr>
+                <td><label for="nom">Nom :</label></td>
+                <td><input type="text" id="nom" name="nom"></td>
+            </tr>
+            <tr>
+                <td><label for="prenom">Prénom :</label></td>
+                <td><input type="text" id="prenom" name="prenom"></td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>

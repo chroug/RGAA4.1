@@ -4,11 +4,21 @@ export default function extraireTableauxDOM() {
     // 1. CIBLAGE EXHAUSTIF : Balises <table> ET rôles ARIA table/grid (RGAA 5.1.1)
     // On exclut strictement les tableaux de présentation
     // On exclut les tableaux de présentation ET les tableaux cachés !
-const tableauxBruts = Array.from(document.querySelectorAll('table:not([role="presentation"]):not([aria-hidden="true"]), [role="table"]:not([aria-hidden="true"]), [role="grid"]:not([aria-hidden="true"])'))
+// 1. CIBLAGE EXHAUSTIF
+    const tableauxBruts = Array.from(document.querySelectorAll('table:not([role="presentation"]):not([role="none"]):not([aria-hidden="true"]), [role="table"]:not([aria-hidden="true"]), [role="grid"]:not([aria-hidden="true"])'))
     .filter(table => {
-        // On filtre aussi ceux qui sont cachés en CSS
+        // Filtre 1 : On exclut ceux qui sont cachés en CSS
         const style = window.getComputedStyle(table);
-        return style.display !== 'none' && style.visibility !== 'hidden';
+        if (style.display === 'none' || style.visibility === 'hidden') return false;
+
+        // Filtre 2 (LE CORRECTIF) : On vérifie s'il a des marqueurs de données
+        const hasDataIndicators = table.querySelector('th, caption') || table.hasAttribute('summary');
+        
+        // S'il n'a aucun marqueur de données, c'est un tableau de mise en forme déguisé.
+        // On l'exclut des tableaux de données (il sera attrapé par l'extracteur 5.3 plus bas)
+        if (!hasDataIndicators && table.tagName === 'TABLE') return false;
+
+        return true;
     });
 
     const tableaux = tableauxBruts.map(table => {
@@ -119,9 +129,77 @@ const tableauxBruts = Array.from(document.querySelectorAll('table:not([role="pre
             headers: headers,
             aUnTitreTechnique: aUnTitreTechnique,
             texteAvant: texteAvant,
-            texteTitre: texteTitre // 👈 AJOUT POUR LE 5.5
+            texteTitre: texteTitre
         };
     });
 
-    return { tableaux };
+    // ====================================================================
+    // 🎨 NOUVEAU : EXTRACTION DES TABLEAUX DE MISE EN FORME (Critère 5.3)
+    // ====================================================================
+    const tableauxLayoutBruts = Array.from(document.querySelectorAll('table')).filter(table => {
+        const style = window.getComputedStyle(table);
+        if (style.display === 'none' || style.visibility === 'hidden') return false;
+
+        const role = table.getAttribute('role');
+        const isExplicitLayout = role === 'presentation' || role === 'none';
+        const hasDataIndicators = table.querySelector('th, caption') || table.hasAttribute('summary');
+        
+        // C'est un tableau de présentation SI : le rôle est explicitement "presentation", 
+        // OU s'il n'a aucun marqueur de données (ni th, ni caption)
+        return isExplicitLayout || !hasDataIndicators;
+    });
+
+    const tableauxMiseEnForme = tableauxLayoutBruts.map(table => {
+        const role = table.getAttribute('role');
+        const aRolePresentation = role === 'presentation' || role === 'none';
+
+      
+       // LINÉARISATION : on extrait le texte, et on signale les éléments interactifs sans texte (inputs)
+        const cellules = Array.from(table.querySelectorAll('td'));
+        let texteLinearise = cellules.map(td => {
+            let cloneTd = td.cloneNode(true);
+            cloneTd.querySelectorAll('[aria-hidden="true"]').forEach(el => el.remove());
+            let contenu = cloneTd.innerText || cloneTd.textContent || "";
+            if (cloneTd.querySelector('input, select, textarea')) {
+                contenu += " [champ de saisie]";
+            }
+            return contenu.trim();
+        }).join(' ');
+        
+        texteLinearise = texteLinearise.replace(/\s+/g, ' ').trim(); // Nettoyage
+
+        // ==========================================
+        // 🚫 VÉRIFICATION DES ÉLÉMENTS INTERDITS (Critère 5.8)
+        // ==========================================
+        let erreurs58 = [];
+        
+        // 1. Attribut summary non vide
+        if (table.hasAttribute('summary') && table.getAttribute('summary').trim() !== '') {
+            erreurs58.push('attribut summary rempli');
+        }
+        // 2. Balises structurelles interdites
+        const elementsInterdits = table.querySelectorAll('caption, th, thead, tfoot');
+        if (elementsInterdits.length > 0) {
+            const tags = Array.from(new Set(Array.from(elementsInterdits).map(el => '<' + el.tagName.toLowerCase() + '>')));
+            erreurs58.push('balises interdites (' + tags.join(', ') + ')');
+        }
+        // 3. Rôles ARIA interdits
+        if (table.querySelectorAll('[role="rowheader"], [role="columnheader"]').length > 0) {
+            erreurs58.push('rôles ARIA (rowheader/columnheader)');
+        }
+        // 4. Attributs de cellules interdits
+        if (table.querySelectorAll('td[scope], td[headers], td[axis]').length > 0) {
+            erreurs58.push('attributs de cellules (scope/headers/axis)');
+        }
+
+        return {
+            htmlComplet: table.outerHTML,
+            aRolePresentation: aRolePresentation,
+            texteLinearise: texteLinearise,
+            erreurs58: erreurs58 // 👈 NOUVELLE DONNÉE AJOUTÉE
+        };
+    });
+
+    // On retourne les deux types de tableaux au Chef d'Orchestre !
+    return { tableaux, tableauxMiseEnForme };
 }
