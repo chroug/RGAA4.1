@@ -112,3 +112,66 @@ ${htmlTableau}
 
 Réponds STRICTEMENT avec ce format JSON RAW :
 { "statut": "CONFORME" ou "NON_CONFORME", "explication": "..." }`;
+
+
+// ==========================================
+// PROMPT POUR LE CRITÈRE 5.4 (TITRE VISUEL NON LIÉ)
+// ==========================================
+export const prompt54_TitreVisuel = (htmlTableau, texteAvant) => `Tu es un expert RGAA 4.1 pragmatique.
+MISSION : Vérifier le Critère 5.4 (Un tableau de données ayant un titre visuel doit avoir ce titre correctement associé).
+
+RAPPEL DE L'ALGORITHME : Le tableau HTML que je t'envoie NE POSSÈDE AUCUNE liaison technique valide (ni <caption>, ni title, ni aria-label, ni aria-labelledby). Ton rôle est de vérifier s'il existe un "faux" titre visuel qui aurait dû être lié techniquement.
+
+TEXTE PRÉSENT JUSTE AVANT LE TABLEAU SUR LA PAGE :
+"${texteAvant}"
+
+CODE HTML DU TABLEAU (début) :
+\`\`\`html
+${htmlTableau.substring(0, 400)}...
+\`\`\`
+
+RÈGLES D'ÉVALUATION :
+1. DÉTECTION D'UN TITRE VISUEL EXTERNE : Le "TEXTE JUSTE AVANT" agit-il sémantiquement comme un TITRE direct pour ce tableau ?
+   - ❌ NON_CONFORME : S'il s'agit d'un texte court, direct, autonome (comme un libellé ou un titre de section) qui annonce clairement le sujet du tableau. Le développeur a créé un titre visuel mais a oublié de le lier.
+   - ✅ CONFORME : Si le texte est vide, OU s'il s'agit d'un paragraphe classique (ex: un long texte d'explication, d'introduction ou des consignes de lecture). Un paragraphe de contenu n'est pas considéré comme un "titre de tableau".
+   
+2. DÉTECTION D'UN FAUX TITRE INTERNE (Hack HTML) :
+   - ❌ NON_CONFORME : Analyse la structure HTML. Y a-t-il, au tout début du tableau, une ligne contenant une ou plusieurs cellules fusionnées (via l'attribut 'colspan') servant UNIQUEMENT à simuler un titre visuel global pour le tableau ? (Le développeur aurait dû utiliser la balise <caption>).
+   
+3. CONCLUSION DE L'ANALYSE :
+   - Si tu détectes un titre visuel (externe ou interne) -> NON_CONFORME.
+   - S'il n'y a manifestement aucun texte conçu pour être un titre -> CONFORME (les tableaux ont tout à fait le droit de ne pas avoir de titre).
+
+Réponds STRICTEMENT avec ce format JSON RAW (sans balises markdown) :
+{
+  "statut": "CONFORME" ou "NON_CONFORME",
+  "explication": "Explication courte."
+}`;
+
+// ==========================================
+// PROMPT POUR LE CRITÈRE 5.5 (PERTINENCE DU TITRE)
+// ==========================================
+export const prompt55_PertinenceTitre = (htmlTableau, texteTitre) => `Tu es un expert RGAA 4.1 pragmatique.
+MISSION : Vérifier le Critère 5.5 (Pour chaque tableau de données ayant un titre, celui-ci doit être pertinent, clair et concis).
+
+TEXTE DU TITRE EXTRAIT :
+"${texteTitre}"
+
+CODE HTML DU TABLEAU (pour contexte) :
+\`\`\`html
+${htmlTableau.substring(0, 800)}...
+\`\`\`
+
+RÈGLES D'ÉVALUATION :
+1. IDENTIFICATION DU SUJET (Tolérance pragmatique) : L'utilisateur comprend-il de quoi parle le tableau en lisant ce titre ?
+   - ❌ NON_CONFORME : Les titres purement génériques, structurels ou séquentiels qui ne décrivent pas la donnée (ex: un simple numéro, "Tableau", "Données", "Liste", "Figure", etc.).
+   - ✅ CONFORME : Tout titre qui annonce le SUJET des données. NE SANCTIONNE JAMAIS la présence de préfixes, de numérotation, ou de mots d'introduction conversationnels (ex: "Annexe A :...", "Voici les...", "Exemple :..."). L'essentiel est que le sujet soit présent et compréhensible.
+2. COHÉRENCE : Le titre correspond-il RÉELLEMENT aux données présentes dans le HTML ? (Si c'est hors-sujet ou déconnecté du contenu, c'est NON_CONFORME).
+3. CONCISION : Le titre est-il raisonnablement court ? (Tant que ce n'est pas un long paragraphe d'explications détaillées ou un mode d'emploi expliquant comment lire le tableau, considère-le comme suffisamment concis).
+4. PROPRETÉ : S'il s'agit d'un texte de test laissé par erreur (ex: Lorem ipsum, texte aléatoire), c'est NON_CONFORME.
+
+Réponds STRICTEMENT avec ce format JSON RAW (sans balises markdown) :
+{
+  "statut": "CONFORME" ou "NON_CONFORME",
+  "explication": "Explication courte."
+}`;

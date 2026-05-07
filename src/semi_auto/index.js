@@ -22,10 +22,10 @@ export async function runSemiAuto(page) {
     };
 
     // ==========================================
-    // 📸 THÈME 1 : IMAGES
+    // 📸 THÈME 1 : IMAGES       !!!!!!!!   PAS FINI ATTEND IMPLEMENTATION CONFIRMATION HUMAIN   !!!!!!!!
     // ==========================================
-    console.log("\n📸 [Thème 1] Analyse des Images...");
-    await runTheme1(page, resultats_globaux);
+    // console.log("\n📸 [Thème 1] Analyse des Images...");
+    // await runTheme1(page, resultats_globaux);
 
     // console.log("\n🖼️ [Thème 2] Analyse des Cadres...");
     // await runTheme2(page, resultats_globaux);
@@ -33,8 +33,8 @@ export async function runSemiAuto(page) {
     // console.log("\n📊 [Thème 3] Analyse contrastes...");
     // await runTheme3(page, resultats_globaux);
 
-    // console.log("\n📊 [Thème 5] Analyse des Tableaux...");
-    // await runTheme5(page, resultats_globaux);
+    console.log("\n📊 [Thème 5] Analyse des Tableaux...");
+    await runTheme5(page, resultats_globaux);
 
     // console.log("\n🔗 [Thème 6] Analyse des Liens...");
     // await runTheme6(page, resultats_globaux);

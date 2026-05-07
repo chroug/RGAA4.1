@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 5.4 - Cas Valides</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test-case { border-left: 5px solid #28a745; background-color: #f4fff5; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; background: #fff; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        caption { font-weight: bold; padding: 10px; background-color: #e9ecef; border: 1px solid #ccc; border-bottom: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Critère 5.4 : Exemples CONFORMES (Valides)</h1>
+
+    <div class="test-case">
+        <h2>Méthode 1 : Utilisation de la balise native &lt;caption&gt;</h2>
+        <table>
+            <caption>Chiffre d'affaires par trimestre (en K€)</caption>
+            <tr><th scope="col">Trimestre</th><th scope="col">Montant</th></tr>
+            <tr><td>T1</td><td>450</td></tr>
+            <tr><td>T2</td><td>520</td></tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Méthode 2 : Utilisation de l'attribut WAI-ARIA aria-labelledby</h2>
+        <h3 id="titre-tab-2">Répartition des effectifs par service</h3>
+        <table aria-labelledby="titre-tab-2">
+            <tr><th scope="col">Service</th><th scope="col">Nombre d'employés</th></tr>
+            <tr><td>Ressources Humaines</td><td>12</td></tr>
+            <tr><td>Informatique</td><td>45</td></tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Méthode 3 : Utilisation de l'attribut WAI-ARIA aria-label</h2>
+        <table aria-label="Jours de fermeture de l'entreprise en 2026">
+            <tr><th scope="col">Date</th><th scope="col">Motif</th></tr>
+            <tr><td>1er Janvier</td><td>Jour de l'an</td></tr>
+            <tr><td>1er Mai</td><td>Fête du travail</td></tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Méthode 4 : Utilisation de l'attribut title sur la balise table</h2>
+        <table title="Horaires d'ouverture de la médiathèque">
+            <tr><th scope="col">Jour</th><th scope="col">Matin</th><th scope="col">Après-midi</th></tr>
+            <tr><td>Lundi</td><td>Fermé</td><td>14h - 18h</td></tr>
+            <tr><td>Mardi</td><td>9h - 12h</td><td>14h - 18h</td></tr>
+        </table>
+    </div>
+
+</body>
+</html>

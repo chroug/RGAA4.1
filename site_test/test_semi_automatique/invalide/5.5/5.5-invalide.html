@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 5.5 - Cas Invalides</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test-case { border-left: 5px solid #dc3545; background-color: #fff4f4; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; background: #fff; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        caption { font-weight: bold; padding: 10px; background-color: #e9ecef; border: 1px solid #ccc; border-bottom: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Critère 5.5 : Exemples NON CONFORMES (Titres non pertinents)</h1>
+
+    <div class="test-case">
+        <h2>Erreur 1 : Titre générique (Ne décrit rien)</h2>
+        <p><em>Le titre ne permet pas de savoir quelles données sont présentées avant de lire le tableau.</em></p>
+        <table>
+            <caption>Tableau 1</caption>
+            <tr><th scope="col">Navigateur</th><th scope="col">Part de marché</th></tr>
+            <tr><td>Chrome</td><td>65%</td></tr>
+            <tr><td>Firefox</td><td>15%</td></tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 2 : Titre hors-sujet / Faux</h2>
+        <p><em>Le développeur a fait un copier-coller d'un autre tableau. Le titre ne correspond pas aux données réelles.</em></p>
+        <table>
+            <!-- Le titre parle de fruits, mais le tableau liste des voitures ! -->
+            <caption>Liste des fruits de saison (Printemps)</caption>
+            <tr><th scope="col">Marque</th><th scope="col">Modèle</th></tr>
+            <tr><td>Peugeot</td><td>208</td></tr>
+            <tr><td>Renault</td><td>Clio</td></tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 3 : Titre beaucoup trop bavard (Non concis)</h2>
+        <p><em>Le titre est un énorme paragraphe. Le RGAA exige que le titre soit "concis". Si c'est trop long, cela devrait être un paragraphe d'introduction ou un résumé (summary/aria-describedby), pas un titre.</em></p>
+        <h3 id="titre-bavard">Voici le tableau qui présente l'évolution complète des effectifs de notre entreprise depuis sa création en 1999 jusqu'à aujourd'hui, avec une répartition détaillée par catégories socioprofessionnelles pour bien comprendre notre politique de recrutement inclusive.</h3>
+        <table aria-labelledby="titre-bavard">
+            <tr><th scope="col">Année</th><th scope="col">Cadres</th><th scope="col">Employés</th></tr>
+            <tr><td>2024</td><td>140</td><td>320</td></tr>
+            <tr><td>2025</td><td>155</td><td>340</td></tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 4 : Placeholder / Texte de test</h2>
+        <p><em>Un texte de test oublié en production.</em></p>
+        <table aria-label="Lorem ipsum dolor sit amet data test blabla">
+            <tr><th scope="col">Abonnement</th><th scope="col">Prix mensuel</th></tr>
+            <tr><td>Premium</td><td>19,99 €</td></tr>
+            <tr><td>Basique</td><td>9,99 €</td></tr>
+        </table>
+    </div>
+
+</body>
+</html>

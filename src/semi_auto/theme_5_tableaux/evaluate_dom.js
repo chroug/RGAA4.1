@@ -72,12 +72,54 @@ const tableauxBruts = Array.from(document.querySelectorAll('table:not([role="pre
             valeurScope: th.getAttribute('scope') || null
         }));
 
+       // ==========================================
+        // 🏷️ RECHERCHE DU TITRE (Pour les critères 5.4 et 5.5)
+        // ==========================================
+        let aUnTitreTechnique = false;
+        let texteTitre = "";
+        
+        // Ordre de priorité sémantique : 1. aria-labelledby, 2. aria-label, 3. caption, 4. title
+        
+        // Méthode 1 : aria-labelledby
+        if (table.hasAttribute('aria-labelledby')) {
+            const validIds = table.getAttribute('aria-labelledby').split(' ').filter(id => document.getElementById(id.trim()));
+            if (validIds.length > 0) {
+                aUnTitreTechnique = true;
+                texteTitre = validIds.map(id => document.getElementById(id.trim()).textContent.trim()).join(' ');
+            }
+        }
+        // Méthode 2 : aria-label
+        else if (table.hasAttribute('aria-label') && table.getAttribute('aria-label').trim() !== '') {
+            aUnTitreTechnique = true;
+            texteTitre = table.getAttribute('aria-label').trim();
+        }
+        // Méthode 3 : caption
+        else if (table.tagName === 'TABLE' && table.querySelector('caption')) {
+            aUnTitreTechnique = true;
+            texteTitre = table.querySelector('caption').textContent.trim();
+        }
+        // Méthode 4 : title
+        else if (table.hasAttribute('title') && table.getAttribute('title').trim() !== '') {
+            aUnTitreTechnique = true;
+            texteTitre = table.getAttribute('title').trim();
+        }
+
+        // On capture le texte juste avant le tableau (au cas où ce serait un "faux" titre visuel pour l'IA)
+        let texteAvant = "";
+        if (table.previousElementSibling) {
+            texteAvant = table.previousElementSibling.innerText || table.previousElementSibling.textContent || "";
+            texteAvant = texteAvant.trim().substring(0, 150);
+        }
+
         return {
-            htmlComplet: table.outerHTML, // Sera envoyé à l'IA pour le 5.2
+            htmlComplet: table.outerHTML,
             estComplexe: estComplexe,
             aUnResume: texteResume.trim().length > 0,
-            texteResume: texteResume.trim().replace(/\s+/g, ' '), // Nettoyage des espaces
-            headers: headers
+            texteResume: texteResume.trim().replace(/\s+/g, ' '),
+            headers: headers,
+            aUnTitreTechnique: aUnTitreTechnique,
+            texteAvant: texteAvant,
+            texteTitre: texteTitre // 👈 AJOUT POUR LE 5.5
         };
     });
 

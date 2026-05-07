@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 5.4 - Cas Invalides</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test-case { border-left: 5px solid #dc3545; background-color: #fff4f4; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; background: #fff; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        /* Simulation visuelle d'un titre pour piéger les algos */
+        .fake-caption { font-weight: bold; font-size: 1.1em; text-align: center; margin-bottom: 5px; color: #333; }
+    </style>
+</head>
+<body>
+
+    <h1>Critère 5.4 : Exemples NON CONFORMES (Invalides)</h1>
+
+    <div class="test-case">
+        <h2>Erreur 1 : Titre visuel non lié (Le grand classique)</h2>
+        <p><em>Un paragraphe stylisé ressemble à un titre, mais n'est pas lié au tableau. Un lecteur d'écran annoncera un tableau sans nom.</em></p>
+        
+        <div class="fake-caption">Liste des fournisseurs agréés</div>
+        <table>
+            <tr><th scope="col">Nom</th><th scope="col">Catégorie</th></tr>
+            <tr><td>Alpha Tech</td><td>Matériel informatique</td></tr>
+            <tr><td>BuroPlus</td><td>Fournitures de bureau</td></tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 2 : Faux caption à l'intérieur du tableau</h2>
+        <p><em>Le développeur a fusionné la première ligne pour faire un titre visuel, au lieu d'utiliser la balise &lt;caption&gt;.</em></p>
+        
+        <table>
+            <!-- Ceci est une erreur RGAA, ce n'est pas un titre sémantique -->
+            <tr><td colspan="2" style="font-weight: bold; text-align: center; background: #e9ecef;">Résultats des élections</td></tr>
+            <tr><th scope="col">Candidat</th><th scope="col">Votes</th></tr>
+            <tr><td>Alice</td><td>1250</td></tr>
+            <tr><td>Bob</td><td>980</td></tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 3 : aria-labelledby pointant vers un ID inexistant</h2>
+        <p><em>Le développeur a tenté de faire une liaison, mais l'ID ciblé n'existe pas dans la page.</em></p>
+        
+        <h3>Calendrier des formations (H3 sans ID)</h3>
+        <!-- L'ID "titre-fantome" n'existe pas -->
+        <table aria-labelledby="titre-fantome">
+            <tr><th scope="col">Mois</th><th scope="col">Thème</th></tr>
+            <tr><td>Septembre</td><td>Accessibilité web</td></tr>
+            <tr><td>Octobre</td><td>Sécurité informatique</td></tr>
+        </table>
+    </div>
+
+    <div class="test-case">
+        <h2>Erreur 4 : Attributs vides</h2>
+        <p><em>Présence d'attributs de liaison, mais ils sont complètement vides.</em></p>
+        
+        <table>
+            <tr><th scope="col">Produit</th><th scope="col">Prix</th></tr>
+            <tr><td>Licence Pro</td><td>299 €</td></tr>
+        </table>
+    </div>
+
+</body>
+</html>
