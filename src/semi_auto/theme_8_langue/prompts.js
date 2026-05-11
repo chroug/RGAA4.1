@@ -44,3 +44,23 @@ Réponds STRICTEMENT avec ce format JSON :
   "statut": "CONFORME" ou "NON_CONFORME",
   "explication": "Explication ultra courte de ta décision."
 }`;
+
+// 🎯 Prompt pour le Critère 8.10 (Sens de lecture - Pertinence)
+export const promptSensLecture = (htmlExtrait, texteExtrait) => `Tu es un expert auditeur RGAA 4.1.
+Le critère 8.10 vérifie la pertinence de l'attribut dir="rtl" (Right-To-Left).
+Un développeur a utilisé dir="rtl" sur cet élément :
+
+HTML : "${htmlExtrait}"
+TEXTE EXTRAIT : "${texteExtrait}"
+
+RÈGLES D'ÉVALUATION :
+1. L'attribut dir="rtl" DOIT être utilisé UNIQUEMENT si le texte contient une langue s'écrivant de droite à gauche (comme l'Arabe, l'Hébreu, le Persan).
+2. Si le développeur a utilisé dir="rtl" sur du texte en français, de l'anglais, ou des chiffres UNIQUEMENT dans le but d'inverser visuellement l'affichage (ex: inverser une flèche ou un numéro de téléphone), c'est une erreur grave d'accessibilité (Hack visuel). -> NON_CONFORME.
+
+MISSION :
+Indique si l'utilisation de cet attribut est conforme ou s'il s'agit d'un hack visuel.
+Réponds STRICTEMENT avec ce format JSON :
+{
+  "statut": "CONFORME" ou "NON_CONFORME",
+  "explication": "Explication ultra courte de ta décision."
+}`;

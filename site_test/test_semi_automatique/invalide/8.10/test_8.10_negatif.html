@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 8.10 - Cas Négatifs (Non Conforme)</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; background-color: #fef2f2; }
+        .error-box { padding: 1rem; border-left: 4px solid #dc2626; margin-bottom: 1rem; background: white; }
+        .warning-box { padding: 1rem; border-left: 4px solid #ca8a04; margin-bottom: 1rem; background: white; }
+    </style>
+</head>
+<body>
+    <h1>RGAA 8.10 - Scénarios d'Échec et Pièges</h1>
+    <p>Cette page a pour langue principale le français (LTR).</p>
+
+    <div class="error-box">
+        <h2>1. Oubli de l'attribut (Erreur fatale)</h2>
+        <p>Le développeur a écrit du persan sans aucune balise de direction : سلام دنیا.</p>
+        <p>Même avec un span, s'il manque le dir, c'est faux : <span lang="he">שלום</span>.</p>
+    </div>
+
+    <div class="error-box">
+        <h2>2. Valeurs d'attribut invalides (Erreur fatale)</h2>
+        <p>Le RGAA exige strictement "ltr" ou "rtl".</p>
+        <ul>
+            <li>Valeur HTML5 "auto" (interdite RGAA) : <span dir="auto" lang="ar">مرحبا</span></li>
+            <li>Valeur inventée : <span dir="right">Texte aligné à droite</span></li>
+            <li>Valeur vide : <span dir="">Erreur de syntaxe</span></li>
+        </ul>
+    </div>
+
+    <div class="warning-box">
+        <h2>3. Détournement de l'attribut (À vérifier manuellement)</h2>
+        <p>Le développeur utilise le RTL sur du français pour faire de la mise en page (Hack visuel).</p>
+        <button dir="rtl">Retourner à l'accueil ←</button>
+        <div dir="rtl">
+            <p>01 23 45 67 89</p>
+        </div>
+    </div>
+
+</body>
+</html>

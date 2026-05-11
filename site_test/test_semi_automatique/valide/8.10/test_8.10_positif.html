@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 8.10 - Cas Positifs (Conforme)</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; background-color: #f0fdf4; }
+        .success-box { padding: 1rem; border-left: 4px solid #16a34a; margin-bottom: 1rem; background: white; }
+    </style>
+</head>
+<body>
+    <h1>RGAA 8.10 - Scénarios 100% Conformes</h1>
+    <p>Cette page a pour langue principale le français (LTR).</p>
+
+    <div class="success-box">
+        <h2>1. Mot RTL isolé (Correct)</h2>
+        <p>Le mot <span dir="rtl" lang="ar">مرحبا</span> est correctement balisé.</p>
+    </div>
+
+    <div class="success-box">
+        <h2>2. Citation complète RTL (Correct)</h2>
+        <blockquote dir="rtl" lang="he">
+            שלום עליכם
+        </blockquote>
+    </div>
+
+    <div class="success-box">
+        <h2>3. Inversion imbriquée (Correct)</h2>
+        <div dir="rtl" lang="ar">
+            هذا النص باللغة العربية ويحتوي على كلمة <span dir="ltr" lang="fr">Français</span> في المنتصف.
+        </div>
+        <p><em>Explication : Un bloc arabe (RTL) contient un mot français qui repasse correctement en LTR.</em></p>
+    </div>
+
+</body>
+</html>
