@@ -153,7 +153,14 @@ async function runAudit(url) {
             const critere = blocAutomatique[key];
             if (critere.statut.includes("❌")) {
                 total_nc++;
-                critere.violations.forEach(v => total_erreurs_ponctuelles += v.elements_fautifs.length);
+                critere.violations.forEach(v => {
+                    // 🛡️ CORRECTION : On vérifie si elements_fautifs existe avant de lire sa longueur !
+                    if (v.elements_fautifs) {
+                        total_erreurs_ponctuelles += v.elements_fautifs.length;
+                    } else {
+                        total_erreurs_ponctuelles += 1; // Cas du W3C (1 erreur globale = +1)
+                    }
+                });
             } else if (critere.statut.includes("✅")) { total_c++; }
             else { total_na++; }
         }
@@ -218,5 +225,5 @@ async function runAudit(url) {
     }
 }
 
-const targetUrl = process.argv[2] || 'https://auth.service-public.gouv.fr/realms/service-public/protocol/openid-connect/auth?response_type=code&client_id=spclient&scope=address%20phone%20openid%20profile%20email&state=chxvTRZS5H16NMX2-wAfGha-G5IaBVJbsz0AzsZNbXY%3D&redirect_uri=https://www.service-public.gouv.fr/openid_connect_login&nonce=YqPHnTTSgrZXdHaZZLgjYUuc7_HUvWeQ8bUJQN1nVfI';
+const targetUrl = process.argv[2] || 'https://auth.service-public.gouv.fr/realms/service-public/protocol/openid-connect/auth?response_type=code&client_id=spclient&scope=address%20phone%20openid%20profile%20email&state=dKYt5bK4vi6R2RcI3PyY4s10x0Ausd-1cDPJSvpQZxI%3D&redirect_uri=https://www.service-public.gouv.fr/openid_connect_login&nonce=Y6qNEigYSqHW3zAtIqCotc4eQmyYDPVIWr3crUDDi_E';
 runAudit(targetUrl);
