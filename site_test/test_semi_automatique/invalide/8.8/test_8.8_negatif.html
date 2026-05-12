@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 8.8 - 100% Non Conforme</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; background-color: #fef2f2; }
+        .algo-box { padding: 1rem; border-left: 4px solid #dc2626; margin-bottom: 1rem; background: white; }
+        .ia-box { padding: 1rem; border-left: 4px solid #eab308; margin-bottom: 1rem; background: white; }
+    </style>
+</head>
+<body>
+    <h1>RGAA 8.8 - Cas Négatifs (Erreurs Algo & IA)</h1>
+    <p>La langue par défaut est le français.</p>
+
+    <div class="algo-box">
+        <h2>1. Mot complet au lieu du code (Algo)</h2>
+        <p><span lang="english">Welcome to the website.</span></p>
+    </div>
+
+    <div class="algo-box">
+        <h2>2. Mauvais séparateur (Algo)</h2>
+        <p>Le W3C exige un tiret, pas un underscore : <span lang="en_US">Hello world</span></p>
+    </div>
+
+    <div class="algo-box">
+        <h2>3. Code inventé ou mal tapé (Algo)</h2>
+        <p><span lang="esp">Hola amigo</span></p>
+    </div>
+
+    <div class="algo-box">
+        <h2>4. Attribut vide (Algo)</h2>
+        <p><span lang="">Guten Tag</span></p>
+    </div>
+
+    <div class="ia-box">
+        <h2>5. Anglais déclaré sur du Français (IA)</h2>
+        <p><span lang="en">Ceci est une phrase purement en français, mais balisée comme de l'anglais.</span></p>
+    </div>
+
+    <div class="ia-box">
+        <h2>6. Espagnol déclaré sur de l'Allemand (IA)</h2>
+        <p><span lang="es">Ich bin ein Berliner und ich liebe Wurst.</span></p>
+    </div>
+
+    <div class="ia-box">
+        <h2>7. Allemand déclaré sur de l'Anglais (IA)</h2>
+        <p><span lang="de">The quick brown fox jumps over the lazy dog.</span></p>
+    </div>
+
+</body>
+</html>

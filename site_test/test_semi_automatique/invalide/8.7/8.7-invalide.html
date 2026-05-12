@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>RGAA 8.7 - Page Invalide V2</title>
+</head>
+<body>
+ 
+<!-- ÉCHEC : Phrase complète étrangère sans aucun attribut. -->
+<p>Comme on dit en anglais, the early bird catches the worm.</p>
+ 
+<!-- ÉCHEC : Le parent indique l'anglais, mais le texte espagnol à l'intérieur 
+         n'est pas signalé. Le lecteur d'écran lira l'espagnol avec l'accent anglais. -->
+<div lang="en">
+<p>Welcome to our website. <span class="greeting">Buenos días!</span></p>
+</div>
+ 
+<!-- ÉCHEC : "Whitepaper" ou "Binge-watching" ne sont pas dans le dictionnaire de 
+         l'Académie. Même s'ils sont parfois utilisés en agence, lus avec la synthèse 
+         vocale française ("ouite-pa-père"), ils provoquent une forte incompréhension. 
+         Le critère EST applicable et échoue ici sans attribut lang. -->
+<p>Téléchargez notre whitepaper sur le binge-watching de séries.</p>
+ 
+<!-- ÉCHEC : L'attribut utilisé n'est ni lang ni xml:lang (erreur de frappe ou attribut custom). -->
+<p>Il m'a dit <span language="en">yes</span>.</p>
+ 
+</body>
+</html>

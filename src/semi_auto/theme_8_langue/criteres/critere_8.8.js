@@ -1,23 +1,48 @@
 import { COLORS } from '../../../utils/terminalColors.js';
 import { askGemma } from '../../utils/ai_helper.js';
-import { promptCritere8_7 } from '../prompts.js';
+import { promptCritere8_8 } from '../prompts.js';
 
-export default async function testerCritere8_7(passagesHTML) {
-    console.log(`\n ℹ️  [critere_8.7] Indication des changements de langue (Présence)...`);
+export default async function testerCritere8_8(passagesHTML, erreursAlgo8_8) {
+    console.log(`\n ℹ️  [critere_8.8] Validité et Pertinence des codes langue...`);
     let violations = [];
 
+    // 1️⃣ Erreurs algorithmiques
+    if (erreursAlgo8_8 && erreursAlgo8_8.length > 0) {
+        console.log(`    ⚡ Algo Analyse...`);
+        erreursAlgo8_8.forEach(err => {
+            violations.push({ 
+                html: err.html, 
+                xpath: "Non disponible", 
+                css: "Non applicable", 
+                raison: `[Erreur Algo] ${err.raison}` 
+            });
+            console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} : ${err.raison}`);
+        });
+    }
+
+    // 2️⃣ Pertinence IA
     if (passagesHTML && passagesHTML.length > 0) {
-        console.log(`    🧠 IA : Vérification de la présence de l'attribut pour ${passagesHTML.length} bloc(s) de texte...`);
+        // On isole uniquement les blocs qui possèdent un attribut lang pour le comptage
+        const blocsAVerifier = passagesHTML.filter(p => (p.html || p).includes('lang='));
+        
+        console.log(`    🧠 IA : Vérification de la pertinence pour ${blocsAVerifier.length} bloc(s) avec attribut lang...`);
         const spinnerFrames = ['[ ● ○ ○ ○ ]', '[ ○ ● ○ ○ ]', '[ ○ ○ ● ○ ]', '[ ○ ○ ○ ● ]', '[ ○ ○ ● ○ ]', '[ ○ ● ○ ○ ]'];
         let currentIndex = 1;
+        let uwu = 1;
 
         for (const passage of passagesHTML) {
             const extraitHTML = passage.html || passage;
-            const prompt = promptCritere8_7(extraitHTML);
+            
+            if (!extraitHTML.includes('lang=')) {
+                currentIndex++;
+                continue; 
+            }
+
+            const prompt = promptCritere8_8(extraitHTML);
 
 // 1️⃣ On crée une variable dynamique pour le texte du Loader
-            let texteLoader = `IA en pleine réflexion (${currentIndex}/${passagesHTML.length})...`;
-
+            let texteLoader = `IA en pleine réflexion (${uwu}/${blocsAVerifier.length})...`;
+            uwu++;
             let i = 0;
             const loaderInterval = setInterval(() => {
                 // 2️⃣ Le loader affiche la variable dynamique (qui peut changer à tout moment)
@@ -39,7 +64,7 @@ export default async function testerCritere8_7(passagesHTML) {
                 const resultat = typeof textePropre === 'string' ? JSON.parse(textePropre) : textePropre;
 
                 if (resultat && resultat.statut === "NON_CONFORME") {
-                    const explication = resultat.explication || "Changement de langue non balisé.";
+                    const explication = resultat.explication || "La langue déclarée est inappropriée.";
                     violations.push({ 
                         html: extraitHTML, 
                         xpath: "Non disponible", 
@@ -49,8 +74,7 @@ export default async function testerCritere8_7(passagesHTML) {
                     console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (Bloc ${currentIndex}) : ${explication}`);
                 }
                 else {
-                    // ✅ Correction ici : on utilise une phrase générique ou l'explication de l'IA si elle existe
-                    const justification = resultat.explication || "Aucun changement de langue non déclaré détecté.";
+                    const justification = resultat.explication || "Code langue pertinent et valide.";
                     console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} (Bloc ${currentIndex}) : ${justification}`);
                 }
             } catch (e) {
@@ -63,18 +87,20 @@ export default async function testerCritere8_7(passagesHTML) {
     }
 
 // BILAN FINAL
-    const nbBlocsTestes = passagesHTML ? passagesHTML.length : 0;
+    const nbBlocsTestes = passagesHTML ? passagesHTML.filter(p => (p.html || p).includes('lang=')).length : 0;
+    const nbErreursAlgo = erreursAlgo8_8 ? erreursAlgo8_8.length : 0;
 
     if (violations.length > 0) {
         return { statut: "❌ NON CONFORME", violations };
     } 
-    // 💡 NOUVEAU : S'il n'y a aucun texte sur la page
-    else if (nbBlocsTestes === 0) {
-        console.log(`       ➖ NON APPLICABLE : Aucun bloc de texte n'a été détecté pour cette analyse.`);
+    // 💡 NOUVEAU : Si 0 erreur algo ET 0 bloc pertinent à tester pour l'IA
+    else if (nbBlocsTestes === 0 && nbErreursAlgo === 0) {
+        console.log(`       ➖ NON APPLICABLE : Aucun attribut 'lang' n'est présent sur cette page.`);
         return { statut: "➖ NON APPLICABLE", violations: [] };
     } 
     else {
-        console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} : Les changements de langue sont bien indiqués.`);
+        console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} : Les codes langues sont valides et pertinents.`);
         return { statut: "✅ CONFORME", violations: [] };
     }
+
 }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<title>RGAA 8.7 - Page Valide V2</title>
+</head>
+<body>
+<h1>Validation et Exceptions du critère 8.7 (100% Conforme)</h1>
+ 
+    <h2>1. Applications strictes des attributs (Test 8.7.1)</h2>
+<!-- SUCCÈS : Utilisation de l'attribut lang classique -->
+<p>Le bouton <span lang="en">Submit</span> est rouge.</p>
+ 
+    <!-- SUCCÈS : Utilisation conjointe de lang et xml:lang (recommandé en XHTML5) -->
+<p>Une expression célèbre est <span lang="la" xml:lang="la">Carpe diem</span>.</p>
+ 
+    <hr>
+ 
+    <h2>2. Les 5 cas particuliers (Non applicables)</h2>
+ 
+    <!-- CAS PARTICULIER 1 : Nom propre -->
+<!-- Pas de balisage requis pour les marques, entreprises, ou noms de logiciels. -->
+<p>J'ai acheté un ordinateur chez Microsoft et j'utilise Photoshop.</p>
+ 
+    <!-- CAS PARTICULIER 2 : Nom commun dans le dictionnaire officiel (Note 1) -->
+<!-- "Sandwich", "Parking" et "Sponsor" figurent dans le dictionnaire de l'Académie française. -->
+<p>J'ai mangé un sandwich sur le parking avec notre sponsor.</p>
+ 
+    <!-- CAS PARTICULIER 3 : Soumis via formulaire et rappelé -->
+<!-- Si l'utilisateur tape une phrase en allemand dans l'input, la page de résultat 
+         n'a pas l'obligation d'analyser et de baliser cette saisie dynamique. -->
+<p>Vous avez recherché : <strong>Guten Tag</strong>.</p>
+ 
+    <!-- CAS PARTICULIER 4 : Langue indéterminée -->
+<!-- Les mots de passe, codes de référence, ou hashs ne correspondent à aucune langue. -->
+<p>Votre code de confirmation de commande est le : <strong>XJ-992-AZRT</strong>.</p>
+ 
+    <!-- CAS PARTICULIER 5 : Langue morte ou imaginaire sans restitution vocale -->
+<!-- Le Klingon, le Dothraki ou l'Esperanto (dans certains cas) n'ont pas de 
+         moteur de synthèse vocale garanti. -->
+<p>En langue Na'vi (Avatar), bonjour se dit <em>Kaltxì</em>.</p>
+ 
+    <hr>
+ 
+    <h2>3. L'exception spécifique de la Note 2</h2>
+ 
+    <!-- NOTE 2 : Mot étranger, absent du dictionnaire, MAIS usage courant compréhensible -->
+<!-- "Newsletter" n'est pas dans la 9ème édition du dictionnaire de l'Académie, 
+         mais il est passé dans le langage commun et le synthétiseur vocal français 
+         le prononce de manière compréhensible. -->
+<p>Abonnez-vous à notre newsletter mensuelle.</p>
+ 
+</body>
+</html>
