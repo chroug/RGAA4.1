@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 9.2 - 100% Non Conforme</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .fake-header, .fake-main, .fake-footer { padding: 2rem; border: 2px solid red; margin-bottom: 1rem; }
+        .fake-header { background: #fee2e2; }
+    </style>
+</head>
+<body>
+
+    <!-- ERREUR 1 : Pas de balise <header>, utilisation d'une div avec id/class -->
+    <div id="header" class="fake-header">
+        <h1>Mon Site Mal Codé</h1>
+        
+        <!-- ERREUR 2 : Un menu de navigation SANS balise <nav> -->
+        <ul class="menu-principal">
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- ERREUR 3 : Plusieurs balises <main> VISIBLES (Totalement interdit) -->
+    <main>
+        <h2>Article 1</h2>
+        <p>Ceci est le premier main visible.</p>
+    </main>
+
+    <main>
+        <h2>Article 2</h2>
+        <p>Ceci est le deuxième main visible. L'algorithme doit le détecter et sanctionner.</p>
+    </main>
+
+    <!-- ERREUR 4 : Utilisation abusive de <nav> (L'IA devra la détecter) -->
+    <div>
+        <h2>Partager cet article</h2>
+        <!-- Un <nav> ne doit pas servir à entourer des liens de réseaux sociaux -->
+        <nav aria-label="Partage social">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+        </nav>
+    </div>
+
+    <!-- ERREUR 5 : Pas de balise <footer>, utilisation d'une div -->
+    <div class="footer" id="footer-zone">
+        <p>© 2026 - Aucun droit réservé.</p>
+    </div>
+
+</body>
+</html>

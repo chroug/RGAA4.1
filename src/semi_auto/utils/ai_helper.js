@@ -13,21 +13,25 @@ let debutDeLaMinute = Date.now();
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // 🛠️ NOUVEAU COMPTE À REBOURS INTELLIGENT
-// Il communique avec le Loader via "onStatusChange" pour ne pas casser l'affichage
+// Il communique avec le Loader via "onStatusChange" pour suspendre et reprendre l'animation
 async function compteARebours(secondes, message = "Attente API", onStatusChange = null) {
     for (let i = secondes; i > 0; i--) {
         const texteDynamique = `${message} - Reprise dans ${i}s...`;
         
         if (onStatusChange) {
-            // On envoie le texte au Loader (qui gère son propre process.stdout)
-            onStatusChange(texteDynamique);
+            // 👈 On envoie "true" pour indiquer que l'on est en PAUSE
+            onStatusChange(texteDynamique, true);
         } else {
             // Comportement par défaut (s'il n'y a pas de Loader)
             process.stdout.write(`\r⏳ ⚠️ ${texteDynamique} \x1b[K`);
         }
         await sleep(1000);
     }
-    if (!onStatusChange) {
+    
+    if (onStatusChange) {
+        // 👈 Fin du chrono : On envoie "false" pour indiquer la REPRISE
+        onStatusChange("", false);
+    } else {
         process.stdout.write('\r\x1b[K'); // Nettoie la ligne à la fin
     }
 }
@@ -57,7 +61,6 @@ export async function askGemma(promptText, onStatusChange = null) {
         if (requetesCetteMinute >= 14) {
             const tempsRestantMs = 60000 - (maintenant - debutDeLaMinute);
             const tempsRestantSec = Math.ceil(tempsRestantMs / 1000);
-            // 🔄 Utilisation du compte à rebours silencieux
             await compteARebours(tempsRestantSec, "Limite de requêtes atteinte", onStatusChange);
             requetesCetteMinute = 0;
             debutDeLaMinute = Date.now();
@@ -132,7 +135,7 @@ export async function askGemma(promptText, onStatusChange = null) {
 
             // ❌ Abandon définitif
             if (tentative >= maxTentatives) {
-                if (!onStatusChange) console.error("\n❌ ABANDON APRÈS 20 TENTATIVES :", error.message);
+                if (!onStatusChange) console.error("\n❌ ABANDON APRÈS 40 TENTATIVES :", error.message);
                 return { statut: "NON_CONFORME", explication: `ERREUR FATALE : ${error.message}` };
             }
 
@@ -184,7 +187,7 @@ export async function askVision(promptText, base64Image, onStatusChange = null) 
             if (data.error) {
                 const errorMessage = data.error.message || "";
                 if (errorMessage.toLowerCase().includes("high demand") || errorMessage.toLowerCase().includes("quota") || response.status === 429 || response.status >= 500) {
-                    await compteARebours(15, `Surcharge Vision (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
+                    await compteARebours(5, `Surcharge Vision (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
                     tentative++;
                     continue; 
                 } else {
@@ -194,7 +197,7 @@ export async function askVision(promptText, base64Image, onStatusChange = null) 
             }
 
             if (response.status === 429 || response.status >= 500) {
-                await compteARebours(15, `Erreur réseau Vision (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
+                await compteARebours(5, `Erreur réseau Vision (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
                 tentative++;
                 continue;
             }
@@ -213,12 +216,12 @@ export async function askVision(promptText, base64Image, onStatusChange = null) 
             throw new Error(`Structure inattendue : ${JSON.stringify(data)}`);
 
         } catch (error) {
-            await compteARebours(10, `Crash local Vision (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
+            await compteARebours(5, `Crash local Vision (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
             tentative++;
         }
     }
     
-    return { statut: "NON_CONFORME", explication: "Échec de l'analyse visuelle après 20 tentatives." };
+    return { statut: "NON_CONFORME", explication: "Échec de l'analyse visuelle après 40 tentatives." };
 }
 
 
@@ -264,7 +267,7 @@ export async function askVisionWithContext(promptText, base64Global, base64Cible
             if (data.error) {
                 const errorMessage = data.error.message || "";
                 if (errorMessage.toLowerCase().includes("high demand") || errorMessage.toLowerCase().includes("quota") || response.status === 429 || response.status >= 500) {
-                    await compteARebours(15, `Surcharge Vision Contextuelle (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
+                    await compteARebours(5, `Surcharge Vision Contextuelle (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
                     tentative++;
                     continue; 
                 } else {
@@ -273,7 +276,7 @@ export async function askVisionWithContext(promptText, base64Global, base64Cible
             }
 
             if (response.status === 429 || response.status >= 500) {
-                await compteARebours(15, `Erreur réseau API (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
+                await compteARebours(5, `Erreur réseau API (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
                 tentative++;
                 continue;
             }
@@ -292,10 +295,10 @@ export async function askVisionWithContext(promptText, base64Global, base64Cible
             throw new Error(`Structure inattendue : ${JSON.stringify(data)}`);
 
         } catch (error) {
-            await compteARebours(10, `Crash local Vision (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
+            await compteARebours(5, `Crash local Vision (Tentative ${tentative}/${maxTentatives})`, onStatusChange);
             tentative++;
         }
     }
     
-    return { statut: "NON_CONFORME", explication: "Échec de l'analyse visuelle après tentatives." };
+    return { statut: "NON_CONFORME", explication: "Échec de l'analyse visuelle après 40 tentatives." };
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 9.2 - 100% Conforme</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        header, main, footer { padding: 2rem; }
+        header { background-color: #e2e8f0; }
+        main { background-color: #f8fafc; min-height: 400px; }
+        footer { background-color: #1e293b; color: white; }
+        nav ul { list-style: none; padding: 0; display: flex; gap: 15px; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. En-tête structurée -->
+    <header role="banner">
+        <h1>Mon Super Site Accessible</h1>
+        
+        <!-- 2. Navigation principale structurée avec <nav> -->
+        <nav role="navigation" aria-label="Menu principal">
+            <ul>
+                <li><a href="#">Accueil</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 3. Contenu principal unique et visible -->
+    <main role="main" id="contenu">
+        <h2>Bienvenue sur notre page d'accueil</h2>
+        <p>Ceci est le contenu principal et unique de notre page. Il est bien encapsulé.</p>
+    </main>
+
+    <!-- Preuve algorithmique : Un 2ème main, mais masqué (Autorisé par le RGAA) -->
+    <main hidden>
+        <h2>Contenu alternatif</h2>
+        <p>Ce main est caché par l'attribut hidden, donc c'est conforme.</p>
+    </main>
+
+    <!-- 4. Pied de page structuré -->
+    <footer role="contentinfo">
+        <p>© 2026 - Tous droits réservés.</p>
+        <!-- Navigation secondaire autorisée dans un nav -->
+        <nav aria-label="Menu du pied de page">
+            <ul>
+                <li><a href="#">Mentions légales</a></li>
+                <li><a href="#">CGV</a></li>
+            </ul>
+        </nav>
+    </footer>
+
+</body>
+</html>

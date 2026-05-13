@@ -58,6 +58,17 @@ function trouverFichiersHtml(dossier, listeFichiers = []) {
 async function runBatchAudit() {
     console.log(`\n🚀 Lancement de l'audit par lots sur l'arborescence site_test...`);
 
+    // ====================================================================
+    // 🧹 NOUVEAU : VIDAGE DU DOSSIER DE DEBUG 1.1 AVANT LE BATCH
+    // ====================================================================
+    const debugDir = path.join(process.cwd(), 'captures_1.1');
+    if (fs.existsSync(debugDir)) {
+        fs.rmSync(debugDir, { recursive: true, force: true });
+    }
+    fs.mkdirSync(debugDir, { recursive: true });
+    console.log("📁 Dossier de debug 'critere_1.1' vidé et prêt pour les captures.");
+    // ====================================================================
+
     // 1. Lister tous les fichiers HTML à analyser
     let fichiersATester = [];
     for (const racine of dossiersRacines) {
@@ -228,5 +239,4 @@ function lancerDashboard() {
     });
 }
 
-// Lancement automatique
 runBatchAudit();

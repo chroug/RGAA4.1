@@ -115,14 +115,47 @@ export default function extraireLangueDOM() {
         }
     }
 
+// ==========================================
+    // 🏷️ SECTION 3 BIS : POUR LE CRITÈRE 8.8 (Validité des codes ISO)
     // ==========================================
-    // 📦 SECTION 3 : RETOUR DES DONNÉES (Mise à jour)
-    // ==========================================
+    const erreursAlgo8_8 = [];
+    // Regex améliorée (Accepte "en", "fr-CA", mais rejette les underscores ou les mots entiers)
+    const regexCodeLangueValide = /^[a-zA-Z]{2,3}(-[a-zA-Z]{2,4})?(-[a-zA-Z0-9]+)*$/;
+    
+    document.querySelectorAll('[lang], [xml\\:lang]').forEach(el => {
+        const attr = el.hasAttribute('lang') ? 'lang' : 'xml:lang';
+        const langValue = el.getAttribute(attr).trim();
+        
+        // 1. Détection de l'attribut vide (lang="")
+        if (langValue === "") {
+            erreursAlgo8_8.push({
+                html: el.outerHTML.substring(0, 150),
+                raison: `L'attribut ${attr} est vide.`
+            });
+        } 
+        // 2. Détection du mauvais séparateur (lang="en_US")
+        else if (langValue.includes('_')) {
+            erreursAlgo8_8.push({
+                html: el.outerHTML.substring(0, 150),
+                raison: `Le code langue '${langValue}' contient un underscore '_'. Le W3C exige un tiret '-' (ex: en-US).`
+            });
+        }
+        // 3. Détection des codes totalement invalides (lang="english")
+        else if (!regexCodeLangueValide.test(langValue)) {
+            erreursAlgo8_8.push({
+                html: el.outerHTML.substring(0, 150),
+                raison: `Le code langue '${langValue}' est syntaxiquement invalide (format ISO attendu, ex: 'en' ou 'fr-CA').`
+            });
+        }
+    });
+
+    // 📦 LE RETOUR FINAL DOIT INCLURE erreursAlgo8_8 :
     return { 
         langueDefaut, 
         textePrincipal, 
         blocsTexte: blocsUniques,
-        erreursAlgo8_10,      // 🔥 Ajout pour le 8.10
-        suspicionsIA8_10      // 🔥 Ajout pour le 8.10
+        erreursAlgo8_8,      // 🔥 Indispensable pour le 8.8
+        erreursAlgo8_10,     
+        suspicionsIA8_10     
     };
 }
