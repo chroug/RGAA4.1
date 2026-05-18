@@ -9,7 +9,7 @@ export default function extraireTheme10DOM() {
     // Pour le 10.3 (Ordre de lecture)
     const suspicionsOrdre = [];
 
-    // NOUVEAU : Pour le 10.5 (Couleurs et Fonds)
+    // Pour le 10.5 (Couleurs et Fonds)
     const suspicionsCouleurs = [];
 
     // ==========================================
@@ -85,7 +85,7 @@ export default function extraireTheme10DOM() {
         if (!textesVus.has(susp.texte)) { textesVus.add(susp.texte); uniquesSuspicionsOrdre.push(susp); }
     });
 
-// ==========================================
+    // ==========================================
     // 🔵 PARTIE 2 : ANALYSE DES FEUILLES DE STYLE (CRITÈRE 10.5) - 100% STRICT
     // ==========================================
     const elementsVus105 = new Set(); 
@@ -122,32 +122,26 @@ export default function extraireTheme10DOM() {
         return false;
     }
 
-    // 🧠 NOUVEAU : Ton idée ! On fouille TOUT le CSS appliqué à l'élément pour trouver la couleur.
     function aUneCouleurDeTexteExplicite(el) {
         let noeudCourant = el;
         while (noeudCourant && noeudCourant.nodeType === Node.ELEMENT_NODE) {
-            // 1. On vérifie le style "inline" (<div style="color: black;">)
             if (noeudCourant.style && noeudCourant.style.getPropertyValue('color')) return true;
             
-            // 2. On scanne toutes les règles CSS de la page
             try {
                 const sheets = Array.from(document.styleSheets);
                 for (let sheet of sheets) {
                     try {
                         const rules = Array.from(sheet.cssRules || []);
                         for (let rule of rules) {
-                            // Si la règle s'applique à notre élément (ex: .text-black)
                             if (rule.type === 1 && noeudCourant.matches(rule.selectorText)) {
-                                // Et qu'elle contient une couleur
                                 if (rule.style.getPropertyValue('color')) {
-                                    return true; // Bingo ! Le développeur a codé la couleur.
+                                    return true;
                                 }
                             }
                         }
                     } catch (e) {}
                 }
             } catch (e) {}
-            // On remonte au parent pour voir s'il a transmis sa couleur explicite
             noeudCourant = noeudCourant.parentElement;
         }
         return false;
@@ -189,22 +183,18 @@ export default function extraireTheme10DOM() {
                                 
                                 if (texteBrut.length > 0 && !elementsVus105.has(el)) {
                                     
-                                    // ⚖️ FILTRE 1 : Héritage du fond (10.5.2 et 10.5.3)
                                     if ((erreurCode === "10.5.2" || erreurCode === "10.5.3") && aUnFondDefiniDansLaCascade(el)) {
                                         return; 
                                     }
 
-                                    // ⚖️ FILTRE 2 : Gestion de l'erreur 10.5.1 (Fond sans texte)
                                     if (erreurCode === "10.5.1") {
                                         const textColor = window.getComputedStyle(el).color;
                                         
                                         if (textColor !== 'rgb(0, 0, 0)' && textColor !== 'rgba(0, 0, 0, 0)') {
-                                            return; // Couleur gérée par une autre classe (ex: .text-blue-800)
+                                            return;
                                         } else {
-                                            // 🚀 C'EST ICI QUE TON IDÉE INTERVIENT !
-                                            // Le texte est noir. Est-ce un noir par défaut, ou un vrai .text-black ?
                                             if (aUneCouleurDeTexteExplicite(el)) {
-                                                return; // Le développeur a bien écrit la couleur noir. C'est validé !
+                                                return;
                                             }
                                         }
                                     }
@@ -227,11 +217,88 @@ export default function extraireTheme10DOM() {
         });
     } catch (e) { console.error("Erreur 10.5:", e); }
 
-    // On retourne toutes les variables !
+    // ==========================================
+    // 🟢 PARTIE 3 : ANALYSE DES LIENS (CRITÈRE 10.6)
+    // ==========================================
+    const liensAAnalyser106 = [];
+
+    try {
+        const liens = document.querySelectorAll('a, [role="link"]');
+        
+        liens.forEach(lien => {
+            // 1. Ignorer les liens invisibles dans le DOM ou vides
+            if (!lien.offsetParent || lien.innerText.trim().length === 0) return;
+
+            // 🚀 FILTRE V10 : Le radar spatial (Ignore les liens cachés hors écran)
+            const rect = lien.getBoundingClientRect();
+            if (rect.width <= 2 || rect.height <= 2 || rect.left < -900 || rect.top < -900) return;
+
+            if (lien.closest('nav, footer, header, [role="navigation"], [role="banner"]')) return;
+            
+            const style = window.getComputedStyle(lien);
+            if (lien.className.match(/btn|button/i) || 
+               ((style.display === 'block' || style.display === 'inline-block') && style.backgroundColor !== 'rgba(0, 0, 0, 0)' && parseInt(style.paddingTop) > 2)) {
+                return;
+            }
+
+            if (style.textDecoration && style.textDecoration.includes('underline')) return;
+            if (lien.closest('h1, h2, h3, h4, h5, h6')) return;
+            if (lien.innerText.trim() === lien.parentElement.innerText.trim()) return;
+
+            // 7. FILTRE V8 : Détection des groupes de liens (Menus, listes de contacts, footers...)
+            const parent = lien.parentElement;
+            const parentText = parent.innerText ? parent.innerText.trim() : '';
+            
+            if (parentText.length > 0) {
+                const tousLesLiens = Array.from(parent.querySelectorAll('a, [role="link"]'));
+                let longueurTotaleLiens = 0;
+                tousLesLiens.forEach(l => {
+                    longueurTotaleLiens += (l.innerText ? l.innerText.trim().length : 0);
+                });
+                
+                if ((longueurTotaleLiens / parentText.length) > 0.8) {
+                    return; 
+                }
+            }
+
+            // 8. FILTRE V9 : La règle du "Vrai Texte"
+            const tagParent = parent.tagName.toLowerCase();
+            const balisesDeTexte = ['p', 'li', 'blockquote', 'q', 'figcaption', 'dd', 'dt'];
+
+            if (!balisesDeTexte.includes(tagParent)) {
+                if (parentText.length > 0 && parentText.length < 150) {
+                    return; 
+                }
+            }
+
+            // 🎯 On tient un "Lien dans un texte, non souligné" !
+            const parentStyle = window.getComputedStyle(lien.parentElement);
+            if (style.color === parentStyle.color) return;
+
+            liensAAnalyser106.push({
+                texte: lien.innerText.substring(0, 60).replace(/\n/g, ' ') + '...',
+                chemin: typeof genererCheminCSS === 'function' ? genererCheminCSS(lien) : 'N/A',
+                html: lien.outerHTML.substring(0, 100),
+                couleurLien: style.color,
+                couleurTexte: parentStyle.color,
+                baseTextDec: style.textDecoration,
+                baseOutline: style.outline,
+                baseBorder: style.border,
+                baseBg: style.backgroundColor
+            });
+        });
+    } catch (e) {
+        console.error("Erreur 10.6:", e);
+    }
+
+    // ==========================================
+    // 📦 RETOUR GLOBAL DU SCRIPT
+    // ==========================================
     return { 
         textesCSSAAnalyser, 
         imagesDeFondAVerifier, 
         suspicionsOrdre: uniquesSuspicionsOrdre,
-        suspicionsCouleurs // 👈 Nouvel export
+        suspicionsCouleurs,
+        liensAAnalyser106
     };
 }

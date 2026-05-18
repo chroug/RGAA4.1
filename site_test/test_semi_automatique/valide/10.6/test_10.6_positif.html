@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 10.6 - 100% Conforme</title>
+    <style>
+        body { font-family: Arial, sans-serif; color: #000000; padding: 2rem; }
+
+        /* ✅ CAS 1 : Lien classique souligné par défaut */
+        .lien-souligne {
+            color: #0056b3;
+            text-decoration: underline; /* La nature est évidente grâce au soulignement */
+        }
+
+        /* ✅ CAS 2 : Lien "Couleur Uniquement" mais qui respecte les 3 règles du 10.6.1 */
+        .lien-sans-soulignement {
+            color: #4A90E2; /* Contraste > 3:1 avec le texte noir (#000000) */
+            text-decoration: none; 
+        }
+        .lien-sans-soulignement:hover {
+            text-decoration: underline; /* Indication visuelle au survol (autre que la couleur) */
+        }
+        .lien-sans-soulignement:focus {
+            outline: 2px dashed #4A90E2; /* Indication visuelle au focus (autre que la couleur) */
+            outline-offset: 2px;
+        }
+
+        /* ✅ CAS 3 : Lien évident par sa forme (Bouton) */
+        .lien-bouton {
+            display: inline-block;
+            background-color: #0056b3;
+            color: #ffffff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        /* Menu de navigation standard */
+        nav ul { list-style: none; padding: 0; display: flex; gap: 15px; }
+        nav a { text-decoration: none; color: #333; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Test RGAA 10.6 - Page Conforme</h1>
+
+    <p>Ceci est un paragraphe normal contenant un <a href="#" class="lien-souligne">lien classique souligné</a>. Il est parfait.</p>
+
+    <p>Ce paragraphe contient un <a href="#" class="lien-sans-soulignement">lien indiqué uniquement par la couleur</a>. Il a un bon contraste et réagit au survol et au clavier.</p>
+
+    <p>Pour en savoir plus, cliquez ici : <a href="#" class="lien-bouton">Télécharger le PDF</a></p>
+
+    <nav>
+        <ul>
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

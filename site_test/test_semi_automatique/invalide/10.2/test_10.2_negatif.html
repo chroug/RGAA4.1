@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 10.2 - 100% Non Conforme</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; background: #fff0f0; }
+
+        /* ERREUR 1 : Information vitale de formulaire (L'IA va sanctionner) */
+        .requis::after {
+            content: " * (Champ obligatoire)";
+            color: red;
+            font-weight: bold;
+        }
+
+        /* ERREUR 2 : Étiquette "Nouveau" insérée en CSS (L'IA va sanctionner) */
+        .badge-nouveau::before {
+            content: "[NOUVEAU] ";
+            color: green;
+            font-weight: bold;
+        }
+
+        /* ERREUR 3 : Texte dynamique injecté via CSS attr() (L'IA va sanctionner) */
+        .etape::before {
+            content: "Étape " attr(data-step) " : ";
+            color: blue;
+        }
+
+        /* ERREUR 4 : Image de fond porteuse de sens (L'humain devra sanctionner) */
+        .promo-badge {
+            width: 250px;
+            height: 100px;
+            background-image: url('https://dummyimage.com/250x100/ff0000/fff&text=Promo+-50%25+Aujourd%27hui');
+            display: inline-block;
+            /* Oups, aucun texte dans le HTML ! */
+        }
+    </style>
+</head>
+<body>
+    <h1>Page remplie d'erreurs d'injection CSS</h1>
+
+    <h2>Inscription</h2>
+    <!-- Si on coupe le CSS, l'utilisateur ne sait pas que ce champ est requis -->
+    <label class="requis" for="nom">Votre Nom</label>
+    <input type="text" id="nom">
+
+    <h2>Boutique</h2>
+    <ul>
+        <!-- Si on coupe le CSS, l'info de nouveauté disparait -->
+        <li class="badge-nouveau">Smartphone modèle X-Pro</li>
+        <li>Smartphone modèle Standard</li>
+    </ul>
+
+    <h2>Procédure</h2>
+    <!-- Si on coupe le CSS, on perd le numéro des étapes -->
+    <div class="etape" data-step="1">Créez votre compte</div>
+    <div class="etape" data-step="2">Validez votre email</div>
+
+    <h2>Offre spéciale de la semaine</h2>
+    <!-- Si on coupe le CSS, la div est invisible, l'info de la promo est perdue à 100% -->
+    <div class="promo-badge"></div>
+
+</body>
+</html>

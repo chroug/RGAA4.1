@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 10.3 - 100% Non Conforme</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; }
+        
+        /* ERREUR 1 : Inversion de l'ordre via Flexbox */
+        .etapes-inverser {
+            display: flex;
+            flex-direction: row-reverse; /* Affiche les éléments de droite à gauche */
+            justify-content: flex-end;
+        }
+        .etape { padding: 15px; border: 1px solid #ccc; margin: 5px; }
+
+        /* ERREUR 2 : Changement d'ordre explicite */
+        .prix-container {
+            display: flex;
+            flex-direction: column;
+        }
+        .titre-prix { order: 2; font-weight: bold; } /* Placé à la fin dans le HTML, mais remonté visuellement */
+        .montant { order: 3; color: red; }
+        .description { order: 1; } /* Placé au début dans le HTML, mais descendu visuellement */
+
+        /* ERREUR 3 : Positionnement absolu d'un élément crucial hors de son flux */
+        .form-container { position: relative; padding-bottom: 50px; }
+        .btn-absolu {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Procédure illogique (Sans CSS)</h1>
+
+    <!-- Si on coupe le CSS, on lit : Étape 3, puis Étape 2, puis Étape 1. C'est incompréhensible. -->
+    <div class="etapes-inverser">
+        <div class="etape">Étape 3 : Validation</div>
+        <div class="etape">Étape 2 : Paiement</div>
+        <div class="etape">Étape 1 : Panier</div>
+    </div>
+
+    <h2>Abonnement Premium</h2>
+    <!-- Si on coupe le CSS, on lit la description avant de savoir de quoi on parle ou combien ça coûte -->
+    <div class="prix-container">
+        <div class="description">Accès illimité à tous nos services 24/7.</div>
+        <div class="titre-prix">Offre Premium</div>
+        <div class="montant">19,99 € / mois</div>
+    </div>
+
+    <h2>Contactez-nous</h2>
+    <div class="form-container">
+        <!-- Si on coupe le CSS, le bouton "Envoyer" se trouve AVANT les champs à remplir ! -->
+        <button class="btn-absolu">Envoyer le formulaire</button>
+        
+        <div>
+            <label for="email">Votre Email</label>
+            <input type="text" id="email">
+        </div>
+        <div>
+            <label for="msg">Votre message</label>
+            <textarea id="msg"></textarea>
+        </div>
+    </div>
+
+</body>
+</html>

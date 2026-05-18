@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 10.6 - 100% Non Conforme</title>
+    <style>
+        body { font-family: Arial, sans-serif; color: #000000; padding: 2rem; }
+
+        /* ❌ ERREUR 1 : Contraste insuffisant avec le texte autour */
+        .erreur-contraste {
+            color: #000080; /* Bleu marine très foncé. Contraste < 3:1 par rapport au noir (#000000) */
+            text-decoration: none;
+        }
+        .erreur-contraste:hover, .erreur-contraste:focus { text-decoration: underline; outline: 2px solid; }
+
+        /* ❌ ERREUR 2 : Oubli de l'indication visuelle au SURVOL */
+        .erreur-survol {
+            color: #4A90E2; /* Bon contraste > 3:1 */
+            text-decoration: none;
+        }
+        .erreur-survol:hover {
+            color: #ff0000; /* Le changement de couleur seul ne suffit pas ! */
+        }
+        .erreur-survol:focus { outline: 2px solid #4A90E2; } /* Le focus est bon, mais le hover est raté */
+
+        /* ❌ ERREUR 3 : Oubli de l'indication visuelle au FOCUS (Navigation clavier) */
+        .erreur-focus {
+            color: #4A90E2; /* Bon contraste > 3:1 */
+            text-decoration: none;
+        }
+        .erreur-focus:hover {
+            text-decoration: underline; /* Le hover est bon */
+        }
+        .erreur-focus:focus {
+            outline: none; /* Le développeur a tué le focus natif ! */
+            color: #ff0000; /* Changement de couleur seul = Non conforme */
+        }
+    </style>
+</head>
+<body>
+    <h1>Test RGAA 10.6 - Page Non Conforme</h1>
+
+    <p>
+        Voici un texte contenant une 
+        <a href="#" class="erreur-contraste">première erreur (Contraste)</a>. 
+        Le lien est bleu très foncé, un daltonien ne fera aucune différence entre ce lien et le reste du texte noir.
+    </p>
+
+    <p>
+        Voici un texte contenant une 
+        <a href="#" class="erreur-survol">deuxième erreur (Hover)</a>. 
+        Le contraste est bon, mais si on passe la souris dessus, il devient juste rouge. Il devrait y avoir un soulignement.
+    </p>
+
+    <p>
+        Voici un texte contenant une 
+        <a href="#" class="erreur-focus">troisième erreur (Focus)</a>. 
+        Le survol à la souris est parfait, mais un utilisateur naviguant au clavier (touche Tab) ne verra aucune forme visuelle apparaître autour du lien.
+    </p>
+</body>
+</html>

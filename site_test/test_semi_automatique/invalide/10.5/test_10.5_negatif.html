@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 10.5 - 100% Non Conforme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+        }
+
+        /* ❌ ERREUR 1 : Déclare le fond, mais oublie la couleur du texte */
+        .erreur-fond {
+            background-color: #333333;
+            /* Oubli : color: #ffffff; */
+            padding: 15px;
+        }
+
+        /* ❌ ERREUR 2 : Déclare le texte, mais oublie la couleur de fond */
+        .erreur-texte {
+            color: #ff0000;
+            /* Oubli : background-color: #ffffff; */
+            font-weight: bold;
+        }
+
+        /* ❌ ERREUR 3 : Image de fond sans couleur de secours (Si l'image disparaît, on a du texte blanc sur fond blanc par défaut !) */
+        .erreur-image {
+            background-image: url('https://dummyimage.com/800x200/000/fff&text=Bannière+Sombre');
+            /* Oubli : background-color: #000000; */
+            color: #ffffff;
+            padding: 50px;
+        }
+        
+        /* ❌ ERREUR 4 : Déclarations incomplètes en Inline (dans le HTML) */
+    </style>
+</head>
+<body>
+
+    <h1>Page Non Conforme (Déclarations CSS orphelines)</h1>
+
+    <div class="erreur-fond">
+        Si l'utilisateur force son texte en noir dans son navigateur, ce texte noir sur fond gris foncé sera illisible !
+    </div>
+
+    <p class="erreur-texte">
+        Ceci est un texte rouge important. Si l'utilisateur a un fond de navigateur forcé en rouge, il ne verra plus le texte !
+    </p>
+
+    <div class="erreur-image">
+        <h2>Titre blanc sur une image noire</h2>
+        <p>Si la connexion est lente et que l'image ne charge pas, ce texte blanc sera invisible sur le fond blanc par défaut de la page.</p>
+    </div>
+
+    <!-- ❌ ERREUR 4 : Style Inline incomplet -->
+    <div style="background-color: blue;">
+        Ceci est une erreur en inline (attribut style). Le fond est bleu, mais le texte n'est pas défini.
+    </div>
+
+</body>
+</html>
