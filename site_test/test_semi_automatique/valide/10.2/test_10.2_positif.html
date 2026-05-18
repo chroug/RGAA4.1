@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 10.2 - 100% Conforme</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; }
+        
+        /* Cas 1 : Puce décorative simple (L'IA doit valider) */
+        .puce-deco::before {
+            content: "➔ ";
+            color: #666;
+            margin-right: 8px;
+        }
+
+        /* Cas 2 : Guillemet décoratif pour citation (L'IA doit valider) */
+        .guillemet::before {
+            content: '"';
+            font-size: 2em;
+            color: #ccc;
+        }
+
+        /* Cas 3 : Image de fond purement esthétique (L'humain devra valider) */
+        .bg-deco {
+            background-image: url('https://dummyimage.com/800x100/e2e8f0/fff&text=Motif+Abstrait');
+            height: 100px;
+            margin-top: 20px;
+        }
+
+        /* Cas 4 : Icône CSS avec un VRAI texte caché accessible (Parfaitement conforme) */
+        .icon-print::before {
+            content: "🖨️ ";
+        }
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Page parfaitement conforme</h1>
+
+    <h2>Liste des services</h2>
+    <ul>
+        <li class="puce-deco">Audit technique</li>
+        <li class="puce-deco">Accompagnement RGAA</li>
+    </ul>
+
+    <blockquote class="guillemet">L'accessibilité, c'est pour tout le monde.</blockquote>
+
+    <!-- Div avec une image de fond qui ne sert qu'à faire un trait de séparation graphique -->
+    <div class="bg-deco"></div>
+
+    <h2>Actions</h2>
+    <button>
+        <span class="icon-print" aria-hidden="true"></span>
+        <span class="sr-only">Imprimer le rapport complet</span>
+    </button>
+</body>
+</html>

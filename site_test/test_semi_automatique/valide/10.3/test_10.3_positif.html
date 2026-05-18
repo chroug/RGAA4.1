@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 10.3 - 100% Conforme</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; }
+        .etape-container {
+            display: flex; /* Flexbox classique, pas d'inversion */
+            gap: 20px;
+        }
+        .etape { padding: 15px; border: 1px solid #ccc; background: #f9f9f9; }
+        
+        .form-group { margin-bottom: 15px; }
+        .submit-btn { float: right; } /* Le float ne casse pas l'ordre logique de lecture ici */
+    </style>
+</head>
+<body>
+
+    <h1>Comment s'inscrire ?</h1>
+
+    <!-- L'ordre HTML est logique : 1, puis 2, puis 3 -->
+    <div class="etape-container">
+        <div class="etape">
+            <h2>1. Créez un compte</h2>
+            <p>Entrez vos coordonnées.</p>
+        </div>
+        <div class="etape">
+            <h2>2. Validez l'email</h2>
+            <p>Cliquez sur le lien reçu.</p>
+        </div>
+        <div class="etape">
+            <h2>3. Profitez</h2>
+            <p>Accédez à vos services.</p>
+        </div>
+    </div>
+
+    <h2>Formulaire de contact</h2>
+    <!-- Le bouton de soumission est bien APRES les champs de saisie dans le code -->
+    <form>
+        <div class="form-group">
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom">
+        </div>
+        <div class="form-group">
+            <label for="message">Message :</label>
+            <textarea id="message"></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Envoyer le message</button>
+    </form>
+
+</body>
+</html>

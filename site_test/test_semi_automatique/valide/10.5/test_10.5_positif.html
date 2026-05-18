@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 10.5 - 100% Conforme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+        }
+
+        /* ✅ CAS 1 : Déclaration complète (Fond + Texte) */
+        .alerte-info {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        /* ✅ CAS 2 : Image de fond avec TOUTES les sécurités (Image + Fond de secours + Texte) */
+        .hero-banner {
+            background-image: url('https://dummyimage.com/800x200/000/fff&text=Bannière');
+            background-color: #000000; /* Fond de secours si l'image plante */
+            color: #ffffff; /* Couleur du texte par-dessus l'image */
+            padding: 50px;
+            text-align: center;
+        }
+
+        /* ✅ CAS 3 : Déclaration dans une balise enfant (Héritage valide) */
+        .bloc-parent {
+            background-color: #ffebee;
+        }
+        .bloc-parent p {
+            color: #b71c1c; /* Le texte enfant a bien sa couleur, donc le bloc parent est conforme */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Page Conforme (Paires de couleurs respectées)</h1>
+
+    <div class="alerte-info">
+        Ceci est une information importante. Les deux couleurs sont définies !
+    </div>
+
+    <div class="hero-banner">
+        <h2>Titre sur l'image</h2>
+        <p>Le texte restera lisible même si l'image ne charge pas, car un fond noir de secours est prévu.</p>
+    </div>
+
+    <div class="bloc-parent">
+        <p>Je suis un texte rouge sur un fond rose. Tout est déclaré explicitement.</p>
+    </div>
+
+</body>
+</html>

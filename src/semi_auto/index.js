@@ -9,6 +9,8 @@ import runTheme5 from './theme_5_tableaux/index.js';
 import runTheme6 from './theme_6_liens/index.js';
 import runTheme7 from './theme_7_scripts/index.js';
 import runTheme8 from './theme_8_langue/index.js';
+import runTheme9 from './theme_9_structuration/index.js';
+import runTheme10 from './theme_10_presentation/index.js';
 import runTheme11 from './theme_11_formulaires/index.js';
 import runTheme12 from './theme_12_navigation/index.js';
 import runTheme13 from './theme_13_consultation/index.js';
@@ -42,8 +44,15 @@ export async function runSemiAuto(page) {
     // console.log("\n⚙️ [Thème 7] Analyse des Scripts (Statuts)...");
     // await runTheme7(page, resultats_globaux);
 
-    console.log("\n🌍 [Thème 8] Analyse de la Langue...");
-    await runTheme8(page, resultats_globaux);
+    // console.log("\n🌍 [Thème 8] Analyse de la Langue...");
+    // await runTheme8(page, resultats_globaux);
+
+    // console.log("\n🌍 [Thème 9] Analyse de la structure...");
+    // await runTheme9(page, resultats_globaux);
+
+    console.log("\n🎨 [Thème 10] Analyse de la Présentation (CSS)...");
+    await runTheme10(page, resultats_globaux);
+
 
     // console.log("\n🧭 [Thème 11] Analyse des formulaires...");
     // await runTheme11(page, resultats_globaux);
