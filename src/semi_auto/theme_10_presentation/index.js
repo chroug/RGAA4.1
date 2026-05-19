@@ -2,7 +2,8 @@ import extraireTheme10DOM from './evaluate_dom.js';
 import testerCritere10_2 from './criteres/critere_10.2.js';
 import testerCritere10_3 from './criteres/critere_10.3.js';
 import testerCritere10_5 from './criteres/critere_10.5.js';
-import testerCritere10_6 from './criteres/critere_10.6.js'; // 👈 1. Ajout de l'import
+import testerCritere10_6 from './criteres/critere_10.6.js';
+import testerCritere10_7 from './criteres/critere_10.7.js';
 
 export default async function runTheme10(page, resultats_globaux) {
     // 1. On lance le scan unique qui récupère les données pour TOUT le thème 10
@@ -22,7 +23,11 @@ export default async function runTheme10(page, resultats_globaux) {
     // const res10_5 = await testerCritere10_5(data.suspicionsCouleurs);
     // resultats_globaux["critere_10.5"] = res10_5;
 
-    // 5. Lancement du 10.6 (On ne passe plus qu'un seul tableau !)
-    const res10_6 = await testerCritere10_6(page, data.liensAAnalyser106);
-    resultats_globaux["critere_10.6"] = res10_6;
+    // // 5. Lancement du 10.6 (On ne passe plus qu'un seul tableau !)
+    // const res10_6 = await testerCritere10_6(page, data.liensAAnalyser106);
+    // resultats_globaux["critere_10.6"] = res10_6;
+
+    // 6. Lancement du 10.7
+    const res10_7 = await testerCritere10_7(page, data.elementsFocusables107);
+    resultats_globaux["critere_10.7"] = res10_7;
 }

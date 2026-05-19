@@ -292,6 +292,84 @@ export default function extraireTheme10DOM() {
     }
 
     // ==========================================
+    // 🟣 PARTIE 4 : ANALYSE DU FOCUS (CRITÈRE 10.7)
+    // ==========================================
+    const elementsFocusables107 = [];
+
+    try {
+        // On cible TOUT ce qui est interactif ou qui possède un tabindex valide
+        const focusables = document.querySelectorAll('a[href]:not([tabindex="-1"]), button:not([tabindex="-1"]), input:not([tabindex="-1"]), textarea:not([tabindex="-1"]), select:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])');
+
+        // 🛠️ Notre algorithme anti-rognage (overflow: hidden)
+        function aUnRisqueDeRognage(element) {
+            let parent = element.parentElement;
+            while (parent && parent !== document.body) {
+                const styleParent = window.getComputedStyle(parent);
+                if (styleParent.overflow === 'hidden' || styleParent.overflowX === 'hidden' || styleParent.overflowY === 'hidden') {
+                    const rectEl = element.getBoundingClientRect();
+                    const rectParent = parent.getBoundingClientRect();
+                    // Si l'élément est à moins de 5px du bord coupé, le focus sera invisible
+                    const estTresProcheDuBord = (
+                        rectEl.top - rectParent.top < 5 ||
+                        rectParent.bottom - rectEl.bottom < 5 ||
+                        rectEl.left - rectParent.left < 5 ||
+                        rectParent.right - rectEl.right < 5
+                    );
+                    if (estTresProcheDuBord) return true;
+                }
+                parent = parent.parentElement;
+            }
+            return false;
+        }
+
+        // 🎨 Trouver la VRAIE couleur de fond derrière l'élément (pour le test de camouflage)
+        function getVraiFond(el) {
+            let noeud = el;
+            while (noeud) {
+                const bg = window.getComputedStyle(noeud).backgroundColor;
+                if (bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') return bg;
+                noeud = noeud.parentElement;
+            }
+            return 'rgb(255, 255, 255)'; // Blanc par défaut
+        }
+
+        focusables.forEach(el => {
+            // On ignore les champs naturellement impossibles à focus
+            if (el.disabled || el.type === 'hidden') return;
+
+            const rect = el.getBoundingClientRect();
+            const estHorsEcranOuInvisible = rect.width <= 1 || rect.height <= 1 || rect.left < -50 || rect.top < -50;
+            
+            let estHoneypotPiege = false;
+
+            if (estHorsEcranOuInvisible) {
+                // Si c'est un lien hors écran (ex: lien d'évitement), on l'ignore car il apparaîtra au focus.
+                // MAIS si c'est un champ de saisie hors écran, c'est un POT DE MIEL !
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName)) {
+                    estHoneypotPiege = true;
+                } else {
+                    return; // On ignore les autres éléments invisibles
+                }
+            }
+
+            // Récupération du texte
+            let textePropre = el.innerText || el.getAttribute('aria-label') || el.title || el.value || el.name || 'Élément interactif';
+            textePropre = textePropre.trim().substring(0, 60).replace(/\n/g, ' ') + '...';
+
+            elementsFocusables107.push({
+                chemin: typeof genererCheminCSS === 'function' ? genererCheminCSS(el) : 'N/A',
+                html: el.outerHTML.substring(0, 100),
+                texte: textePropre,
+                risqueRognage: aUnRisqueDeRognage(el),
+                fondParent: getVraiFond(el.parentElement || el),
+                estHoneypotPiege: estHoneypotPiege // 👈 Notre nouveau tag anti-bot
+            });
+        });
+    } catch (e) {
+        console.error("Erreur 10.7:", e);
+    }
+
+    // ==========================================
     // 📦 RETOUR GLOBAL DU SCRIPT
     // ==========================================
     return { 
@@ -299,6 +377,7 @@ export default function extraireTheme10DOM() {
         imagesDeFondAVerifier, 
         suspicionsOrdre: uniquesSuspicionsOrdre,
         suspicionsCouleurs,
-        liensAAnalyser106
+        liensAAnalyser106,
+        elementsFocusables107
     };
 }

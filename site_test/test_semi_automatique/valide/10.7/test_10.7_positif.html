@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test RGAA 10.7 - 100% POSITIF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #161616;
+            padding: 2rem;
+        }
+
+        /* Cas 1 : Focus natif du navigateur (On ne déclare RIEN pour le focus) */
+        .focus-natif {
+            padding: 5px;
+        }
+
+        /* Cas 2 : Outline personnalisé avec un contraste fort (Noir sur Blanc = 21:1) */
+        .focus-outline-custom:focus {
+            outline: 3px solid #000000;
+            outline-offset: 2px;
+        }
+
+        /* Cas 3 : Remplacement par un changement de fond très contrasté (Bleu foncé) */
+        .focus-background:focus {
+            outline: none; /* Toléré CAR compensé juste en dessous */
+            background-color: #000091;
+            color: #ffffff;
+        }
+
+        /* Cas 4 : Remplacement par une ombre portée (box-shadow) qui simule un contour */
+        .focus-shadow:focus {
+            outline: none; /* Toléré CAR compensé juste en dessous */
+            box-shadow: 0 0 0 4px #000091;
+        }
+
+        /* Cas 5 : Changement de bordure (border) */
+        .focus-border {
+            border: 2px solid transparent; /* Bordure invisible par défaut pour éviter le saut de mise en page */
+            padding: 5px;
+        }
+        .focus-border:focus {
+            outline: none; /* Toléré CAR compensé juste en dessous */
+            border: 2px solid #b34000; /* Orange foncé contrasté */
+        }
+    </style>
+</head>
+<body>
+    <h1>Tests Positifs - Critère 10.7 (Focus)</h1>
+    <p>Naviguez avec la touche <strong>TAB</strong> pour observer les focus.</p>
+
+    <ul>
+        <li><a href="#" class="focus-natif">Lien 1 : Focus natif préservé</a></li>
+        <li><button class="focus-outline-custom">Bouton 2 : Outline personnalisé (Contraste OK)</button></li>
+        <li><input type="text" class="focus-background" placeholder="Input 3 : Fond modifié" /></li>
+        <li><select class="focus-shadow"><option>Select 4 : Box-shadow</option></select></li>
+        <li><div tabindex="0" class="focus-border">Div 5 : Bordure modifiée (tabindex="0")</div></li>
+    </ul>
+</body>
+</html>

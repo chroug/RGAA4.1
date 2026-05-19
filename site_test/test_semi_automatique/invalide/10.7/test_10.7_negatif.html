@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test RGAA 10.7 - 100% NÉGATIF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #161616;
+            padding: 2rem;
+        }
+
+        /* Erreur 1 : Le classique absolu (Suppression totale sans compensation) */
+        .erreur-outline-none:focus {
+            outline: none;
+        }
+
+        /* Erreur 2 : La variante syntaxique (0 au lieu de none) */
+        .erreur-outline-zero:focus {
+            outline: 0;
+        }
+
+        /* Erreur 3 : Contraste insuffisant (< 3:1). Gris très clair (#e5e5e5) sur fond blanc. Ratio ~1.2:1 */
+        .erreur-contraste-faible:focus {
+            outline: 2px solid #e5e5e5;
+        }
+
+        /* Erreur 4 : Le Camouflage. L'outline est de la MÊME couleur que le fond parent. Ratio 1:1 */
+        .parent-camouflage {
+            background-color: #000091;
+            padding: 20px;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .erreur-camouflage:focus {
+            outline: 3px solid #000091; /* Invisible car fond bleu ! */
+        }
+
+        /* Erreur 5 : Le Rogné (Overflow hidden). L'outline existe, mais est coupé par le parent ! */
+        .parent-rogne {
+            overflow: hidden; /* Coupe tout ce qui dépasse */
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 0; /* Pas de marge interne, le lien touche les bords */
+        }
+        .erreur-rogne {
+            display: block;
+            padding: 10px;
+            background: #f4f4f4;
+            text-decoration: none;
+            color: black;
+        }
+        .erreur-rogne:focus {
+            /* L'outline déborde par nature, il sera coupé par l'overflow:hidden du parent */
+            outline: 4px solid #ff0000; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Tests Négatifs - Critère 10.7 (Focus)</h1>
+    <p>Naviguez avec la touche <strong>TAB</strong> pour observer (ou ne pas observer) les focus.</p>
+
+    <ul>
+        <li><a href="#" class="erreur-outline-none">Lien 1 : outline: none;</a></li>
+        <li><button class="erreur-outline-zero">Bouton 2 : outline: 0;</button></li>
+        <li><input type="text" class="erreur-contraste-faible" placeholder="Input 3 : Contraste raté" /></li>
+    </ul>
+
+    <div class="parent-camouflage">
+        <a href="#" class="erreur-camouflage" style="color:white;">Lien 4 : Focus camouflé (Bleu sur Bleu)</a>
+    </div>
+
+    <div class="parent-rogne">
+        <a href="#" class="erreur-rogne">Lien 5 : Focus rogné par overflow: hidden</a>
+    </div>
+</body>
+</html>
