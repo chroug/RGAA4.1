@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 12.6 - Négatif (Zones non identifiables)</title>
+    <style>
+        /* Styles pour simuler visuellement la structure, mais sans sémantique */
+        .fake-header { background: #eee; padding: 20px; }
+        .fake-nav { background: #ddd; padding: 10px; }
+        .fake-search { padding: 10px; }
+        .fake-main { padding: 40px 20px; }
+        .fake-footer { background: #333; color: #fff; padding: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="fake-header">
+        <span style="font-size: 2em; font-weight: bold;">Mon Super Site (Faux Titre)</span>
+        
+        <div class="fake-nav">
+            <a href="#">Accueil</a> | 
+            <a href="#">Services</a> | 
+            <a href="#">Contact</a>
+        </div>
+        
+        <div class="fake-search">
+            Rechercher : <input type="text"> <button>OK</button>
+        </div>
+    </div>
+
+    <div class="fake-main">
+        <span style="font-size: 1.5em; font-weight: bold;">Bienvenue (Faux Titre 2)</span>
+        <p>Ceci est le contenu principal, mais aucun outil d'assistance ne peut deviner que cette div est la zone principale.</p>
+    </div>
+
+    <div class="fake-footer">
+        © 2026 - Mon Super Site
+    </div>
+</body>
+</html>

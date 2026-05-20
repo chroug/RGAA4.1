@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 12.6 - Positif (Zones conformes)</title>
+    <style>
+        /* Styles pour rendre les liens d'évitement visibles au focus (Bonne pratique) */
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            z-index: 999;
+            padding: 1em;
+            background-color: black;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .skip-link:focus {
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <a href="#contenu" class="skip-link">Aller au contenu principal</a>
+    <a href="#recherche" class="skip-link">Aller à la recherche</a>
+
+    <header>
+        <h1>Mon Super Site</h1>
+        
+        <nav aria-label="Navigation principale">
+            <ul>
+                <li><a href="#">Accueil</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        
+        <search id="recherche">
+            <form action="/search">
+                <label for="q">Rechercher</label>
+                <input type="text" id="q" name="q">
+                <button type="submit">OK</button>
+            </form>
+        </search>
+    </header>
+
+    <main id="contenu">
+        <h2>Bienvenue</h2>
+        <p>Ceci est le contenu principal de la page, facilement accessible.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 - Mon Super Site</p>
+    </footer>
+</body>
+</html>
