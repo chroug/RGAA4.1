@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 11.7 - Négatif (Légendes non pertinentes)</title>
+</head>
+<body>
+    <h1>Formulaire Non Conforme (11.7)</h1>
+
+    <form>
+        <fieldset>
+            <legend>Étape 2 / Choix 1 :</legend>
+            <input type="radio" id="cb" name="paiement" value="cb">
+            <label for="cb">Carte Bancaire</label><br>
+            
+            <input type="radio" id="paypal" name="paiement" value="paypal">
+            <label for="paypal">PayPal</label>
+        </fieldset>
+
+        <br>
+
+        <fieldset>
+            <legend>Sélectionnez au moins une option :</legend>
+            <input type="checkbox" id="newsletter" name="abo">
+            <label for="newsletter">Newsletter mensuelle</label><br>
+            
+            <input type="checkbox" id="sms" name="abo">
+            <label for="sms">Offres promotionnelles par SMS</label>
+        </fieldset>
+
+        <br>
+
+        <div role="group" aria-label="form_group_radio_buttons">
+            <input type="radio" id="oui" name="accepte" value="oui">
+            <label for="oui">Oui</label>
+            
+            <input type="radio" id="non" name="accepte" value="non">
+            <label for="non">Non</label>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 11.2 - POSITIF (Pertinence)</title>
+</head>
+<body>
+    <h1>Étiquettes Pertinentes et Valides</h1>
+
+    <div>
+        <label for="nom">Votre nom complet</label>
+        <input type="text" id="nom" name="nom">
+    </div>
+
+    <div>
+        <input type="search" title="Rechercher une commune" placeholder="Ex: Paris">
+    </div>
+
+    <div>
+        <input type="tel" aria-label="Numéro de téléphone portable">
+    </div>
+
+    <div>
+        <span id="label-cv">Uploader votre Curriculum Vitae :</span>
+        <input type="file" aria-labelledby="label-cv">
+    </div>
+
+    <div>
+        <label for="prenom">Prénom *</label>
+        <input type="text" id="prenom" aria-label="Prénom obligatoire">
+    </div>
+
+    <div>
+        <input type="text" title="Saisir votre recherche">
+        <button type="submit">Lancer la recherche</button>
+    </div>
+
+    <div>
+        <button aria-label="Mettre en gras" style="font-weight: bold;">B</button>
+    </div>
+
+</body>
+</html>

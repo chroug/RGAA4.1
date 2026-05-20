@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 11.2 - NÉGATIF (Non pertinent)</title>
+</head>
+<body>
+    <h1>Étiquettes Absurdes et Conflictuelles</h1>
+
+    <div>
+        <label for="c1">Champ 1 :</label>
+        <input type="text" id="c1">
+    </div>
+
+    <div>
+        <input type="text" title="input_field_text" placeholder="Entrez votre ville">
+    </div>
+
+    <div>
+        <input type="text" aria-label="Cliquez ici pour taper au clavier">
+    </div>
+
+    <div>
+        <span id="faux-label">Lorem ipsum dolor sit amet</span>
+        <input type="text" aria-labelledby="faux-label">
+    </div>
+
+    <div>
+        <label for="mail">Email</label>
+        <input type="text" id="mail" aria-label="Identifiant">
+    </div>
+
+    <div>
+        <input type="text" title="Recherche">
+        <button type="submit">Go</button> </div>
+
+</body>
+</html>

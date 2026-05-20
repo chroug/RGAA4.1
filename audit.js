@@ -28,7 +28,23 @@ async function runAudit(url) {
     await page.setViewportSize({ width: 1280, height: 800 });
 
     try {
-        await page.goto(url, { waitUntil: 'load', timeout: 60000 }); 
+        // ====================================================================
+        // 🛡️ NAVIGATION ROBUSTE (TRY/CATCH + NETWORKIDLE)
+        // ====================================================================
+        try {
+            // 'networkidle' waits until there are no network connections for at least 500 ms.
+            // It is less strict than 'load' and prevents infinite hanging from trackers.
+            // Timeout increased to 90 seconds.
+            await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 }); 
+        } catch (navError) {
+            if (navError.name === 'TimeoutError') {
+                console.log(`\n⚠️ Avertissement : Le chargement complet de la page a expiré.`);
+                console.log(`   L'audit se poursuit sur le contenu (DOM) qui a réussi à charger.\n`);
+            } else {
+                // If it's not a timeout (e.g., DNS error, site offline), we throw it up to the main catch block
+                throw navError; 
+            }
+        }
 
         // ====================================================================
         // 🍪 GESTION DES BANDEAUX DE COOKIES (POUR DÉBLOQUER LES IFRAMES)
@@ -219,11 +235,11 @@ async function runAudit(url) {
         });
 
     } catch (error) {
-        console.error("❌ Erreur d'audit :", error);
+        console.error("❌ Erreur fatale d'audit (Le site est probablement hors ligne) :", error);
     } finally {
         await browser.close();
     }
 }
 
-const targetUrl = process.argv[2] || 'https://auth.service-public.gouv.fr/realms/service-public/protocol/openid-connect/auth?response_type=code&client_id=spclient&scope=address%20phone%20openid%20profile%20email&state=dKYt5bK4vi6R2RcI3PyY4s10x0Ausd-1cDPJSvpQZxI%3D&redirect_uri=https://www.service-public.gouv.fr/openid_connect_login&nonce=Y6qNEigYSqHW3zAtIqCotc4eQmyYDPVIWr3crUDDi_E';
+const targetUrl = process.argv[2] || 'https://auth.service-public.gouv.fr/realms/service-public/protocol/openid-connect/auth?response_type=code&client_id=spclient&scope=address%20phone%20openid%20profile%20email&state=paGcwQNdH6W9cCfpzMFZo3KO9ZXHnV752NLXUhCJyro%3D&redirect_uri=https://www.service-public.gouv.fr/openid_connect_login&nonce=0-_eo8jby4311IRN5dhhwVKbNLdyk9DSnVvp5-xjW5Y';
 runAudit(targetUrl);

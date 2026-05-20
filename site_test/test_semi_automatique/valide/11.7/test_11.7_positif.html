@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 11.7 - Positif (Légendes pertinentes)</title>
+</head>
+<body>
+    <h1>Formulaire Conforme (11.7)</h1>
+
+    <form>
+        <fieldset>
+            <legend>Mode de livraison souhaité :</legend>
+            <input type="radio" id="liv_domicile" name="livraison" value="domicile">
+            <label for="liv_domicile">À domicile</label><br>
+            
+            <input type="radio" id="liv_relais" name="livraison" value="relais">
+            <label for="liv_relais">En point relais</label>
+        </fieldset>
+
+        <br>
+
+        <div role="group" aria-label="Options supplémentaires pour votre commande">
+            <input type="checkbox" id="opt_cadeau" name="options">
+            <label for="opt_cadeau">Emballage papier cadeau</label><br>
+            
+            <input type="checkbox" id="opt_express" name="options">
+            <label for="opt_express">Livraison express (24h)</label>
+        </div>
+    </form>
+</body>
+</html>
