@@ -56,11 +56,11 @@ export async function runSemiAuto(page) {
     // console.log("\n🧭 [Thème 11] Analyse des formulaires...");
     // await runTheme11(page, resultats_globaux);
 
-    console.log("\n🧭 [Thème 12] Analyse de la Navigation...");
-    await runTheme12(page, resultats_globaux);
+    // console.log("\n🧭 [Thème 12] Analyse de la Navigation...");
+    // await runTheme12(page, resultats_globaux);
 
-    // console.log("\n👁️ [Thème 13] Analyse de la Consultation...");
-    // await runTheme13(page, resultats_globaux);
+    console.log("\n👁️ [Thème 13] Analyse de la Consultation...");
+    await runTheme13(page, resultats_globaux);
 
 
     // ==========================================

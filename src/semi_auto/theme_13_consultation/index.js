@@ -1,21 +1,21 @@
+import extraireContenusConsultation from './evaluate_dom.js';
 import testerCritere13_2 from './criteres/critere_13.2.js';
+import testerCritere13_5 from './criteres/critere_13.5.js';
 
 export default async function runTheme13(page, resultats_globaux) {
-    console.log(`   👁️ [Thème 13] Analyse de la Consultation...`);
+    console.log(`\n 👁️  [Thème 13] Analyse de la Consultation...`);
 
-    // On va vérifier si une popup s'est ouverte automatiquement
-    let popupAutomatiqueDetectee = false;
+    // 1. Lancement du test des popups (Critère 13.2) - On passe directement l'objet 'page'
+    const res13_2 = await testerCritere13_2(page);
 
-    // Playwright écoute les nouvelles fenêtres
-    page.on('popup', async (popup) => {
-        popupAutomatiqueDetectee = true;
-        await popup.close(); // On ferme la popup pour ne pas polluer
-    });
+    // 2. Extraction du DOM pour les critères sémantiques (13.5)
+    const dataDOM = await page.evaluate(extraireContenusConsultation);
+    console.log(`   📝 Extraction du DOM terminée (13.5/Contenus cryptiques : ${dataDOM.contents13_5?.length || 0} potentiels trouvés).`);
 
-    // On attend un tout petit peu pour laisser le temps aux scripts comme "setTimeout" de s'exécuter
-    await page.waitForTimeout(1500); 
+    // 3. Lancement du test des contenus cryptiques par l'IA (Critère 13.5)
+    const res13_5 = await testerCritere13_5(dataDOM.contenus13_5);
 
-    // Lancement du test 13.2
-    const res13_2 = await testerCritere13_2(popupAutomatiqueDetectee);
+    // 4. Enregistrement des résultats dans le rapport global d'audit
     resultats_globaux["critere_13.2"] = res13_2;
+    resultats_globaux["critere_13.5"] = res13_5;
 }
