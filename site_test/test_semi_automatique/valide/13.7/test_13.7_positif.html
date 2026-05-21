@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 13.7 - Positif (Flashs conformes)</title>
+    <style>
+        /* Animation lente : 1 cycle par seconde (< 3 par seconde) */
+        @keyframes flashLent {
+            0% { background-color: white; }
+            50% { background-color: black; }
+            100% { background-color: white; }
+        }
+        
+        /* Animation rapide : 10 cycles par seconde (> 3 par seconde) */
+        @keyframes flashRapide {
+            0% { background-color: red; }
+            50% { background-color: yellow; }
+            100% { background-color: red; }
+        }
+
+        /* 1. Conforme car LENT (même si c'est grand) */
+        .grand-et-lent {
+            width: 400px;
+            height: 400px; /* 160 000 pixels (dépasse le seuil) */
+            animation: flashLent 1s infinite; /* 1 fois par seconde = Sans danger */
+        }
+
+        /* 2. Conforme car PETIT (même si c'est très rapide) */
+        .petit-et-rapide {
+            width: 100px;
+            height: 100px; /* 10 000 pixels (sous le seuil de 21824) */
+            animation: flashRapide 0.1s infinite; /* 10 fois par seconde, mais trop petit pour déclencher une crise */
+        }
+    </style>
+</head>
+<body>
+    <h1>Critère 13.7 - Exemples Conformes</h1>
+
+    <h2>1. Test CSS : Grand mais lent (13.7.3)</h2>
+    <div class="grand-et-lent">Cette zone clignote 1 fois par seconde. C'est sécurisé.</div>
+
+    <h2>2. Test CSS : Rapide mais très petit (13.7.3)</h2>
+    <div class="petit-et-rapide">Très rapide, mais < 21824 px</div>
+
+    <h2>3. Test JS : Script petit et rapide (13.7.2)</h2>
+    <div id="js-petit" style="width: 140px; height: 140px; background: blue;"></div>
+    <script>
+        // Clignote 10 fois par seconde, mais la zone est inférieure à 21824 px
+        setInterval(() => {
+            const el = document.getElementById('js-petit');
+            el.style.backgroundColor = el.style.backgroundColor === 'blue' ? 'red' : 'blue';
+        }, 100);
+    </script>
+</body>
+</html>

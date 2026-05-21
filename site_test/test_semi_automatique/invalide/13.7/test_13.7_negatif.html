@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test 13.7 - Négatif (Flashs dangereux !)</title>
+    <style>
+        /* Animation très rapide : 10 cycles par seconde (> 3 par seconde) */
+        @keyframes flashDangereux {
+            0% { background-color: red; color: white; }
+            50% { background-color: white; color: black; }
+            100% { background-color: red; color: white; }
+        }
+
+        /* 1. NON CONFORME : Grand ET Rapide */
+        .grand-et-rapide {
+            width: 500px;
+            height: 300px; /* 150 000 pixels (largement au-dessus de 21824) */
+            animation: flashDangereux 0.1s infinite; /* 10 flashs par seconde ! DANGER */
+        }
+    </style>
+</head>
+<body>
+    <h1>Critère 13.7 - Exemples NON Conformes (DANGER)</h1>
+
+    <h2>1. Test CSS : Grand ET Rapide (13.7.3)</h2>
+    <div class="grand-et-rapide">
+        ⚠️ DANGER : Plus de 21824px ET plus de 3 flashs par seconde.
+    </div>
+
+    <h2>2. Test JS : Grand ET Rapide (13.7.2)</h2>
+    <div id="js-dangereux" style="width: 400px; height: 400px; background: black;">
+        <h3 style="color:white;">⚠️ DANGER JS</h3>
+    </div>
+    <script>
+        // Clignote 20 fois par seconde (50ms) sur une très grande zone
+        setInterval(() => {
+            const el = document.getElementById('js-dangereux');
+            el.style.backgroundColor = el.style.backgroundColor === 'black' ? 'white' : 'black';
+        }, 50);
+    </script>
+
+    <h2>3. Test Multimédia (13.7.1)</h2>
+    <video width="600" height="400" controls loop autoplay>
+        <source src="video-flash-dangereux.mp4" type="video/mp4">
+        Vidéo contenant des flashs de plus de 3 Hz.
+    </video>
+</body>
+</html>
