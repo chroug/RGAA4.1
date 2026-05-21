@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critère 13.9 - 100% Conforme (Responsive)</title>
+    <style>
+        /* 
+           BONNE PRATIQUE RGAA : 
+           Le design s'adapte, le scroll est libre, rien ne disparaît.
+        */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap; /* Magie du responsive : passe en colonne sur mobile */
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .article-principal {
+            flex: 2 1 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .barre-laterale {
+            flex: 1 1 250px;
+            background: #e0e6ed;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .bouton-action {
+            display: block;
+            background-color: #27ae60;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        /* On génère un contenu très long pour tester le scroll naturel */
+        .long-texte {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+        
+        .spacer {
+            height: 1000px; /* Force l'apparition de la barre de défilement */
+            background: repeating-linear-gradient(
+                45deg,
+                #f0f0f0,
+                #f0f0f0 10px,
+                #fafafa 10px,
+                #fafafa 20px
+            );
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Site Web Accessible</h1>
+    </header>
+
+    <div class="container">
+        <!-- Contenu principal -->
+        <main class="article-principal">
+            <h2>L'importance de l'orientation</h2>
+            
+            <!-- CAS N°1 (Défense) : Des mots pièges pour tester l'IA -->
+            <p>
+                <strong>Information :</strong> Ce site a été conçu de manière adaptative. Que vous décidiez de 
+                <em>tourner</em> votre appareil, de le consulter en mode <em>portrait</em> ou en mode 
+                <em>paysage</em>, le contenu s'adaptera toujours parfaitement à votre écran. 
+                Nous ne vous forcerons jamais à pivoter votre téléphone.
+            </p>
+
+            <div class="long-texte">
+                <p>Voici un très long article pour vérifier que le défilement (scroll) fonctionne correctement dans toutes les orientations.</p>
+                
+                <!-- CAS N°3 (Défense) : Un bloc très grand pour forcer le scroll. 
+                     Comme il n'y a pas de "overflow: hidden" dans le CSS, l'outil validera ! -->
+                <div class="spacer">
+                    (Espace de 1000px pour simuler un long article. Le scroll fonctionne !)
+                </div>
+
+                <p>Fin de l'article. Si vous lisez ceci, c'est que vous avez pu faire défiler la page avec succès !</p>
+            </div>
+        </main>
+
+        <!-- Barre latérale -->
+        <aside class="barre-laterale">
+            <h3>Actions rapides</h3>
+            <!-- CAS N°2 (Défense) : Ce bouton ne disparaît JAMAIS, il se déplace juste en dessous en mode portrait -->
+            <a href="#" class="bouton-action">S'abonner à la newsletter</a>
+            
+            <p>Ici, quelques informations complémentaires qui restent visibles quelle que soit l'orientation.</p>
+        </aside>
+    </div>
+
+</body>
+</html>

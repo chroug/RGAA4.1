@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreur invisible : Perte de contenu</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .panier { border: 2px solid #ccc; padding: 20px; border-radius: 8px; }
+        .btn-payer {
+            background-color: #27ae60; color: white; padding: 15px 30px;
+            font-size: 20px; border: none; cursor: pointer; display: block; margin-top: 20px;
+        }
+
+        /* L'ERREUR EST ICI : Le développeur a masqué le bouton en paysage pour gagner de la place */
+        @media screen and (orientation: landscape) {
+            .btn-payer {
+                display: none; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Validation de votre commande</h1>
+    <div class="panier">
+        <h2>Total à payer : 45,00 €</h2>
+        <p>Vos articles sont prêts. Veuillez cliquer sur le bouton ci-dessous pour payer.</p>
+        
+        <!-- Ce bouton disparaît en mode paysage ! -->
+        <button class="btn-payer">💳 Payer maintenant</button>
+    </div>
+</body>
+</html>

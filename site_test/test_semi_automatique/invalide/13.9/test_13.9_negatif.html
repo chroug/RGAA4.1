@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critère 13.9 - Multi-Violations (Les 4 cas)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* ---------------------------------------------------
+           CAS N°1 : MESSAGE DE BLOCAGE EXPLICITE
+           S'affiche uniquement en mode portrait
+        --------------------------------------------------- */
+        #warning-cas1 {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #e74c3c;
+            color: white;
+            text-align: center;
+            padding-top: 40vh;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 9999;
+        }
+
+        @media screen and (orientation: portrait) {
+            #warning-cas1 {
+                display: block; /* Affiche le message */
+            }
+            #content {
+                display: none; /* Cache le vrai site */
+            }
+        }
+
+        /* ---------------------------------------------------
+           CAS N°2 : PERTE DE CONTENU PUR ET SIMPLE
+           Le bouton disparaît en mode paysage
+        --------------------------------------------------- */
+        .bouton-achat {
+            background-color: #27ae60;
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        @media screen and (orientation: landscape) {
+            .bouton-achat {
+                display: none; /* VIOLATION : Le bouton est supprimé sans alternative */
+            }
+        }
+
+        /* ---------------------------------------------------
+           CAS N°3 : CONTENU TRONQUÉ (SCROLL BLOQUÉ)
+           En mode paysage, on empêche l'utilisateur de descendre
+        --------------------------------------------------- */
+        @media screen and (orientation: landscape) {
+            body {
+                height: 100vh;
+                overflow: hidden; /* VIOLATION : Le défilement est interdit ! */
+            }
+        }
+        
+        .long-texte {
+            height: 2000px; /* Force un contenu très long pour obliger à scroller */
+            background: linear-gradient(to bottom, #f1c40f, #2980b9);
+            padding: 20px;
+            color: black;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CAS N°1 : Le message bloquant -->
+    <div id="warning-cas1">
+        ⚠️ Attention, veuillez tourner votre appareil en mode paysage pour utiliser cette application.
+    </div>
+
+    <div id="content">
+        <h1>Boutique en ligne</h1>
+        
+        <!-- CAS N°2 : Le bouton qui va disparaître -->
+        <button class="bouton-achat">🛒 Ajouter au panier</button>
+
+        <!-- CAS N°3 : Le texte qu'on ne pourra pas lire jusqu'en bas -->
+        <div class="long-texte">
+            <h2>Description du produit</h2>
+            <p>Début du texte... (Si vous êtes en mode paysage, essayez de descendre, vous ne pouvez pas !)</p>
+            <p style="margin-top: 1800px; color: white;">
+                FIN DU TEXTE : Si vous lisez ceci, c'est que le scroll n'est pas bloqué.
+            </p>
+        </div>
+    </div>
+
+    <!-- ---------------------------------------------------
+         CAS N°4 : VERROUILLAGE JAVASCRIPT
+    --------------------------------------------------- -->
+    <script>
+        // Essaye de forcer le navigateur à rester bloqué en paysage
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock("landscape").catch(function(error) {
+                console.warn("[Cas 4] Le navigateur a refusé le verrouillage JS (Comportement normal sur PC) :", error.message);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreur invisible : Chevauchement de texte</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { display: flex; gap: 20px; }
+        
+        /* L'ERREUR EST ICI : Une hauteur fixe stricte (height au lieu de min-height) */
+        .carte {
+            width: 50%;
+            height: 120px; /* Hauteur bloquée ! */
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            overflow: visible; /* Le texte va déborder */
+        }
+        
+        /* En mode portrait, l'écran est plus étroit, le texte va revenir à la ligne et déborder */
+        .carte-suivante {
+            margin-top: 20px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Actualités</h1>
+    <div class="container">
+        <div class="carte">
+            <h2>Titre très long qui prend de la place</h2>
+            <p>Ce texte est assez long. En mode paysage (écran large), il tient sur deux lignes donc tout va bien. Mais si vous passez en mode portrait (écran étroit), le texte va revenir à la ligne, déborder de la boîte bleue, et s'écraser sur le bloc rouge en dessous ! Il deviendra illisible.</p>
+        </div>
+    </div>
+
+    <div class="carte-suivante">
+        Ce bloc rouge va se retrouver sous le texte bleu qui déborde en mode portrait.
+    </div>
+</body>
+</html>

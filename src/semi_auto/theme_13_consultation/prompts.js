@@ -52,3 +52,20 @@ CONTRAINTES DE FORMATAGE (STRICTES) :
 RÉPONSE ATTENDUE (Format JSON) : { "statut": "CONFORME" | "NON_CONFORME" | "NON_APPLICABLE", "explication": "Justification courte de l'alternative trouvée (ex: Le mot entre parenthèse décrit bien le symbole)." }
 
 RÉPONSE :`;
+
+export const promptAvertissementOrientation = (texte) => `Tu es un auditeur RGAA 4.1. Ton rôle est d'évaluer le critère 13.9 (Consultation possible quelle que soit l'orientation).
+
+On a extrait ce texte visible sur une page web lors d'un changement d'orientation de l'écran (Portrait / Paysage) :
+"${texte}"
+
+Ce texte est-il un avertissement bloquant qui demande EXPLICITEMENT à l'utilisateur de tourner, pivoter ou changer l'orientation de son appareil (écran) pour continuer la navigation ?
+- Si OUI (ex: "Veuillez tourner votre appareil", "Passez en mode paysage") -> "NON_CONFORME".
+- Si NON (c'est juste du texte normal du site, ex: un article parlant d'un "portrait" ou de "paysage") -> "CONFORME".
+
+CONTRAINTES DE FORMATAGE :
+- Objet JSON pur uniquement (aucun markdown).
+- Échappe les guillemets ou backslashs si besoin.
+
+RÉPONSE ATTENDUE : { "statut": "CONFORME" | "NON_CONFORME", "explication": "Justification ultra courte" }
+
+RÉPONSE :`;
