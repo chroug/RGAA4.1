@@ -10,7 +10,8 @@ export default async function testerCritere2_2(page) {
         critere: '2.2',
         titre: 'Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ?',
         statut: 'C', 
-        elements_verifies: []
+        violations: [],
+        conformites: []
     };
 
     console.log("   ⏳ Attente du chargement des cadres (iframes)...");
@@ -116,13 +117,19 @@ export default async function testerCritere2_2(page) {
             hasError = true;
         }
 
-        resultats.elements_verifies.push({
-            html: frameData.html,
-            title: frameData.title,
-            capture_sauvegardee: base64Image ? filePath : null,
-            statut: estConforme ? 'C' : 'NC',
-            commentaire: raison
-        });
+        if (!estConforme) {
+            resultats.violations.push({
+                ...frameData,
+                capture_sauvegardee: base64Image ? filePath : null,
+                raison: raison
+            });
+        } else {
+            resultats.conformites.push({
+                ...frameData,
+                capture_sauvegardee: base64Image ? filePath : null,
+                raison: raison
+            });
+        }
     }
 
     if (hasError) {

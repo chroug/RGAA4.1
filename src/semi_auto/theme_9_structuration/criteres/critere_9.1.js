@@ -5,15 +5,14 @@ import { promptCritere9_1 } from '../prompts.js';
 export default async function testerCritere9_1(erreursAlgo, titresAAnalyser, fauxTitresPotentiels) {
     console.log(`\n ℹ️  [critere_9.1] Structuration de l'information par les titres...`);
     let violations = [];
+    let conformites = [];
 
     // 1️⃣ Erreurs Algorithmiques (Hiérarchie 9.1.1)
     if (erreursAlgo && erreursAlgo.length > 0) {
         console.log(`    ⚡ Algo Analyse...`);
         erreursAlgo.forEach(err => {
             violations.push({ 
-                html: err.html, 
-                xpath: "Non disponible", 
-                css: "Non applicable", 
+                ...err, 
                 raison: `[Erreur Algo - 9.1.1] ${err.raison}` 
             });
             const indicateurTitre = err.niveau === 'ARIA' ? 'Titre ARIA' : `Titre H${err.niveau}`;
@@ -67,10 +66,14 @@ export default async function testerCritere9_1(erreursAlgo, titresAAnalyser, fau
 
                 if (resultat && resultat.statut === "NON_CONFORME") {
                     const explication = resultat.explication || "Le titre ne semble pas pertinent vis-à-vis de son contenu.";
-                    violations.push({ html: element.html, xpath: "N/A", css: "N/A", raison: `[Erreur IA - 9.1.2] ${explication}` });
+                    violations.push({ ...element, raison: `[Erreur IA - 9.1.2] ${explication}` });
                     console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (Élément ${currentIndex} - Titre ${element.label}) : ${explication}`);
                 } else {
                     const justification = resultat.explication || "Titre pertinent.";
+                    conformites.push({
+                        ...element,
+                        raison: `[9.1.2] ${justification}`
+                    });
                     console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} (Élément ${currentIndex} - Titre ${element.label}) : ${justification}`);
                 }
             } catch (e) {
@@ -97,12 +100,12 @@ export default async function testerCritere9_1(erreursAlgo, titresAAnalyser, fau
     const nbErreursAlgo = erreursAlgo ? erreursAlgo.length : 0;
 
     if (violations.length > 0) {
-        return { statut: "❌ NON CONFORME", violations };
+        return { statut: "❌ NON CONFORME", violations, conformites };
     } else if (nbTitres === 0 && nbErreursAlgo === 0) {
         console.log(`       ${COLORS.CYAN}➖ NON APPLICABLE${COLORS.RESET} : Aucun titre n'a été détecté sur cette page.`);
-        return { statut: "➖ NON APPLICABLE", violations: [] };
+        return { statut: "➖ NON APPLICABLE", violations: [], conformites: [] };
     } else {
         console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} : La structure et la pertinence des titres semblent correctes.`);
-        return { statut: "✅ CONFORME", violations: [] };
+        return { statut: "✅ CONFORME", violations: [], conformites };
     }
 }

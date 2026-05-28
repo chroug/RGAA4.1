@@ -2,7 +2,12 @@ import { askGemma } from '../../utils/ai_helper.js';
 import { promptAutocomplete } from '../prompts.js';
 
 export default async function testerCritere11_13(champsPersos) {
-    let resultat = { statut: "➖ Non Applicable (NA)", violations: [] };
+    let resultat = { 
+        statut: "➖ Non Applicable (NA)", 
+        methode_detection: "Semi-Automatique (Gemini 3.1 Flash)",
+        violations: [], 
+        conformites: []
+    };
     if (!champsPersos || champsPersos.length === 0) return resultat;
 
     resultat.statut = "✅ Conforme (C)";
@@ -17,12 +22,18 @@ export default async function testerCritere11_13(champsPersos) {
     ];
 
     for (let i = 0; i < items.length; i++) {
-        const donneesChamp = items[i].toLowerCase();
         
-        let labelSeul = donneesChamp.split('| html:')[0]; 
-        const labelNettoye = labelSeul.replace(/[:*]/g, '').trim();
+        // ⚠️ SAAS : On capture l'objet en entier pour ne pas perdre le CSS et XPath !
+        const itemSaaS = items[i];
+        
+        // Si promptData n'existe pas (cas où dom_helpers n'a pas marché), on crée un fallback texte
+        const promptDataText = itemSaaS.promptData || `Label visible: ""\nCode HTML: ${itemSaaS.html || ""}`;
 
-        // Extraction (tolère les simples et doubles guillemets)
+        const donneesChamp = promptDataText.toLowerCase();
+        
+        let labelSeul = donneesChamp.split('\ncode html:')[0].replace('label visible:', ''); 
+        const labelNettoye = labelSeul.replace(/[:*"]/g, '').trim();
+
         const matchAutocomplete = donneesChamp.match(/autocomplete=['"]([^'"]+)['"]/i);
         const valeurTrouvee = matchAutocomplete ? matchAutocomplete[1] : null;
 
@@ -35,16 +46,21 @@ export default async function testerCritere11_13(champsPersos) {
             if (correspondanceExacte) {
                 resoluParAlgo = true; 
 
-                // L'algo SAIT que c'est une donnée personnelle. On vérifie maintenant l'autocomplete.
                 if (valeurTrouvee && valeurTrouvee.includes(regle.attendu)) {
                     console.log(`   ⚡ Algo [critere_11.13] Analyse ${i + 1}/${items.length}... ✅ Conforme (${regle.attendu})`);
+                    resultat.conformites.push({
+                        ...itemSaaS,
+                        raison: `Le champ "${labelNettoye}" possède un autocomplete="${regle.attendu}" conforme, détecté par l'algorithme.`
+                    });
                 } else {
                     const raison = !valeurTrouvee ? "Attribut totalement absent" : `Mauvaise valeur (attendu ${regle.attendu}, trouvé ${valeurTrouvee})`;
                     console.log(`   ⚡ Algo [critere_11.13] Analyse ${i + 1}/${items.length}... ❌ Non Conforme (${raison})`);
                     resultat.statut = "❌ Non Conforme (NC)";
+                    
+                    // 🚀 SAAS : INJECTION DE L'OBJET COMPLET
                     resultat.violations.push({ 
-                        description: `Le champ "${labelNettoye}" exige un autocomplete="${regle.attendu}". Erreur : ${raison}.`, 
-                        html: items[i].replace(/\n/g, ' | ') 
+                        ...itemSaaS, 
+                        raison: `Le champ "${labelNettoye}" exige un autocomplete="${regle.attendu}". Erreur : ${raison}.`
                     });
                 }
                 break; 
@@ -53,22 +69,44 @@ export default async function testerCritere11_13(champsPersos) {
 
         if (resoluParAlgo) continue;
 
-        // 🧠 Fallback IA (Si l'algo ne connait pas le champ, l'IA décide s'il faut un autocomplete ou non)
+        // 🧠 Fallback IA
         process.stdout.write(`   🧠 [critere_11.13] Analyse IA ${i + 1}/${items.length}... `);
         
-        const resIA = await askGemma(promptAutocomplete(items[i]));
+        try {
+            const resIABrute = await askGemma(promptAutocomplete(promptDataText));
+            
+            let resIA = resIABrute;
+            if (typeof resIABrute === 'string') {
+                const match = resIABrute.match(/\{[\s\S]*\}/);
+                if (match) resIA = JSON.parse(match[0]);
+            }
 
-        const aUneErreur = resIA.statut === "NON_CONFORME";
+            const aUneErreur = resIA.statut === "NON_CONFORME";
 
-        if (aUneErreur) {
-            console.log(`❌ Non Conforme (${resIA.explication})`); 
-            resultat.statut = "❌ Non Conforme (NC)";
-            resultat.violations.push({ 
-                description: `Erreur d'autocomplétion : ${resIA.explication}`, 
-                html: items[i].replace(/\n/g, ' | ') 
-            });
-        } else {
-            console.log(`✅ Conforme (${resIA.explication})`);
+            if (aUneErreur) {
+                console.log(`❌ Non Conforme (${resIA.explication})`); 
+                resultat.statut = "❌ Non Conforme (NC)";
+                
+                // 🚀 SAAS : INJECTION DE L'OBJET COMPLET
+                resultat.violations.push({ 
+                    ...itemSaaS,
+                    raison: `Erreur d'autocomplétion : ${resIA.explication}`
+                });
+            } else if (resIA.statut === "NON_APPLICABLE") {
+                console.log(`⚪ Non Applicable (${resIA.explication})`);
+                resultat.conformites.push({
+                    ...itemSaaS,
+                    raison: `[11.13] Champ jugé non applicable pour l'autocomplétion par l'IA : ${resIA.explication}`
+                });
+            } else {
+                console.log(`✅ Conforme (${resIA.explication})`);
+                resultat.conformites.push({
+                    ...itemSaaS,
+                    raison: `[11.13] Autocomplétion jugée conforme par l'IA : ${resIA.explication}`
+                });
+            }
+        } catch (error) {
+            console.log(`⚠️ Erreur technique IA : ${error.message}`);
         }
     }
     return resultat;

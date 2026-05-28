@@ -80,20 +80,18 @@ export default function extraireLangueDOM() {
         const dirValue = el.getAttribute('dir').toLowerCase().trim();
         
         if (dirValue !== 'ltr' && dirValue !== 'rtl') {
-            erreursAlgo8_10.push({
-                html: el.outerHTML.substring(0, 150),
-                raison: `Valeur d'attribut "dir" non conforme : '${dirValue}'. Le RGAA exige 'ltr' ou 'rtl'.`
-            });
+            const errData = window.RGAA_UTILS.extraireDonneesSaaS(el);
+            errData.raison = `Valeur d'attribut "dir" non conforme : '${dirValue}'. Le RGAA exige 'ltr' ou 'rtl'.`;
+            erreursAlgo8_10.push(errData);
         }
 
         if (dirValue === 'rtl') {
             const texte = el.textContent || "";
             // Si dir="rtl" MAIS aucun alphabet oriental détecté -> Suspicion de hack visuel
             if (texte.trim().length > 0 && !rtlRegex.test(texte)) {
-                suspicionsIA8_10.push({
-                    html: el.outerHTML.substring(0, 150),
-                    texte: texte.trim().substring(0, 100)
-                });
+                const suspData = window.RGAA_UTILS.extraireDonneesSaaS(el);
+                suspData.texte = texte.trim().substring(0, 100);
+                suspicionsIA8_10.push(suspData);
             }
         }
     });
@@ -107,10 +105,9 @@ export default function extraireLangueDOM() {
             const parentElement = node.parentElement;
             const inheritedDir = getClosestDirAttribute(parentElement);
             if (inheritedDir !== 'rtl') {
-                erreursAlgo8_10.push({
-                    html: parentElement.outerHTML.substring(0, 150),
-                    raison: `Texte s'écrivant de droite à gauche détecté, mais sans attribut dir="rtl".`
-                });
+                const errData2 = window.RGAA_UTILS.extraireDonneesSaaS(parentElement);
+                errData2.raison = `Texte s'écrivant de droite à gauche détecté, mais sans attribut dir="rtl".`;
+                erreursAlgo8_10.push(errData2);
             }
         }
     }
@@ -128,24 +125,21 @@ export default function extraireLangueDOM() {
         
         // 1. Détection de l'attribut vide (lang="")
         if (langValue === "") {
-            erreursAlgo8_8.push({
-                html: el.outerHTML.substring(0, 150),
-                raison: `L'attribut ${attr} est vide.`
-            });
+            const errData88_1 = window.RGAA_UTILS.extraireDonneesSaaS(el);
+            errData88_1.raison = `L'attribut ${attr} est vide.`;
+            erreursAlgo8_8.push(errData88_1);
         } 
         // 2. Détection du mauvais séparateur (lang="en_US")
         else if (langValue.includes('_')) {
-            erreursAlgo8_8.push({
-                html: el.outerHTML.substring(0, 150),
-                raison: `Le code langue '${langValue}' contient un underscore '_'. Le W3C exige un tiret '-' (ex: en-US).`
-            });
+            const errData88_2 = window.RGAA_UTILS.extraireDonneesSaaS(el);
+            errData88_2.raison = `Le code langue '${langValue}' contient un underscore '_'. Le W3C exige un tiret '-' (ex: en-US).`;
+            erreursAlgo8_8.push(errData88_2);
         }
         // 3. Détection des codes totalement invalides (lang="english")
         else if (!regexCodeLangueValide.test(langValue)) {
-            erreursAlgo8_8.push({
-                html: el.outerHTML.substring(0, 150),
-                raison: `Le code langue '${langValue}' est syntaxiquement invalide (format ISO attendu, ex: 'en' ou 'fr-CA').`
-            });
+            const errData88_3 = window.RGAA_UTILS.extraireDonneesSaaS(el);
+            errData88_3.raison = `Le code langue '${langValue}' est syntaxiquement invalide (format ISO attendu, ex: 'en' ou 'fr-CA').`;
+            erreursAlgo8_8.push(errData88_3);
         }
     });
 

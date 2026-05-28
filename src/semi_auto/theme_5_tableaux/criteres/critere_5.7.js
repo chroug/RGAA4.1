@@ -4,11 +4,11 @@ import { askGemma } from '../../utils/ai_helper.js';
 import { prompt571_Presence, prompt572_Direction, prompt573_LogiqueID } from '../prompts.js';
 
 export default async function testerCritere5_7(tableaux) {
-    let resultat = { statut: "✅ Conforme (C)", violations: [] };
+    let resultat = { statut: "✅ Conforme (C)", violations: [], conformites: [] };
 
     if (!tableaux || tableaux.length === 0) {
         console.log(`   ➖ Algo [critere_5.7] Analyse... Non Applicable`);
-        return { statut: "➖ Non Applicable (NA)", violations: [] };
+        return { statut: "➖ Non Applicable (NA)", violations: [], conformites: [] };
     }
 
     for (let i = 0; i < tableaux.length; i++) {
@@ -21,8 +21,8 @@ export default async function testerCritere5_7(tableaux) {
                 console.log(`   ⚡ Algo [critere_5.7] Analyse ${i + 1}/${tableaux.length}... ❌ Non Conforme (Syntaxe scope invalide)`);
                 resultat.statut = "❌ Non Conforme (NC)";
                 resultat.violations.push({
-                    description: `L'attribut scope="${th.valeurScope}" n'est pas autorisé.`,
-                    html: th.html
+                    ...table,
+                    raison: `L'attribut scope="${th.valeurScope}" n'est pas autorisé.`
                 });
                 tableauEstConforme = false;
                 break; // On arrête l'algo pour ce tableau

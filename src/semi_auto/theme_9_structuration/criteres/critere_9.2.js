@@ -5,12 +5,13 @@ import { promptCritere9_2 } from '../prompts.js';
 export default async function testerCritere9_2(erreursAlgo, navsAAnalyser, suspicions) {
     console.log(`\n ℹ️  [critere_9.2] Structure globale du document (header, main, footer, nav)...`);
     let violations = [];
+    let conformites = [];
 
     // 1️⃣ Erreurs Algorithmiques (Absence ou doublons de structure)
     if (erreursAlgo && erreursAlgo.length > 0) {
         console.log(`    ⚡ Algo Analyse (Bases structurelles)...`);
         erreursAlgo.forEach((err, idx) => {
-            violations.push({ html: "N/A", xpath: "N/A", css: "N/A", raison: `[Erreur Algo - 9.2.1] ${err.raison}` });
+            violations.push({ ...err, raison: `[Erreur Algo - 9.2.1] ${err.raison}` });
             console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (${err.element}) : ${err.raison}`);
         });
     } else {
@@ -62,9 +63,13 @@ export default async function testerCritere9_2(erreursAlgo, navsAAnalyser, suspi
                 const resultat = typeof textePropre === 'string' ? JSON.parse(textePropre) : textePropre;
 
                 if (resultat && resultat.statut === "NON_CONFORME") {
-                    violations.push({ html: nav.html, xpath: "N/A", css: "N/A", raison: `[Erreur IA - 9.2.1] ${resultat.explication}` });
+                    violations.push({ ...nav, raison: `[Erreur IA - 9.2.1] ${resultat.explication}` });
                     console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (<nav> n°${currentIndex}) : ${resultat.explication}`);
                 } else {
+                    conformites.push({
+                        ...nav,
+                        raison: `[9.2.1] ${resultat.explication || "Usage légitime de la balise nav."}`
+                    });
                     console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} (<nav> n°${currentIndex}) : ${resultat.explication || "Usage légitime de la balise nav."}`);
                 }
             } catch (e) {
@@ -89,9 +94,9 @@ export default async function testerCritere9_2(erreursAlgo, navsAAnalyser, suspi
 
     // BILAN FINAL
     if (violations.length > 0) {
-        return { statut: "❌ NON CONFORME", violations };
+        return { statut: "❌ NON CONFORME", violations, conformites };
     } else {
         console.log(`       ${COLORS.CYAN}👀 VALIDATION MANUELLE REQUISE : Un humain doit s'assurer que la balise <main> englobe bien le VRAI contenu de la page.${COLORS.RESET}`);
-        return { statut: "✅ CONFORME", violations: [] };
+        return { statut: "✅ CONFORME", violations: [], conformites };
     }
 }

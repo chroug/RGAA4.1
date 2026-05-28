@@ -13,7 +13,7 @@ export default async function testerCritere12_6(data12_6) {
             const raisonConformite = `La zone '${zone.nom}' est correctement structurée grâce à une balise sémantique HTML5 (ex: <header>) ou un rôle ARIA valide.`;
             
             resultat.conformites.push({
-                html: zone.html,
+                ...zone, // 👈 INJECTION DES DONNÉES SAAS (Sélecteur CSS, XPath, etc.)
                 raison: `[12.6] ${raisonConformite}`
             });
             
@@ -35,6 +35,10 @@ export default async function testerCritere12_6(data12_6) {
             }
 
             resultat.violations.push({
+                html: "N/A",
+                selecteur_css: "N/A",
+                xpath: "N/A",
+                bounding_box: null,
                 zone: nomZone, // On précise quelle zone pose problème
                 raison: `[12.6] ${msgErreur} ${explication}`
             });

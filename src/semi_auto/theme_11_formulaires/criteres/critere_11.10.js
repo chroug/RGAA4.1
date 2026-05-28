@@ -2,10 +2,10 @@ import { askGemma } from '../../utils/ai_helper.js';
 import { promptObligatoire } from '../prompts.js';
 
 export default async function testerCritere11_10(champs11_10) {
-    let resultat = { statut: "✅ Conforme (C)", violations: [] };
+    let resultat = { statut: "✅ Conforme (C)", violations: [], conformites: [] };
 
     if (!champs11_10 || champs11_10.length === 0) {
-        return { statut: "➖ Non Applicable (NA)", violations: [] };
+        return { statut: "➖ Non Applicable (NA)", violations: [], conformites: [] };
     }
 
     for (let i = 0; i < champs11_10.length; i++) {
@@ -14,10 +14,18 @@ export default async function testerCritere11_10(champs11_10) {
         // 1. Cas 100% sûrs : Cohérence parfaite entre la technique et le visuel
         if (champ.estRequisTechnique && champ.estRequisVisuel) {
             console.log(`   ⚡ Algo [critere_11.10] Analyse ${i + 1}/${champs11_10.length}... ✅ Conforme (Requis tech et visuel)`);
+            resultat.conformites.push({
+                ...champ, // 👈 INJECTION DES DONNÉES SAAS
+                raison: "[11.10] La mention obligatoire est cohérente entre l'attribut technique et l'indication visuelle."
+            });
             continue;
         }
         if (!champ.estRequisTechnique && !champ.estRequisVisuel) {
             console.log(`   ⚡ Algo [critere_11.10] Analyse ${i + 1}/${champs11_10.length}... ✅ Conforme (Champ facultatif)`);
+            resultat.conformites.push({
+                ...champ, // 👈 INJECTION DES DONNÉES SAAS
+                raison: "[11.10] Le champ est correctement identifié comme facultatif (aucune mention obligatoire technique ou visuelle)."
+            });
             continue;
         }
 
@@ -26,8 +34,8 @@ export default async function testerCritere11_10(champs11_10) {
             console.log(`   ⚡ Algo [critere_11.10] Analyse ${i + 1}/${champs11_10.length}... ❌ Non Conforme (Manque attribut 'required')`);
             resultat.statut = "❌ Non Conforme (NC)";
             resultat.violations.push({
-                description: "Le label indique visuellement que le champ est obligatoire (ex: *), mais il manque l'attribut HTML 'required' ou 'aria-required=\"true\"'.",
-                html: champ.html
+                ...champ, // 👈 INJECTION DES DONNÉES SAAS
+                raison: "Le label indique visuellement que le champ est obligatoire (ex: *), mais il manque l'attribut HTML 'required' ou 'aria-required=\"true\"'."
             });
             continue;
         }
@@ -45,11 +53,15 @@ export default async function testerCritere11_10(champs11_10) {
             console.log(`❌ Non Conforme (${resIA.explication})`);
             resultat.statut = "❌ Non Conforme (NC)";
             resultat.violations.push({
-                description: `Champ obligatoire techniquement (required) mais aucune indication visuelle détectée : ${resIA.explication}`,
-                html: champ.html
+                ...champ, // 👈 INJECTION DES DONNÉES SAAS
+                raison: `Champ obligatoire techniquement (required) mais aucune indication visuelle détectée : ${resIA.explication}`
             });
         } else {
             console.log(`✅ Conforme (${resIA.explication})`);
+            resultat.conformites.push({
+                ...champ, // 👈 INJECTION DES DONNÉES SAAS
+                raison: `[11.10] Indication visuelle d'obligation jugée conforme par l'IA : ${resIA.explication}`
+            });
         }
     }
 

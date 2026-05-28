@@ -29,49 +29,38 @@ export async function runSemiAuto(page) {
     // console.log("\n📸 [Thème 1] Analyse des Images...");
     // await runTheme1(page, resultats_globaux);
 
-    // console.log("\n🖼️ [Thème 2] Analyse des Cadres...");
-    // await runTheme2(page, resultats_globaux);
+    console.log("\n🖼️ [Thème 2] Analyse des Cadres...");
+    await runTheme2(page, resultats_globaux);
 
-    // console.log("\n📊 [Thème 3] Analyse contrastes...");
-    // await runTheme3(page, resultats_globaux);
+    console.log("\n📊 [Thème 3] Analyse contrastes...");
+    await runTheme3(page, resultats_globaux);
 
-    // console.log("\n📊 [Thème 5] Analyse des Tableaux...");
-    // await runTheme5(page, resultats_globaux);
+    console.log("\n📊 [Thème 5] Analyse des Tableaux...");
+    await runTheme5(page, resultats_globaux);
 
-    // console.log("\n🔗 [Thème 6] Analyse des Liens...");
-    // await runTheme6(page, resultats_globaux);
+    console.log("\n🔗 [Thème 6] Analyse des Liens...");
+    await runTheme6(page, resultats_globaux);
     
-    // console.log("\n⚙️ [Thème 7] Analyse des Scripts (Statuts)...");
-    // await runTheme7(page, resultats_globaux);
+    console.log("\n⚙️ [Thème 7] Analyse des Scripts (Statuts)...");
+    await runTheme7(page, resultats_globaux);
 
-    // console.log("\n🌍 [Thème 8] Analyse de la Langue...");
-    // await runTheme8(page, resultats_globaux);
+    console.log("\n🌍 [Thème 8] Analyse de la Langue...");
+    await runTheme8(page, resultats_globaux);
 
-    // console.log("\n🌍 [Thème 9] Analyse de la structure...");
-    // await runTheme9(page, resultats_globaux);
+    console.log("\n🌍 [Thème 9] Analyse de la structure...");
+    await runTheme9(page, resultats_globaux);
 
-    // console.log("\n🎨 [Thème 10] Analyse de la Présentation (CSS)...");
-    // await runTheme10(page, resultats_globaux);
+    console.log("\n🎨 [Thème 10] Analyse de la Présentation (CSS)...");
+    await runTheme10(page, resultats_globaux);
 
-    // console.log("\n🧭 [Thème 11] Analyse des formulaires...");
-    // await runTheme11(page, resultats_globaux);
+    console.log("\n🧭 [Thème 11] Analyse des formulaires...");
+    await runTheme11(page, resultats_globaux);
 
-    // console.log("\n🧭 [Thème 12] Analyse de la Navigation...");
-    // await runTheme12(page, resultats_globaux);
+    console.log("\n🧭 [Thème 12] Analyse de la Navigation...");
+    await runTheme12(page, resultats_globaux);
 
     console.log("\n👁️ [Thème 13] Analyse de la Consultation...");
     await runTheme13(page, resultats_globaux);
 
-
-    // ==========================================
-    // SAUVEGARDE DU RAPPORT
-    // ==========================================
-    const nomFichier = `audit_rgaa_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
-    fs.writeFileSync(path.resolve(process.cwd(), nomFichier), JSON.stringify({
-        metadata: { url_auditee: await page.url(), date_audit: new Date() },
-        resultats_semi_automatiques: resultats_globaux
-    }, null, 2), 'utf-8');
-
-    console.log(`\n💾 Rapport sauvegardé : ${nomFichier}`);
     return resultats_globaux;
 }

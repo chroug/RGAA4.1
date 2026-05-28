@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 1.3 - Cas Invalides (Pertinence)</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-case { border-left: 5px solid #dc3545; background-color: #fff4f4; padding: 15px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Critère 1.3 : Exemples NON CONFORMES (Alternatives non pertinentes)</h1>
+
+    <div class="test-case">
+        <h2>1.3.1 : Alternative générique (Le nom du fichier)</h2>
+        <!-- L'image montre le mot "Promotion", mais le alt donne le nom du fichier -->
+        <svg width="200" height="50" role="img" aria-label="image_promo_v2_final.jpg">
+            <rect width="200" height="50" fill="#007bff" />
+            <text x="10" y="30" fill="white" font-family="Arial" font-size="20">PROMOTION -50%</text>
+        </svg>
+    </div>
+
+    <div class="test-case">
+        <h2>1.3.1 : Alternative qui décrit le visuel au lieu de la fonction</h2>
+        <!-- Erreur classique : On décrit à quoi ça ressemble au lieu de dire à quoi ça sert -->
+        <svg width="200" height="50" role="img" aria-label="Bouton rectangle rouge avec du texte blanc">
+            <rect width="200" height="50" fill="#dc3545" />
+            <text x="10" y="30" fill="white" font-family="Arial" font-size="20">Valider le panier</text>
+        </svg>
+    </div>
+
+    <div class="test-case">
+        <h2>1.3.1 : Alternative mensongère ou hors sujet</h2>
+        <!-- Le visuel affiche le logo de Facebook, l'alternative dit Twitter -->
+        <svg width="150" height="50" role="img" aria-label="Lien vers notre page Twitter">
+            <rect width="150" height="50" fill="#1877f2" />
+            <text x="10" y="30" fill="white" font-family="Arial" font-size="20">FACEBOOK</text>
+        </svg>
+    </div>
+
+</body>
+</html>

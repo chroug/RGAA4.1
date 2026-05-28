@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 export default async function analyserContrastesAvecVision(page, elementsGraphiques) {
-    let resultat = { statut: "✅ Conforme (C)", violations: [], elements_valides: [] };
+    let resultat = { statut: "✅ Conforme (C)", violations: [], conformites: [] };
     let nbErreurs = 0;
 
     if (!elementsGraphiques || elementsGraphiques.length === 0) {
@@ -30,9 +30,9 @@ export default async function analyserContrastesAvecVision(page, elementsGraphiq
         // 🛑 NOUVEAUTÉ : Si l'élément est exempté, on valide immédiatement sans API !
         if (item.exemption) {
             console.log(`   ⏭️  Filtre [3.3] Analyse ${i + 1}/${elementsGraphiques.length}... ✅ Ok (${item.exemption})`);
-            resultat.elements_valides.push({
-                description: item.exemption,
-                html: item.html,
+            resultat.conformites.push({
+                ...item,
+                raison: item.exemption,
                 capture_locale: null
             });
             continue; // On passe directement au prochain élément de la boucle !
@@ -70,6 +70,11 @@ export default async function analyserContrastesAvecVision(page, elementsGraphiq
             const base64Image = imageBuffer.toString('base64');
 
             const prompt = promptVisionContraste(item.html);
+
+            // 🚦 NOUVEAUTÉ : LA PAUSE RESPIRATOIRE POUR NE PAS FRAPPER L'API
+            // On attend 4 secondes (4000 millisecondes) avant d'envoyer l'image
+            await new Promise(resolve => setTimeout(resolve, 4000));
+            
             const resIA = await askVision(prompt, base64Image);
 
             // 💾 SAUVEGARDE DE L'IMAGE SUR LE DISQUE
@@ -83,15 +88,15 @@ export default async function analyserContrastesAvecVision(page, elementsGraphiq
                 console.log(`❌ Non Conforme (${resIA.explication})`);
                 nbErreurs++;
                 resultat.violations.push({
-                    description: resIA.explication,
-                    html: item.html,
+                    ...item,
+                    raison: resIA.explication,
                     capture_locale: cheminFichier 
                 });
             } else {
                 console.log(`✅ Ok (${resIA.explication})`);
-                resultat.elements_valides.push({
-                    description: resIA.explication,
-                    html: item.html,
+                resultat.conformites.push({
+                    ...item,
+                    raison: resIA.explication,
                     capture_locale: cheminFichier
                 });
             }

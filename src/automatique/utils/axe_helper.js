@@ -1,16 +1,20 @@
+// src/automatique/utils/axe_helper.js
+
 export function extraireErreursAxe(axeResults, locatorsMap, axeRuleIds) {
     const violations = [];
     axeResults.violations.forEach(v => {
-        // Si l'erreur Axe correspond à ce qu'on cherche
         if (axeRuleIds.includes(v.id)) {
             v.nodes.forEach(node => {
+                const axeTarget = node.target[0] || "N/A";
+                
+                // On récupère l'objet magique généré par dom_helpers !
+                const saasData = (locatorsMap && locatorsMap[axeTarget]) ? locatorsMap[axeTarget] : {};
+
                 violations.push({
-                    regle: v.id,
-                    description: v.help,
-                    elements_fautifs: [{
-                        code_html: node.html.replace(/\n/g, ''),
-                        copier_coller_inspecteur: locatorsMap[node.target[0]]
-                    }]
+                    ...saasData,
+                    html: node.html.replace(/\n/g, ''), // On garde le HTML exact d'Axe-core
+                    raison: `[Règle Axe : ${v.id}] ${v.help} - ${v.failureSummary || ''}`.replace(/\n/g, ' '),
+                    axe_rule_id: v.id
                 });
             });
         }

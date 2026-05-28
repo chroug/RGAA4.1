@@ -3,6 +3,7 @@ import { prompt54_TitreVisuel } from '../prompts.js';
 
 export default async function testerCritere5_4(tableaux) {
     let violations = [];
+    let conformites = [];
     let nbConformes = 0;
 
     const greenOpen = "\x1b[32m";
@@ -16,6 +17,7 @@ export default async function testerCritere5_4(tableaux) {
         if (tab.aUnTitreTechnique) {
             console.log(`  ${greenOpen}✅ VALIDE 5.4${greenClose} (Tableau ${index + 1}) : Titre technique valide trouvé.`);
             nbConformes++;
+            conformites.push({ ...tab, raison: "Titre technique valide trouvé." });
             continue;
         }
 

@@ -118,6 +118,61 @@ async function runBatchAudit() {
                 });
             });
 
+            // 🛡️ ====================================================================
+            // 🚀 INJECTION GLOBALE DU POLYFILL SAAS (Le correctif ultime)
+            // ====================================================================
+            await page.evaluate(() => {
+                // Créer l'objet global s'il n'existe pas
+                if (!window.RGAA_UTILS) {
+                    window.RGAA_UTILS = {};
+                }
+                
+                // Injecter notre fonction de secours si elle manque
+                if (typeof window.RGAA_UTILS.extraireDonneesSaaS !== 'function') {
+                    window.RGAA_UTILS.extraireDonneesSaaS = function(element) {
+                        const getXPath = (el) => {
+                            if (!el || el.nodeType !== 1) return '';
+                            if (el.id !== '') return `//*[@id="${el.id}"]`;
+                            if (el === document.body) return '/html/body';
+                            
+                            let ix = 0;
+                            let siblings = el.parentNode ? el.parentNode.childNodes : [];
+                            for (let i = 0; i < siblings.length; i++) {
+                                let sibling = siblings[i];
+                                if (sibling === el) return `${getXPath(el.parentNode)}/${el.tagName.toLowerCase()}[${ix + 1}]`;
+                                if (sibling.nodeType === 1 && sibling.tagName === el.tagName) ix++;
+                            }
+                            return '';
+                        };
+
+                        const getCssSelector = (el) => {
+                            if (!el) return '';
+                            if (el.id) return `#${el.id}`;
+                            if (el.className && typeof el.className === 'string') {
+                                const classes = el.className.trim().split(/\s+/).join('.');
+                                if (classes) return `${el.tagName.toLowerCase()}.${classes}`;
+                            }
+                            return el.tagName.toLowerCase();
+                        };
+
+                        const rect = element.getBoundingClientRect();
+                        return {
+                            xpath: getXPath(element),
+                            selecteur_css: getCssSelector(element),
+                            html: element.outerHTML ? element.outerHTML.substring(0, 200) : "",
+                            texteVisuel: element.innerText ? element.innerText.trim() : "",
+                            bounding_box: {
+                                x: Math.round(rect.x),
+                                y: Math.round(rect.y),
+                                width: Math.round(rect.width),
+                                height: Math.round(rect.height)
+                            }
+                        };
+                    };
+                }
+            });
+            // ====================================================================
+
             // ⚙️ Lancement des différents moteurs d'analyse
             const blocAutomatique = await runAutomatique(page);
             const blocSemiAuto = await runSemiAuto(page);

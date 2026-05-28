@@ -1,5 +1,3 @@
-// theme_6_liens/evaluate_dom.js
-
 export default function extraireLiensDOM() {
     // 1. On cible les vrais liens (avec href) et les éléments avec role="link"
     const liensBruts = Array.from(document.querySelectorAll('a[href], [role="link"]'));
@@ -24,10 +22,11 @@ export default function extraireLiensDOM() {
         // Un lien est valide s'il possède au moins l'une de ces caractéristiques
         const aUnIntitule = texteInterne !== '' || ariaLabel !== '' || ariaLabelledby !== null || hasValidImgAlt || title !== '';
 
-        return {
-            html: lien.outerHTML, 
-            aUnIntitule: aUnIntitule
-        };
+        // 🚀 AJOUT SAAS : Injection des données
+        const donneesSaaS = window.RGAA_UTILS.extraireDonneesSaaS(lien);
+        donneesSaaS.aUnIntitule = aUnIntitule;
+        
+        return donneesSaaS;
     });
 
     return { liens: liensAnalyse };

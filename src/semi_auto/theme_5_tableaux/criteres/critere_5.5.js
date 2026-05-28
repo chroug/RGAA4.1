@@ -3,6 +3,7 @@ import { prompt55_PertinenceTitre } from '../prompts.js';
 
 export default async function testerCritere5_5(tableaux) {
     let violations = [];
+    let conformites = [];
     let nbConformes = 0;
     let nbTitresAnalyses = 0;
 
@@ -28,24 +29,24 @@ export default async function testerCritere5_5(tableaux) {
             
             if (reponseIA.statut === "NON_CONFORME") {
                 violations.push({
-                    tableau_index: index,
-                    titre_fautif: tab.texteTitre,
+                    ...tab,
                     raison: reponseIA.explication
                 });
                 console.log(`  ${redOpen}❌ NON CONFORME 5.5${redClose} : ${reponseIA.explication}`);
             } else {
                 console.log(`  ${greenOpen}✅ VALIDE 5.5${greenClose} (Tableau ${index + 1}) : Titre pertinent et concis.`);
                 nbConformes++;
+                conformites.push({ ...tab, raison: "Titre pertinent et concis." });
             }
         } catch (e) {
             console.log(`  ${redOpen}❌ NON CONFORME 5.5${redClose} : ${e.message}`);
-            violations.push({ tableau_index: index, raison: "Erreur IA lors de la validation du titre." });
+            violations.push({ ...tab, raison: "Erreur IA lors de la validation du titre." });
         }
     }
 
-    if (violations.length > 0) return { statut: "❌ Non Conforme", violations };
-    if (nbTitresAnalyses === 0) return { statut: "➖ Non Applicable (NA)", violations: [] }; // Aucun tableau avec titre
-    if (nbConformes > 0) return { statut: "✅ Conforme", violations: [] };
+    if (violations.length > 0) return { statut: "❌ Non Conforme", violations, conformites };
+    if (nbTitresAnalyses === 0) return { statut: "➖ Non Applicable (NA)", violations: [], conformites }; 
+    if (nbConformes > 0) return { statut: "✅ Conforme", violations: [], conformites };
     
-    return { statut: "➖ Non Applicable (NA)", violations: [] };
+    return { statut: "➖ Non Applicable (NA)", violations: [], conformites };
 }

@@ -1,77 +1,83 @@
-import ollama from 'ollama';
-import fs from 'fs';
+// Fichier: test-ia.js
+// Utilisation : node test-ia.js
 
-async function testerVision() {
-  console.log("🤖 Connexion à l'IA locale en cours...");
-
-  try {
-    const cheminImage = './low-dog.jpg';
-    const alt = 'chien';
-    
-    // Node.js lit le fichier et le convertit en Base64
-    const imageBase64 = fs.readFileSync(cheminImage, { encoding: 'base64' });
-
-    const reponse = await ollama.chat({
-      model: 'llava',
-      format: 'json',
-      options: {
-        temperature: 0.0, 
-        num_predict: 250 // <-- CORRIGÉ : On lui donne assez de mots pour finir sa phrase
-      },
-      messages: [{   
-        role: 'user', 
-        content: `
-          Agis comme un expert en accessibilité web (RGAA). 
-          Je te fournis une image et son attribut alt actuel : "${alt}".
-
-          Ta mission est d'évaluer si ce texte alternatif décrit correctement l'image.
-
-          Règles strictes :
-          1. Analyse l'image avec précision.
-          2. Si tu as le moindre doute (image floue, ambiguë, concept abstrait), tu dois l'indiquer.
-          3. N'inclus AUCUN saut de ligne dans tes textes et n'utilise pas de guillemets doubles à l'intérieur de tes phrases.
-          
-          Réponds UNIQUEMENT au format JSON avec cette structure exacte, sans aucun autre texte :
-          {
-            "correspond": boolean,
-            "doute_existant": true ou false,
-            "explication_doute": "Si doute_existant est true, explique pourquoi tu hésites. Sinon laisse vide.",
-            "description_detaillee": "Décris ce que tu vois réellement sur l'image.",
-            "suggestion_alt": "Ta meilleure suggestion courte pour remplacer l'attribut alt."
-          }
-        `,
-        images: [imageBase64]
-      }]
-    });
-
-    let resultat;
-    
-    // 🛡️ NOUVEAU : Le bouclier pour empêcher le script de crasher si l'IA écrit mal le JSON
-    try {
-        resultat = JSON.parse(reponse.message.content);
-    } catch (parseErreur) {
-        console.log("\n⚠️ L'IA a fait une faute de frappe dans son JSON !");
-        console.log("Voici sa réponse brute pour comprendre l'erreur :");
-        console.log("--------------------------------------------------");
-        console.log(reponse.message.content);
-        console.log("--------------------------------------------------");
-        return; // On arrête le script proprement ici
+const imagesATester = [
+    {
+        nom: "Test Pertinence (Vrai)",
+        url: "https://cdn.pixabay.com/photo/2016/11/21/06/53/beautiful-natural-image-1844362_1280.jpg",
+        alt_text: "Un chat assis sur un canapé"
+    },
+    {
+        nom: "Test Pertinence (Faux)",
+        url: "https://static.vecteezy.com/system/resources/thumbnails/066/582/335/small/monarch-butterfly-resting-on-green-leaf-vibrant-nature-image-close-up-free-photo.jpg",
+        alt_text: "papillon orange et noir posé sur une feuille verte"
+    },
+    {
+        nom: "Test Image-Texte",
+        url: "https://cdn.creativefabrica.com/2021/05/19/Buy-online-icon-Graphics-12193041-1-1-580x386.jpg",
+        alt_text: "Bouton d'achat"
     }
+];
 
-    console.log("\n✅ Analyse terminée ! Voici le rapport structuré :\n");
-    console.log(`- Correspondance : ${resultat.correspond ? "✅ Oui" : "❌ Non"}`);
-    console.log(`- Doute de l'IA  : ${resultat.doute_existant ? "⚠️ Oui" : "✅ Non"}`);
-    
-    if (resultat.doute_existant) {
-        console.log(`  👉 Explication   : ${resultat.explication_doute}`);
+
+async function lancerTestIA() {
+    for (const test of imagesATester) {
+        console.log(`\n📸 Test en cours : ${test.nom}`);
+        
+        try {
+            // 1. Télécharger l'image depuis l'URL
+            const reponse = await fetch(test.url);
+            if (!reponse.ok) throw new Error(`Erreur réseau HTTP ${reponse.status}`);
+            
+            const buffer = await reponse.arrayBuffer();
+            const base64 = Buffer.from(buffer).toString('base64'); // <-- Base64 pur pour Ollama
+
+            console.log(`✅ Image téléchargée et convertie en Base64.`);
+            console.log(`📝 Texte alt à vérifier : "${test.alt_text}"`);
+
+            // 2. Le Prompt pour ton IA
+// 2. Le Prompt optimisé (Consignes en Anglais, Données en Français)
+            const prompt = `
+            You are an expert accessibility auditor. Compare the image with the following French alt-text: "${test.alt_text}".
+            
+            Task: Does the alt-text accurately describe the main subject of the image?
+            
+            Rules for your response:
+            - If the alt-text correctly describes the image, output EXACTLY the word: CONFORME
+            - If the alt-text is completely wrong (for example, saying it's a car when it's a butterfly), output EXACTLY the word: NON_CONFORME
+            - If it contains a lot of embedded text or if you are not 100% sure, output EXACTLY the word: INCERTAIN
+            
+            Do not explain your reasoning. Output only ONE word.
+            `;
+
+            console.log("🤖 Appel de LLaVA en cours (ça va prendre quelques secondes)...");
+            
+            // 3. VRAI APPEL À OLLAMA (LLaVA)
+            const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'llava', // Assure-toi que LLaVA est bien installé
+                    prompt: prompt,
+                    images: [base64], // Ollama veut le base64 PUR, sans le préfixe "data:image/..."
+                    stream: false     // On veut la réponse complète en une seule fois
+                })
+            });
+
+            if (!ollamaResponse.ok) {
+                throw new Error("Ollama ne répond pas correctement. Est-il bien lancé en arrière-plan ?");
+            }
+
+            const data = await ollamaResponse.json();
+            
+            console.log(`👉 RÉPONSE DE L'IA : ${data.response.trim()}`);
+            console.log("--------------------------------------------------");
+
+        } catch (erreur) {
+            console.error(`❌ Erreur sur l'image ${test.nom}:`, erreur.message);
+            console.log("👉 Astuce : N'oublie pas de lancer l'application Ollama et d'avoir téléchargé le modèle (ollama pull llava)");
+        }
     }
-    
-    console.log(`- Description    : ${resultat.description_detaillee}`);
-    console.log(`- Suggestion alt : "${resultat.suggestion_alt}"\n`);
-    
-  } catch (erreur) {
-    console.error("❌ Erreur :", erreur.message);
-  }
 }
 
-testerVision();
+lancerTestIA();

@@ -1,11 +1,17 @@
 export default function testerCritere10_1(customErrors) {
-    let resultat = { statut: "✅ Conforme", violations: [] };
+    let erreursTotales = [];
+
     if (customErrors.balisesObsoletes && customErrors.balisesObsoletes.length > 0) {
-        resultat.statut = "❌ Non conforme (Custom Playwright)";
-        resultat.violations = customErrors.balisesObsoletes.map(e => ({
-            regle: "custom-obsolete", description: "Utilisation de balises obsolètes (font, center, etc.).",
-            elements_fautifs: [{ code_html: e.html, copier_coller_inspecteur: e.locators }]
+        erreursTotales = customErrors.balisesObsoletes.map(e => ({
+            ...e, // 👈 INJECTION DES DONNÉES SAAS (html, css, xpath, etc.)
+            raison: "[Custom] Utilisation de balises obsolètes (font, center, marquee, blink, etc.).",
+            axe_rule_id: "custom-obsolete"
         }));
     }
-    return resultat;
+
+    if (erreursTotales.length > 0) {
+        return { statut: "❌ NON CONFORME", violations: erreursTotales, conformites: [] };
+    } else {
+        return { statut: "✅ CONFORME", violations: [], conformites: [] };
+    }
 }

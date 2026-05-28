@@ -20,12 +20,20 @@ function getContrast(rgb1, rgb2) {
 export default async function testerCritere10_7(page, elementsFocusables) {
     console.log(`\n ℹ️  [critere_10.7] Visibilité du Focus (Simulation Clavier active)...`);
     let violations = [];
+    let conformites = [];
     let statutFinal = "✅ CONFORME";
     let alertesManuelles = 0;
 
     if (!elementsFocusables || elementsFocusables.length === 0) {
         console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} : Aucun élément interactif détecté.`);
-        return { statut: statutFinal, violations };
+        conformites.push({
+            html: "N/A",
+            selecteur_css: "N/A",
+            xpath: "N/A",
+            bounding_box: null,
+            raison: "Aucun élément interactif détecté nécessitant un test de focus clavier."
+        });
+        return { statut: statutFinal, violations, conformites };
     }
 
     for (const el of elementsFocusables) {
@@ -33,7 +41,7 @@ export default async function testerCritere10_7(page, elementsFocusables) {
             // 🍯 DÉTECTION DU POT DE MIEL (Honeypot)
             if (el.estHoneypotPiege) {
                 statutFinal = "❌ NON CONFORME";
-                violations.push({ html: el.html, xpath: el.chemin, raison: "[10.7.1] Piège Clavier : Un champ caché (Honeypot) reçoit le focus car il manque tabindex='-1'." });
+                violations.push({ ...el, raison: "[10.7.1] Piège Clavier : Un champ caché (Honeypot) reçoit le focus car il manque tabindex='-1'." });
                 console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (Piège clavier : champ caché focusable)`);
                 console.log(`         Texte : "🍯 ${el.texte}"`);
                 continue; // On passe à l'élément suivant sans faire l'analyse visuelle !
@@ -95,7 +103,7 @@ export default async function testerCritere10_7(page, elementsFocusables) {
             // ERREUR 1 : La suppression totale (outline: none sans compensation)
             if (!aChangeOutline && !aChangeBg && !aChangeShadow && !aChangeBorder) {
                 statutFinal = "❌ NON CONFORME";
-                violations.push({ html: el.html, xpath: el.chemin, raison: "[10.7.1] Focus supprimé (outline: none) sans alternative visuelle." });
+                violations.push({ ...el, raison: "[10.7.1] Focus supprimé (outline: none) sans alternative visuelle." });
                 console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (Focus supprimé et non compensé)`);
                 console.log(`         Texte : "${el.texte}"`);
                 continue;
@@ -158,8 +166,7 @@ export default async function testerCritere10_7(page, elementsFocusables) {
             if ((aChangeOutline || aChangeBorder || aChangeShadow) && meilleurRatio > 0 && meilleurRatio < 3) {
                 statutFinal = "❌ NON CONFORME";
                 violations.push({ 
-                    html: el.html, 
-                    xpath: el.chemin, 
+                    ...el,
                     raison: `[10.7.1] Contraste du focus insuffisant (${meilleurRatio.toFixed(2)}:1). L'indicateur le plus fort était : ${typeIndicateur}.` 
                 });
                 
@@ -167,6 +174,12 @@ export default async function testerCritere10_7(page, elementsFocusables) {
                 console.log(`         Texte : "${el.texte}"`);
                 continue;
             }
+
+            // Si on arrive ici, l'élément est conforme pour ce critère.
+            conformites.push({
+                ...el,
+                raison: `[10.7.1] Le focus est visible et suffisamment contrasté (Meilleur ratio: ${meilleurRatio.toFixed(2)}:1 via ${typeIndicateur}).`
+            });
 
         } catch (error) {
             // Elément intraitable
@@ -179,5 +192,5 @@ export default async function testerCritere10_7(page, elementsFocusables) {
     
     console.log(`\n       ${COLORS.CYAN}👀 VALIDATION MANUELLE : Naviguez sur la page avec la touche TAB pour vérifier visuellement que le focus est toujours bien visible.${COLORS.RESET}`);
 
-    return { statut: statutFinal, violations };
+    return { statut: statutFinal, violations, conformites };
 }

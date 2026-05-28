@@ -4,6 +4,7 @@ import { COLORS } from '../../../utils/terminalColors.js';
 
 export default async function testerCritere5_3(tableauxMiseEnForme) {
     let violations = [];
+    let conformites = [];
     let nbConformes = 0;
 
     for (const [index, tab] of tableauxMiseEnForme.entries()) {
@@ -17,8 +18,7 @@ export default async function testerCritere5_3(tableauxMiseEnForme) {
 
         if (!tab.aRolePresentation) {
             violations.push({
-                tableau_index: index,
-                html: tab.htmlComplet.substring(0, 150) + "...",
+                ...tab,
                 raison: "Le tableau de mise en forme ne possède pas l'attribut obligatoire role=\"presentation\"."
             });
             console.log(`  ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} [Critère 5.3] (Tableau ${index + 1}) : Attribut role="presentation" manquant.`);
@@ -37,8 +37,7 @@ export default async function testerCritere5_3(tableauxMiseEnForme) {
                 
                 if (reponseIA.statut === "NON_CONFORME") {
                     violations.push({
-                        tableau_index: index,
-                        texte_lu: tab.texteLinearise,
+                        ...tab,
                         raison: reponseIA.explication
                     });
                     console.log(`  ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} [Critère 5.3] (Tableau ${index + 1}) : ${reponseIA.explication}`);
@@ -48,7 +47,7 @@ export default async function testerCritere5_3(tableauxMiseEnForme) {
                 }
             } catch (e) {
                 console.log(`  ⚠️ ATTENTION [Critère 5.3] (Tableau ${index + 1}) : Erreur IA lors de la vérification (${e.message}).`);
-                violations.push({ tableau_index: index, raison: "Erreur IA lors de la vérification." });
+                violations.push({ ...tab, raison: "Erreur IA lors de la vérification." });
                 tableauEstValide = false;
             }
         } else {

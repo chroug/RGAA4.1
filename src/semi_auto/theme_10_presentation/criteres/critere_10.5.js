@@ -9,9 +9,7 @@ export default async function testerCritere10_5(suspicionsCouleurs) {
         
         suspicionsCouleurs.forEach((susp, idx) => {
             violations.push({
-                html: susp.html,
-                css: susp.css,
-                xpath: susp.cheminExact, // 👈 On l'ajoute au rapport JSON final
+                ...susp,
                 raison: `[Test ${susp.test}] ${susp.erreur}`
             });
             
@@ -27,6 +25,13 @@ export default async function testerCritere10_5(suspicionsCouleurs) {
         
     } else {
         console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} : Toutes les couleurs de fond et de texte déclarées sont parfaitement couplées.`);
-        return { statut: "✅ CONFORME", violations: [] };
+        return { 
+            statut: "✅ CONFORME", 
+            violations: [],
+            conformites: [{
+                raison: "Toutes les déclarations de couleur de texte ou de fond sont bien couplées (color/background-color).",
+                html: "N/A", selecteur_css: "N/A", xpath: "N/A", bounding_box: null
+            }]
+        };
     }
 }   

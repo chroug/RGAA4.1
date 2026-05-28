@@ -8,6 +8,13 @@ export default async function testerCritere13_6(contenus13_5) {
 
     if (!contenus13_5 || contenus13_5.length === 0) {
         console.log(`       ✅ CONFORME : Aucun contenu cryptique (ASCII/émoticône) à évaluer sur la page.`);
+        resultat.conformites.push({
+            html: "N/A",
+            selecteur_css: "N/A",
+            xpath: "N/A",
+            bounding_box: null,
+            raison: "Aucun contenu cryptique (art ASCII, émoticône) avec alternative n'a été détecté pour évaluation."
+        });
         return resultat;
     }
 
@@ -24,13 +31,13 @@ export default async function testerCritere13_6(contenus13_5) {
                 console.log(`❌ Non Conforme (${resIA.explication})`); 
                 resultat.statut = "❌ NON CONFORME";
                 resultat.violations.push({
-                    html: item.html,
+                    ...item,
                     raison: `[13.6] ${resIA.explication}`
                 });
             } else if (resIA.statut === "CONFORME") {
                 console.log(`✅ Conforme (${resIA.explication})`);
                 resultat.conformites.push({
-                    html: item.html,
+                    ...item,
                     raison: `[13.6] ${resIA.explication}`
                 });
             } else {

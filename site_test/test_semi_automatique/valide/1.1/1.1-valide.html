@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 1.1 - Cas Valides</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test-case { border-left: 5px solid #28a745; background-color: #f4fff5; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        img, svg, canvas, object, embed { border: 1px dashed #28a745; display: block; margin-top: 10px; background: #fff; }
+    </style>
+</head>
+<body>
+
+    <h1>Critère 1.1 : Exemples CONFORMES (Valides)</h1>
+
+    <div class="test-case">
+        <h2>1.1.1 : Balises &lt;img&gt; et role="img"</h2>
+        <img src="https://placehold.co/400x200/png?text=Graphique+Hausse+20%25" alt="Graphique montrant une hausse de 20% des ventes" width="400" height="200">
+        
+        <img src="https://placehold.co/400x200/png?text=Photo+Equipe+Direction" aria-labelledby="desc-photo" width="400" height="200">
+        <p id="desc-photo" hidden>Photo de l'équipe de direction.</p>
+        
+        <div role="img" aria-label="Icône de validation" style="width:50px; height:50px; background:green; margin-top: 10px;"></div>
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.2 : Zones d'images réactives &lt;area&gt;</h2>
+        <img src="https://placehold.co/400x200/png?text=Carte+des+regions" usemap="#map-conforme" alt="Carte des régions de France" width="400" height="200">
+        <map name="map-conforme">
+            <area shape="rect" coords="0,0,200,200" href="#" alt="Région Bretagne">
+            <area shape="rect" coords="200,0,400,200" href="#" aria-label="Région Normandie">
+        </map>
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.3 : Boutons de type image &lt;input type="image"&gt;</h2>
+        <input type="image" src="https://placehold.co/150x50/png?text=Loupe+Recherche" alt="Lancer la recherche" width="150" height="50">
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.4 : Images réactives côté serveur (ismap)</h2>
+        <a href="/traitement-serveur">
+            <img src="https://placehold.co/400x200/png?text=Carte+Interactive+Agences" ismap alt="Carte interactive des agences" width="400" height="200">
+        </a>
+        <ul>
+            <li><a href="/agence/paris">Agence de Paris</a></li>
+            <li><a href="/agence/lyon">Agence de Lyon</a></li>
+        </ul>
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.5 : Images vectorielles &lt;svg&gt;</h2>
+        <svg role="img" aria-label="Graphique des statistiques" width="100" height="50">
+            <rect width="100" height="50" fill="blue" />
+        </svg>
+        <svg role="img" width="100" height="50">
+            <title>Cercle vert de validation</title>
+            <circle cx="25" cy="25" r="20" fill="green" />
+        </svg>
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.6 & 1.1.7 : Balises &lt;object&gt; et &lt;embed&gt;</h2>
+        <!-- Note: placehold.co gère très bien le svg -->
+        <object type="image/svg+xml" data="https://placehold.co/400x200/svg?text=Schema+Moteur" role="img" aria-label="Schéma du moteur" width="400" height="200"></object>
+        
+        <embed type="image/svg+xml" src="https://placehold.co/400x200/svg?text=Schema+Complexe" width="400" height="200">
+        <a href="description.html" style="display: block; margin-top: 10px;">Consulter la description du schéma (Lien adjacent)</a>
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.8 : Images bitmap &lt;canvas&gt;</h2>
+        <canvas id="canvas1" width="400" height="200" role="img" aria-label="Tableau de bord financier"></canvas>
+        
+        <canvas id="canvas2" width="400" height="200" style="margin-top: 10px;">
+            <p>Contenu alternatif: Le chiffre d'affaires a augmenté de 15%.</p>
+        </canvas>
+
+        <!-- Petit script pour dessiner un truc dans les canvas sinon l'IA verra un rectangle blanc -->
+        <script>
+            const ctx1 = document.getElementById('canvas1').getContext('2d');
+            ctx1.fillStyle = '#f0f0f0'; ctx1.fillRect(0,0,400,200);
+            ctx1.fillStyle = '#000'; ctx1.font = '20px Arial'; ctx1.fillText('Tableau de bord financier', 90, 100);
+
+            const ctx2 = document.getElementById('canvas2').getContext('2d');
+            ctx2.fillStyle = '#f0f0f0'; ctx2.fillRect(0,0,400,200);
+            ctx2.fillStyle = '#000'; ctx2.font = '20px Arial'; ctx2.fillText('Hausse CA 15%', 130, 100);
+        </script>
+    </div>
+
+</body>
+</html>

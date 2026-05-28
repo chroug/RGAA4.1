@@ -1,12 +1,11 @@
 import { extraireErreursAxe } from '../../utils/axe_helper.js';
 
-export default function testerCritere2_1(axeResults, locatorsMap) {
-    let resultat = { statut: "✅ Conforme", violations: [] };
-    
-    // On extrait uniquement l'erreur "frame-title" d'Axe
-    resultat.violations = extraireErreursAxe(axeResults, locatorsMap, ['frame-title']);
+export default function testerCritereX_Y(axeResults, axeMap) {
+    const erreurs = extraireErreursAxe(axeResults, axeMap, ['label', 'select-name']);
 
-    if (resultat.violations.length > 0) resultat.statut = "❌ Non conforme (Axe-core)";
-    
-    return resultat;
+    if (erreurs.length > 0) {
+        return { statut: "❌ NON CONFORME", violations: erreurs, conformites: [] };
+    } else {
+        return { statut: "✅ CONFORME", violations: [], conformites: [] };
+    }
 }

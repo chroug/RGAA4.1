@@ -9,17 +9,23 @@ function isCodeLangueValide(lang) {
 }
 
 export default async function testerCritere8_4(data) {
-    let resultat = { statut: "➖ Non Applicable (NA)", violations: [] };
+    let resultat = { statut: "➖ Non Applicable (NA)", violations: [], conformites: [] };
 
     if (!data.langueDefaut) {
         console.log(`   ⚡ Algo [critere_8.4] Analyse... ❌ Non Conforme (Balise absente)`);
         resultat.statut = "❌ Non Conforme (NC)";
-        resultat.violations.push({ description: "La balise <html> ne possède aucun attribut 'lang'.", html: "<html>" });
+        resultat.violations.push({ 
+            html: "<html>", selecteur_css: "html", xpath: "/html", bounding_box: null,
+            raison: "La balise <html> ne possède aucun attribut 'lang'." 
+        });
     } 
     else if (!isCodeLangueValide(data.langueDefaut)) {
         console.log(`   ⚡ Algo [critere_8.4] Analyse... ❌ Non Conforme (Code Invalide)`);
         resultat.statut = "❌ Non Conforme (NC)";
-        resultat.violations.push({ description: `Le code "${data.langueDefaut}" n'est pas valide.`, html: `<html lang="${data.langueDefaut}">` });
+        resultat.violations.push({ 
+            html: `<html lang="${data.langueDefaut}">`, selecteur_css: "html", xpath: "/html", bounding_box: null,
+            raison: `Le code "${data.langueDefaut}" n'est pas valide.` 
+        });
     } 
     else if (data.textePrincipal.length > 50) {
         process.stdout.write(`   🧠 [critere_8.4] Détection de langue IA... `);
@@ -34,12 +40,16 @@ export default async function testerCritere8_4(data) {
             console.log(`❌ Non Conforme (Trouvé: ${codeTrouve}, Attendu: ${codeAttendu})`);
             resultat.statut = "❌ Non Conforme (NC)";
             resultat.violations.push({ 
-                description: `Le code déclaré est '${data.langueDefaut}' mais l'IA a détecté que le texte est en '${codeTrouve}'. Détail : ${resIA.explication}`, 
-                html: `<html lang="${data.langueDefaut}">` 
+                html: `<html lang="${data.langueDefaut}">`, selecteur_css: "html", xpath: "/html", bounding_box: null,
+                raison: `Le code déclaré est '${data.langueDefaut}' mais l'IA a détecté que le texte est en '${codeTrouve}'. Détail : ${resIA.explication}` 
             });
         } else {
             console.log(`✅ Conforme (${codeTrouve})`);
             resultat.statut = "✅ Conforme (C)";
+            resultat.conformites.push({
+                html: `<html lang="${data.langueDefaut}">`, selecteur_css: "html", xpath: "/html", bounding_box: null,
+                raison: `Langue principale détectée : ${codeTrouve} (Code déclaré : ${data.langueDefaut}).`
+            });
         }
     }
 

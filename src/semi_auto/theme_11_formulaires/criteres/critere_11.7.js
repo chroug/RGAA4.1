@@ -4,10 +4,17 @@ import { promptPertinenceLegende } from '../prompts.js';
 export default async function testerCritere11_7(champs11_7) {
     console.log(`\n ℹ️  [critere_11.7] Analyse de la pertinence des légendes de groupes (IA)...`);
     
-    let resultat = { statut: "✅ CONFORME", violations: [] };
+    let resultat = { statut: "✅ CONFORME", violations: [], conformites: [] };
 
     if (!champs11_7 || champs11_7.length === 0) {
         console.log(`       ✅ CONFORME : Aucun groupe avec légende à analyser.`);
+        resultat.conformites.push({
+            html: "N/A",
+            selecteur_css: "N/A",
+            xpath: "N/A",
+            bounding_box: null,
+            raison: "Aucun groupe de champs avec légende n'a été détecté sur la page."
+        });
         return resultat;
     }
 
@@ -23,11 +30,15 @@ export default async function testerCritere11_7(champs11_7) {
                 console.log(`❌ Non Conforme (${resIA.explication})`); 
                 resultat.statut = "❌ NON CONFORME";
                 resultat.violations.push({
-                    html: groupe.html,
+                    ...groupe,
                     raison: `[11.7] Erreur de pertinence : ${resIA.explication}`
                 });
             } else {
                 console.log(`✅ Conforme (${resIA.explication})`);
+                resultat.conformites.push({
+                    ...groupe,
+                    raison: `[11.7] Pertinence de la légende validée par l'IA : ${resIA.explication}`
+                });
             }
 
         } catch (error) {

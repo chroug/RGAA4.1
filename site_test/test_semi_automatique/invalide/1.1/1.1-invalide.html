@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 1.1 - Cas Invalides</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-case { border-left: 5px solid #dc3545; background-color: #fff4f4; padding: 15px; margin-bottom: 20px; }
+        img, svg, canvas, object, embed { border: 1px dashed #dc3545; display: block; margin-top: 10px; background: #e9ecef; }
+    </style>
+</head>
+<body>
+
+    <h1>Critère 1.1 : Exemples NON CONFORMES (Invalides)</h1>
+
+    <div class="test-case">
+        <h2>1.1.1 : Balises &lt;img&gt; et role="img" (Sans alternative)</h2>
+        <img src="graphique.png" width="100" height="50">
+        
+        <div role="img" style="width:50px; height:50px; background:red;"></div>
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.2 : Zones d'images réactives &lt;area&gt; (Sans alt)</h2>
+        <map name="map-invalide">
+            <area shape="rect" coords="0,0,50,50" href="#">
+        </map>
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.3 : Boutons de type image &lt;input type="image"&gt; (Sans alternative)</h2>
+        <input type="image" src="bouton.png" width="50" height="20">
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.4 : Images réactives côté serveur (ismap sans alternative)</h2>
+        <a href="/traitement-serveur">
+            <img src="carte-serveur.png" ismap alt="Carte interactive des agences" width="100" height="50">
+        </a>
+        </div>
+
+    <div class="test-case">
+        <h2>1.1.5 : Images vectorielles &lt;svg&gt; (Rôle manquant ou alternative manquante)</h2>
+        <svg aria-label="Graphique des statistiques" width="100" height="50">
+            <rect width="100" height="50" fill="red" />
+        </svg>
+        
+        <svg role="img" width="100" height="50">
+            <rect width="100" height="50" fill="orange" />
+        </svg>
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.6 & 1.1.7 : Balises &lt;object&gt; et &lt;embed&gt; (Totalement muettes)</h2>
+        <object type="image/svg+xml" data="image.svg" width="100" height="50"></object>
+        <embed type="image/svg+xml" src="image.svg" width="100" height="50">
+    </div>
+
+    <div class="test-case">
+        <h2>1.1.8 : Images bitmap &lt;canvas&gt; (Sans alternative)</h2>
+        <canvas width="100" height="50" aria-label="Tableau de bord financier"></canvas>
+        <canvas width="100" height="50" role="img"></canvas>
+        <canvas width="100" height="50"></canvas>
+    </div>
+
+</body>
+</html>

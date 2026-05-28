@@ -2,14 +2,17 @@ import { askGemma } from '../../utils/ai_helper.js';
 import { promptLienEvitement } from '../prompts.js';
 
 export default async function testerCritere12_7(dataDOM) {
-    let resultat = { statut: "❌ Non Conforme (NC)", violations: [] };
+    let resultat = { statut: "❌ Non Conforme (NC)", violations: [], conformites: [] };
 
     // CORRECTION : S'il n'y a aucun lien, c'est une NON CONFORMITÉ (et pas NA)
     if (!dataDOM.liensTrouves || dataDOM.donneesLiens.length === 0) {
         console.log(`   ❌ [critere_12.7] Non Conforme : Aucun lien d'évitement trouvé.`);
         resultat.violations.push({
-            description: "Absence totale de lien d'accès rapide ou d'évitement au début du document.",
-            html: "N/A"
+            html: "N/A",
+            selecteur_css: "N/A",
+            xpath: "N/A",
+            bounding_box: null,
+            raison: "Absence totale de lien d'accès rapide ou d'évitement au début du document."
         });
         return resultat;
     }
@@ -30,11 +33,15 @@ export default async function testerCritere12_7(dataDOM) {
             console.log(`❌ Non Conforme`);
             resultat.statut = "❌ Non Conforme (NC)";
             resultat.violations.push({
-                description: `Lien d'évitement invalide. Explication : ${resIA.explication}`,
-                html: lienData.html.replace(/\n/g, '')
+                ...lienData,
+                raison: `Lien d'évitement invalide. Explication : ${resIA.explication}`
             });
         } else {
             console.log(`✅ Conforme`);
+            resultat.conformites.push({
+                ...lienData,
+                raison: `Lien d'évitement valide. Explication : ${resIA.explication || "L'IA a validé la pertinence de ce lien d'évitement."}`
+            });
         }
     }
 

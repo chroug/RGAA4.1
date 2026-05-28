@@ -7,6 +7,10 @@ import path from 'path';
 import { exec } from 'child_process'; 
 import http from 'http';
 
+// 👇 NOUVEAUX IMPORTS POUR LA BASE DE DONNÉES 👇
+import { saveAuditToDb } from './database/auditService.js';
+import { getAvantApresByUrl } from './database/dashboardService.js';
+
 async function runAudit(url) {
     if (!url) {
         console.error("❌ Erreur : Veuillez fournir une URL.");
@@ -25,191 +29,236 @@ async function runAudit(url) {
     });
     const page = await context.newPage();
 
-    await page.setViewportSize({ width: 1280, height: 800 });
-
+    // 🛠️ INJECTION DES UTILITAIRES POUR LE SAAS
+    const helperPath = path.join(process.cwd(), 'src', 'utils', 'dom_helpers.js');
+    if (fs.existsSync(helperPath)) {
+        await page.addInitScript({ path: helperPath });
+    } else {
+        console.warn(`⚠️ Attention: dom_helpers.js introuvable au chemin ${helperPath}`);
+    }
+    
     try {
         // ====================================================================
-        // 🛡️ NAVIGATION ROBUSTE (TRY/CATCH + NETWORKIDLE)
+        // 🛡️ NAVIGATION ROBUSTE (Évite les Timeouts infinis)
         // ====================================================================
         try {
-            // 'networkidle' waits until there are no network connections for at least 500 ms.
-            // It is less strict than 'load' and prevents infinite hanging from trackers.
-            // Timeout increased to 90 seconds.
-            await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 }); 
+            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }); 
+            await page.waitForTimeout(3000); 
         } catch (navError) {
             if (navError.name === 'TimeoutError') {
-                console.log(`\n⚠️ Avertissement : Le chargement complet de la page a expiré.`);
-                console.log(`   L'audit se poursuit sur le contenu (DOM) qui a réussi à charger.\n`);
+                console.log(`\n⚠️ Avertissement : Le chargement a expiré (Timeout). L'audit se poursuit sur ce qui a chargé.\n`);
             } else {
-                // If it's not a timeout (e.g., DNS error, site offline), we throw it up to the main catch block
                 throw navError; 
             }
         }
 
         // ====================================================================
-        // 🍪 GESTION DES BANDEAUX DE COOKIES (POUR DÉBLOQUER LES IFRAMES)
+        // 🍪 GESTION DES BANDEAUX DE COOKIES
         // ====================================================================
         console.log("🍪 Tentative d'acceptation forcée des cookies (API & Clics)...");
         await page.evaluate(() => {
-            // 1. Si le site utilise Tarteaucitron (comme 90% des mairies), on force l'API native
             if (typeof tarteaucitron !== 'undefined' && tarteaucitron.userInterface) {
                 try { tarteaucitron.userInterface.respondAll(true); } catch(e) {}
             }
-            // 2. Si le site utilise Axeptio
             if (typeof window._axcb !== 'undefined') {
                 try { window.axeptioSDK.requestConsent('all'); } catch(e) {}
             }
-            // 3. Fallback : On cherche tous les boutons et on clique sur celui qui dit "accepter"
-            const buttons = Array.from(document.querySelectorAll('button, a, [role="button"]'));
-            const acceptBtn = buttons.find(b => /tout accepter|accepter tout|j'accepte|autoriser/i.test(b.innerText));
+            const buttons = Array.from(document.querySelectorAll('button, a, [role="button"], div[class*="cookie"]'));
+            const regexAccept = /tout accepter|accepter tout|j'accepte|autoriser|ok|compris|agree|accept/i;
+            const acceptBtn = buttons.find(b => {
+                const text = (b.textContent || b.value || "").trim();
+                return regexAccept.test(text);
+            });
             if (acceptBtn) {
-                try { acceptBtn.click(); } catch(e) {}
+                try { 
+                    acceptBtn.click(); 
+                    acceptBtn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+                } catch(e) {}
             }
         });
-        
-        // On laisse généreusement 3 secondes au site pour injecter ses iframes après l'acceptation
-        await page.waitForTimeout(3000);
+        await page.waitForTimeout(2500);
 
+        // ====================================================================
         // 🔥 FORCER LE CHARGEMENT DES IMAGES LAZY
+        // ====================================================================
         console.log(`⏬ Défilement de la page pour charger les images cachées...`);
         await page.evaluate(async () => {
             await new Promise((resolve) => {
                 let totalHeight = 0;
-                const distance = 250;
+                const distance = 300;
                 const timer = setInterval(() => {
                     const scrollHeight = document.body.scrollHeight;
                     window.scrollBy(0, distance);
                     totalHeight += distance;
                     if (totalHeight >= scrollHeight) {
                         clearInterval(timer);
-                        window.scrollTo(0, 0);
+                        window.scrollTo(0, 0); 
                         resolve();
                     }
                 }, 50); 
             });
         });
+        await page.waitForTimeout(1000);
 
+        // ====================================================================
+        // 🚀 EXÉCUTION DES MODULES D'AUDIT
+        // ====================================================================
         const blocAutomatique = await runAutomatique(page);
         const blocSemiAuto = await runSemiAuto(page);
-        const blocManuel = getManuelle();
 
         // ====================================================================
-        // 📸 PRISE DES CAPTURES D'ÉCRAN (DOUBLE MODE : CLAIR & SOMBRE)
+        // 📊 FUSION INTELLIGENTE DES RÉSULTATS (AXE-CORE + TES SCRIPTS)
         // ====================================================================
-        let imagesATrier = [];
-        if (blocSemiAuto?.validation_manuelle?.theme_1_images) {
-            imagesATrier = blocSemiAuto.validation_manuelle.theme_1_images;
-        } else if (blocSemiAuto?.resultats_semi_automatiques?.validation_manuelle?.theme_1_images) {
-            imagesATrier = blocSemiAuto.resultats_semi_automatiques.validation_manuelle.theme_1_images;
-        }
-
-        if (imagesATrier.length > 0) {
-            console.log(`📸 Analyse et double-capture (Light/Dark) en cours...`);
-            
-            for (let i = 0; i < imagesATrier.length; i++) {
-                let item = imagesATrier[i];
-                
-                if (item.auditId && item.needsScreenshot) {
-                    try {
-                        const imgLocator = page.locator(`[data-audit-id="${item.auditId}"]`);
-                        await imgLocator.scrollIntoViewIfNeeded();
-                        
-                        // 1. Calcul du cadre (Bounding Box avec padding)
-                        const box = await imgLocator.boundingBox();
-                        let clipDef = undefined;
-                        
-                        if (box && box.width > 0 && box.height > 0) {
-                            const padding = 80;
-                            const pageDims = await page.evaluate(() => ({ w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }));
-                            const clipX = Math.max(0, box.x - padding);
-                            const clipY = Math.max(0, box.y - padding);
-                            const clipWidth = Math.min(box.width + (padding * 2), pageDims.w - clipX);
-                            const clipHeight = Math.min(box.height + (padding * 2), pageDims.h - clipY);
-                            clipDef = { x: clipX, y: clipY, width: clipWidth, height: clipHeight };
-                        }
-
-                        // ☀️ PHOTO 1 : MODE CLAIR (Défaut)
-                        await page.emulateMedia({ colorScheme: 'light' });
-                        await page.waitForTimeout(300); // Attendre que le CSS s'applique
-                        const bufferLight = await (clipDef ? page.screenshot({ type: 'jpeg', quality: 60, clip: clipDef }) : imgLocator.locator('..').screenshot({ type: 'jpeg', quality: 60 }));
-                        item.screenshot_light = bufferLight.toString('base64');
-
-                        // 🌙 PHOTO 2 : MODE SOMBRE (Forcé)
-                        // On force le media query système
-                        await page.emulateMedia({ colorScheme: 'dark' });
-                        // On force aussi la classe HTML très utilisée (Tailwind/Bootstrap)
-                        await page.evaluate(() => document.documentElement.classList.add('dark', 'dark-mode'));
-                        await page.waitForTimeout(400); // Attendre la transition d'animation sombre
-                        
-                        const bufferDark = await (clipDef ? page.screenshot({ type: 'jpeg', quality: 60, clip: clipDef }) : imgLocator.locator('..').screenshot({ type: 'jpeg', quality: 60 }));
-                        item.screenshot_dark = bufferDark.toString('base64');
-
-                        // 🧹 NETTOYAGE : On remet le site en mode normal pour la suite
-                        await page.emulateMedia({ colorScheme: 'light' });
-                        await page.evaluate(() => document.documentElement.classList.remove('dark', 'dark-mode'));
-
-                        process.stdout.write(`✅ `); 
-                    } catch (e) {
-                        item.screenshot_light = null; 
-                        item.screenshot_dark = null;
-                        process.stdout.write(`❌ `); 
-                    }
-                }
-                
-                delete item.auditId;
-                delete item.needsScreenshot;
-            }
-            console.log("\n");
-        }
-
-        // --- CALCUL DES STATS ---
-        let total_c = 0, total_nc = 0, total_na = 0, total_erreurs_ponctuelles = 0;
+        const tousLesCriteres = { ...blocAutomatique };
         
-        for (const key in blocAutomatique) {
-            const critere = blocAutomatique[key];
-            if (critere.statut.includes("❌")) {
+        // On fusionne blocSemiAuto par-dessus, mais de manière intelligente !
+        for (const [key, value] of Object.entries(blocSemiAuto)) {
+            if (key === 'validation_manuelle' || key === 'resultats_semi_automatiques' || key.includes('theme_1')) continue;
+
+            if (tousLesCriteres[key]) {
+                // Si le critère existe DÉJÀ dans Axe-core (ex: 6.2, 11.1), on CONSERVE tout !
+                // Si l'un des deux a trouvé une croix rouge, le statut final est ❌
+                const statutFinalFusion = (tousLesCriteres[key].statut.includes('❌') || value.statut.includes('❌')) 
+                    ? "❌ NON CONFORME" 
+                    : value.statut;
+
+                tousLesCriteres[key] = {
+                    statut: statutFinalFusion,
+                    methode_detection: "Hybride (Axe-Core + IA/DOM)",
+                    // On additionne les violations des deux outils !
+                    violations: [...(tousLesCriteres[key].violations || []), ...(value.violations || [])],
+                    // On additionne les conformités des deux outils !
+                    conformites: [...(tousLesCriteres[key].conformites || []), ...(value.conformites || [])]
+                };
+            } else {
+                // Si c'est un critère exclusif à ton script IA (ex: 13.6), on l'ajoute simplement
+                tousLesCriteres[key] = value;
+            }
+        }
+        
+        let points_obtenus = 0;
+        let criteres_applicables_evalues = 0;
+        let total_c = 0, total_nc = 0, total_na = 0;
+        let total_erreurs_ponctuelles = 0;
+
+        const resultats_par_theme = {};
+
+        for (const [key, critere] of Object.entries(tousLesCriteres)) {
+            // On ignore le bloc de validation manuelle des images
+            if (key === 'validation_manuelle' || key === 'resultats_semi_automatiques' || key.includes('theme_1')) continue;
+
+            const themeMatch = key.match(/critere_(\d+)/);
+            const themeNum = themeMatch ? themeMatch[1] : "inconnu";
+            const nomTheme = `theme_${themeNum}`;
+
+            if (!resultats_par_theme[nomTheme]) {
+                resultats_par_theme[nomTheme] = { score_theme: { points: 0, total: 0 }, criteres: {} };
+            }
+
+            let statutFinal = "NA";
+
+            // RÈGLE RGAA : 0 point s'il y a la moindre erreur
+            if (critere.statut.includes("❌") || critere.statut.includes("NC")) {
+                statutFinal = "NC"; 
                 total_nc++;
-                critere.violations.forEach(v => {
-                    // 🛡️ CORRECTION : On vérifie si elements_fautifs existe avant de lire sa longueur !
-                    if (v.elements_fautifs) {
-                        total_erreurs_ponctuelles += v.elements_fautifs.length;
-                    } else {
-                        total_erreurs_ponctuelles += 1; // Cas du W3C (1 erreur globale = +1)
-                    }
-                });
-            } else if (critere.statut.includes("✅")) { total_c++; }
-            else { total_na++; }
+                criteres_applicables_evalues++;
+                resultats_par_theme[nomTheme].score_theme.total++;
+                
+                if (critere.violations) {
+                    critere.violations.forEach(v => {
+                        total_erreurs_ponctuelles += (v.elements_fautifs ? v.elements_fautifs.length : 1);
+                    });
+                }
+            } 
+            // RÈGLE RGAA : 1 point si TOUT est conforme
+            else if (critere.statut.includes("✅") || critere.statut.includes(" C ")) {
+                statutFinal = "C"; 
+                total_c++;
+                criteres_applicables_evalues++;
+                points_obtenus++; 
+                resultats_par_theme[nomTheme].score_theme.total++;
+                resultats_par_theme[nomTheme].score_theme.points++;
+            } 
+            else {
+                statutFinal = "NA";
+                total_na++;
+            }
+
+            resultats_par_theme[nomTheme].criteres[key] = {
+                statut: statutFinal,
+                methode_detection: critere.methode_detection || (blocSemiAuto[key] ? "Semi-Automatique (Gemini 3.1 Flash)" : "Automatique (Axe-Core)"),
+                violations: critere.violations || [],
+                conformites: critere.conformites || []
+            };
         }
 
-        let taux_conformite = (total_c + total_nc > 0) ? Math.round((total_c / (total_c + total_nc)) * 100) : 0;
+        const taux_conformite = criteres_applicables_evalues > 0 
+            ? Math.round((points_obtenus / criteres_applicables_evalues) * 100) 
+            : 0;
 
         const rapportFinal = {
-            metadata: { url_auditee: url, date_audit: new Date().toISOString() },
-            statistiques: {
-                taux_de_conformite_automatique: `${taux_conformite}%`,
-                repartition_des_criteres_auto: { "✅_C": total_c, "❌_NC": total_nc, "➖_NA": total_na },
-                total_elements_en_erreur: total_erreurs_ponctuelles,
-                criteres_manuels: Array.isArray(blocManuel) ? blocManuel.length : 0
+            metadata: { 
+                audit_id: `audit_${new Date().getTime()}`,
+                url_auditee: url, 
+                date_audit: new Date().toISOString(),
+                environnement: { moteur: "Playwright", viewport: "1280x800" }
             },
-            resultats: {
-                // automatique: blocAutomatique,
-                semi_automatique: blocSemiAuto
-            }
+            statistiques: {
+                score_rgaa_partiel: {
+                    points_obtenus: points_obtenus,
+                    criteres_evalues: criteres_applicables_evalues,
+                    note_sur_106: `${points_obtenus} / 106`, 
+                    taux_de_conformite: `${taux_conformite}%`
+                },
+                repartition_par_statut: { "C": total_c, "NC": total_nc, "NA": total_na },
+                total_elements_en_erreur: total_erreurs_ponctuelles
+            },
+            resultats: resultats_par_theme
         };
 
-        // --- SAUVEGARDE POUR LE DASHBOARD ---
         const reportsDir = './rapports';
         if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir);
 
-        const fileName = `audit_${new Date().getTime()}.json`;
+        const fileName = `${rapportFinal.metadata.audit_id}.json`;
         fs.writeFileSync(path.join(reportsDir, fileName), JSON.stringify(rapportFinal, null, 2));
         fs.writeFileSync('./last_results.json', JSON.stringify(rapportFinal, null, 2));
 
-        console.log(`✅ Audit terminé.`);
+        console.log(`\n✅ Audit terminé. Score RGAA (Partiel) : ${points_obtenus}/${criteres_applicables_evalues} (${taux_conformite}%)`);
         console.log(`📄 Rapport archivé : ${fileName}`);
+
+        // ====================================================================
+        // 🗄️ AJOUT : SAUVEGARDE EN BASE DE DONNÉES & CALCUL AVANT/APRÈS
+        // ====================================================================
+        console.log("💾 Enregistrement des résultats en base de données PostgreSQL...");
+        let statsAvantApres = null;
+        try {
+            await saveAuditToDb(rapportFinal, "Audit RGAA CLI");
+            statsAvantApres = await getAvantApresByUrl(url);
+
+            console.log("\n=============================================");
+            console.log("📊 DASHBOARD EVOLUTION (AVANT / APRÈS)");
+            console.log("=============================================");
+            if (statsAvantApres && statsAvantApres.comparaison) {
+                console.log(`URL : ${statsAvantApres.url}`);
+                console.log(`Taux actuel : ${statsAvantApres.comparaison.actuel.taux} (Évolution: ${statsAvantApres.comparaison.evolutions.taux})`);
+                console.log(`Erreurs actuelles : ${statsAvantApres.comparaison.actuel.erreurs} (Évolution: ${statsAvantApres.comparaison.evolutions.erreurs})`);
+            } else if (statsAvantApres) {
+                console.log(`URL : ${statsAvantApres.url}`);
+                console.log(`ℹ️  ${statsAvantApres.message}`);
+                if(statsAvantApres.actuel) {
+                    console.log(`Score initial : ${statsAvantApres.actuel.taux} (${statsAvantApres.actuel.erreurs} erreurs)`);
+                }
+            }
+            console.log("=============================================\n");
+        } catch (dbError) {
+            console.error("❌ Avertissement : Impossible d'enregistrer en BDD (vérifiez votre connexion PostgreSQL).", dbError.message);
+        }
+
+        // ====================================================================
+        // 🖥️ LANCEMENT DU SERVEUR DASHBOARD
+        // ====================================================================
         console.log(`🖥️  Création du serveur local et ouverture du Dashboard...`);
 
-        // --- SERVEUR WEB ET OUVERTURE DU DASHBOARD ---
         const server = http.createServer((req, res) => {
             if (req.url === '/' || req.url === '/dashboard.html') {
                 res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -217,6 +266,10 @@ async function runAudit(url) {
             } else if (req.url === '/last_results.json') {
                 res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(fs.readFileSync('./last_results.json'));
+            } else if (req.url === '/avant_apres.json') {
+                // 👇 NOUVELLE ROUTE POUR LE DASHBOARD FRONTEND 👇
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify(statsAvantApres || { error: "Données non disponibles" }));
             } else {
                 res.writeHead(404);
                 res.end('Fichier introuvable');
@@ -226,20 +279,19 @@ async function runAudit(url) {
         server.listen(0, () => {
             const port = server.address().port;
             const dashboardUrl = `http://localhost:${port}/dashboard.html`;
+            console.log(`✅ Dashboard prêt et accessible sur : ${dashboardUrl}`);
+            console.log(`⚠️  Laissez ce terminal ouvert. Faites "Ctrl+C" pour quitter.\n`);
             
-            console.log(`\n✅ Dashboard prêt et accessible sur : ${dashboardUrl}`);
-            console.log(`⚠️  Laissez ce terminal ouvert pendant votre triage. Faites "Ctrl+C" pour quitter.\n`);
-
             const startCmd = (process.platform === 'win32' ? 'start' : process.platform === 'darwin' ? 'open' : 'xdg-open');
             exec(`${startCmd} ${dashboardUrl}`);
         });
 
     } catch (error) {
-        console.error("❌ Erreur fatale d'audit (Le site est probablement hors ligne) :", error);
+        console.error("❌ Erreur fatale d'audit :", error);
     } finally {
         await browser.close();
     }
 }
 
-const targetUrl = process.argv[2] || 'https://auth.service-public.gouv.fr/realms/service-public/protocol/openid-connect/auth?response_type=code&client_id=spclient&scope=address%20phone%20openid%20profile%20email&state=paGcwQNdH6W9cCfpzMFZo3KO9ZXHnV752NLXUhCJyro%3D&redirect_uri=https://www.service-public.gouv.fr/openid_connect_login&nonce=0-_eo8jby4311IRN5dhhwVKbNLdyk9DSnVvp5-xjW5Y';
+const targetUrl = process.argv[2] || 'https://www.service-public.fr';
 runAudit(targetUrl);

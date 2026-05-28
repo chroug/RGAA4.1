@@ -2,14 +2,9 @@ export default function extraireTheme10DOM() {
     // ==========================================
     // 📦 INITIALISATION DES RETOURS
     // ==========================================
-    // Pour le 10.2 (Injections CSS)
     const textesCSSAAnalyser = [];
     const imagesDeFondAVerifier = [];
-    
-    // Pour le 10.3 (Ordre de lecture)
     const suspicionsOrdre = [];
-
-    // Pour le 10.5 (Couleurs et Fonds)
     const suspicionsCouleurs = [];
 
     // ==========================================
@@ -32,9 +27,10 @@ export default function extraireTheme10DOM() {
             if (content && content !== 'none' && content !== 'normal' && content !== '""' && content !== "''") {
                 const textePropre = content.replace(/^"|"$/g, '').replace(/^'|'$/g, '').trim();
                 if (textePropre.length > 1 && /[a-zA-Z0-9]/.test(textePropre)) {
-                    textesCSSAAnalyser.push({
-                        texte: textePropre, html: el.outerHTML.substring(0, 150), tagName: el.tagName
-                    });
+                    const data = window.RGAA_UTILS.extraireDonneesSaaS(el);
+                    data.texte = textePropre;
+                    data.tagName = el.tagName;
+                    textesCSSAAnalyser.push(data);
                 }
             }
         });
@@ -42,9 +38,9 @@ export default function extraireTheme10DOM() {
         const bgImage = styleEl.getPropertyValue('background-image');
         if (bgImage && bgImage !== 'none' && bgImage.includes('url(')) {
             if (texteBrut.length === 0) {
-                imagesDeFondAVerifier.push({
-                    css: bgImage.substring(0, 80) + '...', html: el.outerHTML.substring(0, 150)
-                });
+                const data = window.RGAA_UTILS.extraireDonneesSaaS(el);
+                data.css = bgImage.substring(0, 80) + '...';
+                imagesDeFondAVerifier.push(data);
             }
         }
 
@@ -72,9 +68,10 @@ export default function extraireTheme10DOM() {
             }
 
             if (estSuspect) {
-                suspicionsOrdre.push({
-                    texte: texteBrut.substring(0, 60).replace(/\n/g, ' ') + '...', html: el.outerHTML.substring(0, 150), cssCause: raison
-                });
+                const data = window.RGAA_UTILS.extraireDonneesSaaS(el);
+                data.texte = texteBrut.substring(0, 60).replace(/\n/g, ' ') + '...';
+                data.cssCause = raison;
+                suspicionsOrdre.push(data);
             }
         }
     });
@@ -86,31 +83,9 @@ export default function extraireTheme10DOM() {
     });
 
     // ==========================================
-    // 🔵 PARTIE 2 : ANALYSE DES FEUILLES DE STYLE (CRITÈRE 10.5) - 100% STRICT
+    // 🔵 PARTIE 2 : ANALYSE DES FEUILLES DE STYLE (CRITÈRE 10.5)
     // ==========================================
     const elementsVus105 = new Set(); 
-
-    function genererCheminCSS(el) {
-        if (!(el instanceof Element)) return;
-        const path = [];
-        while (el.nodeType === Node.ELEMENT_NODE) {
-            let selector = el.nodeName.toLowerCase();
-            if (el.id) {
-                selector += '#' + el.id;
-                path.unshift(selector);
-                break;
-            } else {
-                let sib = el, nth = 1;
-                while (sib = sib.previousElementSibling) {
-                    if (sib.nodeName.toLowerCase() == selector) nth++;
-                }
-                if (nth != 1) selector += ":nth-of-type("+nth+")";
-            }
-            path.unshift(selector);
-            el = el.parentNode;
-        }
-        return path.join(" > ");
-    }
 
     function aUnFondDefiniDansLaCascade(el) {
         let noeudCourant = el;
@@ -126,7 +101,6 @@ export default function extraireTheme10DOM() {
         let noeudCourant = el;
         while (noeudCourant && noeudCourant.nodeType === Node.ELEMENT_NODE) {
             if (noeudCourant.style && noeudCourant.style.getPropertyValue('color')) return true;
-            
             try {
                 const sheets = Array.from(document.styleSheets);
                 for (let sheet of sheets) {
@@ -134,9 +108,7 @@ export default function extraireTheme10DOM() {
                         const rules = Array.from(sheet.cssRules || []);
                         for (let rule of rules) {
                             if (rule.type === 1 && noeudCourant.matches(rule.selectorText)) {
-                                if (rule.style.getPropertyValue('color')) {
-                                    return true;
-                                }
+                                if (rule.style.getPropertyValue('color')) return true;
                             }
                         }
                     } catch (e) {}
@@ -149,14 +121,12 @@ export default function extraireTheme10DOM() {
 
     try {
         const stylesheets = Array.from(document.styleSheets);
-        
         stylesheets.forEach(sheet => {
             try {
                 const rules = Array.from(sheet.cssRules || []);
                 rules.forEach(rule => {
                     if (rule.type === 1) { 
                         const style = rule.style;
-                        
                         const bgColorDec = style.getPropertyValue('background-color');
                         const colorDec = style.getPropertyValue('color');
                         const bgImgDec = style.getPropertyValue('background-image');
@@ -180,34 +150,21 @@ export default function extraireTheme10DOM() {
                             const elementsImpactes = document.querySelectorAll(rule.selectorText);
                             elementsImpactes.forEach(el => {
                                 const texteBrut = el.innerText ? el.innerText.trim() : '';
-                                
                                 if (texteBrut.length > 0 && !elementsVus105.has(el)) {
-                                    
-                                    if ((erreurCode === "10.5.2" || erreurCode === "10.5.3") && aUnFondDefiniDansLaCascade(el)) {
-                                        return; 
-                                    }
-
+                                    if ((erreurCode === "10.5.2" || erreurCode === "10.5.3") && aUnFondDefiniDansLaCascade(el)) return; 
                                     if (erreurCode === "10.5.1") {
                                         const textColor = window.getComputedStyle(el).color;
-                                        
-                                        if (textColor !== 'rgb(0, 0, 0)' && textColor !== 'rgba(0, 0, 0, 0)') {
-                                            return;
-                                        } else {
-                                            if (aUneCouleurDeTexteExplicite(el)) {
-                                                return;
-                                            }
-                                        }
+                                        if (textColor !== 'rgb(0, 0, 0)' && textColor !== 'rgba(0, 0, 0, 0)') return;
+                                        else if (aUneCouleurDeTexteExplicite(el)) return;
                                     }
 
                                     elementsVus105.add(el);
-                                    suspicionsCouleurs.push({
-                                        test: erreurCode,
-                                        css: rule.selectorText,
-                                        cheminExact: genererCheminCSS(el),
-                                        html: el.outerHTML.substring(0, 100),
-                                        texte: texteBrut.substring(0, 60).replace(/\n/g, ' ') + "...",
-                                        erreur: erreurMsg
-                                    });
+                                    const data = window.RGAA_UTILS.extraireDonneesSaaS(el);
+                                    data.test = erreurCode;
+                                    data.css = rule.selectorText;
+                                    data.texte = texteBrut.substring(0, 60).replace(/\n/g, ' ') + "...";
+                                    data.erreur = erreurMsg;
+                                    suspicionsCouleurs.push(data);
                                 }
                             });
                         }
@@ -224,15 +181,11 @@ export default function extraireTheme10DOM() {
 
     try {
         const liens = document.querySelectorAll('a, [role="link"]');
-        
         liens.forEach(lien => {
-            // 1. Ignorer les liens invisibles dans le DOM ou vides
             if (!lien.offsetParent || lien.innerText.trim().length === 0) return;
 
-            // 🚀 FILTRE V10 : Le radar spatial (Ignore les liens cachés hors écran)
             const rect = lien.getBoundingClientRect();
             if (rect.width <= 2 || rect.height <= 2 || rect.left < -900 || rect.top < -900) return;
-
             if (lien.closest('nav, footer, header, [role="navigation"], [role="banner"]')) return;
             
             const style = window.getComputedStyle(lien);
@@ -245,47 +198,36 @@ export default function extraireTheme10DOM() {
             if (lien.closest('h1, h2, h3, h4, h5, h6')) return;
             if (lien.innerText.trim() === lien.parentElement.innerText.trim()) return;
 
-            // 7. FILTRE V8 : Détection des groupes de liens (Menus, listes de contacts, footers...)
             const parent = lien.parentElement;
             const parentText = parent.innerText ? parent.innerText.trim() : '';
             
             if (parentText.length > 0) {
                 const tousLesLiens = Array.from(parent.querySelectorAll('a, [role="link"]'));
                 let longueurTotaleLiens = 0;
-                tousLesLiens.forEach(l => {
-                    longueurTotaleLiens += (l.innerText ? l.innerText.trim().length : 0);
-                });
-                
-                if ((longueurTotaleLiens / parentText.length) > 0.8) {
-                    return; 
-                }
+                tousLesLiens.forEach(l => { longueurTotaleLiens += (l.innerText ? l.innerText.trim().length : 0); });
+                if ((longueurTotaleLiens / parentText.length) > 0.8) return; 
             }
 
-            // 8. FILTRE V9 : La règle du "Vrai Texte"
             const tagParent = parent.tagName.toLowerCase();
             const balisesDeTexte = ['p', 'li', 'blockquote', 'q', 'figcaption', 'dd', 'dt'];
 
             if (!balisesDeTexte.includes(tagParent)) {
-                if (parentText.length > 0 && parentText.length < 150) {
-                    return; 
-                }
+                if (parentText.length > 0 && parentText.length < 150) return; 
             }
 
-            // 🎯 On tient un "Lien dans un texte, non souligné" !
             const parentStyle = window.getComputedStyle(lien.parentElement);
             if (style.color === parentStyle.color) return;
 
-            liensAAnalyser106.push({
-                texte: lien.innerText.substring(0, 60).replace(/\n/g, ' ') + '...',
-                chemin: typeof genererCheminCSS === 'function' ? genererCheminCSS(lien) : 'N/A',
-                html: lien.outerHTML.substring(0, 100),
-                couleurLien: style.color,
-                couleurTexte: parentStyle.color,
-                baseTextDec: style.textDecoration,
-                baseOutline: style.outline,
-                baseBorder: style.border,
-                baseBg: style.backgroundColor
-            });
+            const data = window.RGAA_UTILS.extraireDonneesSaaS(lien);
+            data.texte = lien.innerText.substring(0, 60).replace(/\n/g, ' ') + '...';
+            data.couleurLien = style.color;
+            data.couleurTexte = parentStyle.color;
+            data.baseTextDec = style.textDecoration;
+            data.baseOutline = style.outline;
+            data.baseBorder = style.border;
+            data.baseBg = style.backgroundColor;
+            
+            liensAAnalyser106.push(data);
         });
     } catch (e) {
         console.error("Erreur 10.6:", e);
@@ -297,10 +239,8 @@ export default function extraireTheme10DOM() {
     const elementsFocusables107 = [];
 
     try {
-        // On cible TOUT ce qui est interactif ou qui possède un tabindex valide
         const focusables = document.querySelectorAll('a[href]:not([tabindex="-1"]), button:not([tabindex="-1"]), input:not([tabindex="-1"]), textarea:not([tabindex="-1"]), select:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])');
 
-        // 🛠️ Notre algorithme anti-rognage (overflow: hidden)
         function aUnRisqueDeRognage(element) {
             let parent = element.parentElement;
             while (parent && parent !== document.body) {
@@ -308,7 +248,6 @@ export default function extraireTheme10DOM() {
                 if (styleParent.overflow === 'hidden' || styleParent.overflowX === 'hidden' || styleParent.overflowY === 'hidden') {
                     const rectEl = element.getBoundingClientRect();
                     const rectParent = parent.getBoundingClientRect();
-                    // Si l'élément est à moins de 5px du bord coupé, le focus sera invisible
                     const estTresProcheDuBord = (
                         rectEl.top - rectParent.top < 5 ||
                         rectParent.bottom - rectEl.bottom < 5 ||
@@ -322,7 +261,6 @@ export default function extraireTheme10DOM() {
             return false;
         }
 
-        // 🎨 Trouver la VRAIE couleur de fond derrière l'élément (pour le test de camouflage)
         function getVraiFond(el) {
             let noeud = el;
             while (noeud) {
@@ -330,48 +268,39 @@ export default function extraireTheme10DOM() {
                 if (bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') return bg;
                 noeud = noeud.parentElement;
             }
-            return 'rgb(255, 255, 255)'; // Blanc par défaut
+            return 'rgb(255, 255, 255)'; 
         }
 
         focusables.forEach(el => {
-            // On ignore les champs naturellement impossibles à focus
             if (el.disabled || el.type === 'hidden') return;
 
             const rect = el.getBoundingClientRect();
             const estHorsEcranOuInvisible = rect.width <= 1 || rect.height <= 1 || rect.left < -50 || rect.top < -50;
-            
             let estHoneypotPiege = false;
 
             if (estHorsEcranOuInvisible) {
-                // Si c'est un lien hors écran (ex: lien d'évitement), on l'ignore car il apparaîtra au focus.
-                // MAIS si c'est un champ de saisie hors écran, c'est un POT DE MIEL !
                 if (['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName)) {
                     estHoneypotPiege = true;
                 } else {
-                    return; // On ignore les autres éléments invisibles
+                    return; 
                 }
             }
 
-            // Récupération du texte
             let textePropre = el.innerText || el.getAttribute('aria-label') || el.title || el.value || el.name || 'Élément interactif';
             textePropre = textePropre.trim().substring(0, 60).replace(/\n/g, ' ') + '...';
 
-            elementsFocusables107.push({
-                chemin: typeof genererCheminCSS === 'function' ? genererCheminCSS(el) : 'N/A',
-                html: el.outerHTML.substring(0, 100),
-                texte: textePropre,
-                risqueRognage: aUnRisqueDeRognage(el),
-                fondParent: getVraiFond(el.parentElement || el),
-                estHoneypotPiege: estHoneypotPiege // 👈 Notre nouveau tag anti-bot
-            });
+            const data = window.RGAA_UTILS.extraireDonneesSaaS(el);
+            data.texte = textePropre;
+            data.risqueRognage = aUnRisqueDeRognage(el);
+            data.fondParent = getVraiFond(el.parentElement || el);
+            data.estHoneypotPiege = estHoneypotPiege;
+
+            elementsFocusables107.push(data);
         });
     } catch (e) {
         console.error("Erreur 10.7:", e);
     }
 
-    // ==========================================
-    // 📦 RETOUR GLOBAL DU SCRIPT
-    // ==========================================
     return { 
         textesCSSAAnalyser, 
         imagesDeFondAVerifier, 

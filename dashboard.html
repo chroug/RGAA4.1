@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="fr" class="bg-white">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGAA Audit Dashboard - Architect</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        primary: '#4f46e5',
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .bg-checkerboard {
+            background-color: white;
+            background-image: 
+                linear-gradient(45deg, #f3f4f6 25%, transparent 25%), 
+                linear-gradient(-45deg, #f3f4f6 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #f3f4f6 75%), 
+                linear-gradient(-45deg, transparent 75%, #f3f4f6 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        ::-webkit-scrollbar { height: 8px; width: 8px;}
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="font-sans text-gray-900 antialiased relative selection:bg-brand-500 selection:text-white">
+
+    <div class="absolute inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">
+        <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+    </div>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24 pt-16 sm:pt-24">
+        
+        <div class="text-center">
+            <div class="mb-6 flex justify-center">
+                <span class="relative rounded-full px-4 py-1.5 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 shadow-sm bg-white/50 backdrop-blur-sm">
+                    Audit généré par les <span class="font-semibold text-brand-600">3 Moteurs (Algo, IA, Humain)</span>
+                </span>
+            </div>
+            <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-6xl">
+                Rapport d'Audit RGAA
+            </h1>
+            <p class="mt-4 text-lg leading-8 text-gray-500 max-w-2xl mx-auto">
+                Cible analysée : <a href="#" id="target-url" class="font-medium text-brand-600 hover:text-brand-500 underline decoration-brand-500/30 underline-offset-4" target="_blank">...</a>
+            </p>
+            <!-- Zone pour afficher la date de comparaison -->
+            <div id="historique-info" class="mt-2 text-sm text-gray-500"></div>
+        </div>
+
+        <div class="mx-auto mt-16 max-w-5xl mb-20">
+            <dl class="grid grid-cols-1 gap-x-8 gap-y-12 text-center sm:grid-cols-3" id="stats"></dl>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-24">
+            
+            <section class="flex flex-col gap-4">
+                <div class="border-b border-gray-200 pb-3 mb-2 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <span>🤖</span> Automatique
+                    </h2>
+                    <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full" id="count-auto">0</span>
+                </div>
+                <div id="col-auto" class="flex flex-col gap-4"></div>
+            </section>
+
+            <section class="flex flex-col gap-4">
+                <div class="border-b border-gray-200 pb-3 mb-2 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <span>🧠</span> Semi-Auto (IA)
+                    </h2>
+                    <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full" id="count-semi">0</span>
+                </div>
+                <div id="col-semi" class="flex flex-col gap-4"></div>
+            </section>
+
+            <section class="flex flex-col gap-4">
+                <div class="border-b border-gray-200 pb-3 mb-2 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <span>👁️</span> Manuelle
+                    </h2>
+                    <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full" id="count-manuel-col">0</span>
+                </div>
+                <div id="col-manuel" class="flex flex-col gap-4">
+                    </div>
+            </section>
+
+        </div>
+
+        <section id="section-triage" class="border-t border-gray-200 pt-16 hidden">
+            <div class="pb-5 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight text-gray-900">Triage Humain Requis (Images)</h2>
+                    <p class="mt-1 text-sm text-gray-500">Vérifiez la pertinence des alternatives textuelles remontées par le moteur Semi-Automatique.</p>
+                </div>
+                <span class="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-sm font-semibold text-yellow-800" id="count-triage">0</span>
+            </div>
+            <div id="manual-triage-list" class="space-y-8"></div>
+        </section>
+
+    </main>
+
+<script>
+    // --- Fonction utilitaire pour générer une "Carte Critère" ---
+    function createCardHtml(key, value) {
+        if (!value || !value.statut) return '';
+        const critName = key.replace('critere_', 'Critère ');
+        let icon = '';
+        let borderClass = 'border-gray-200';
+        let bgClass = 'bg-white';
+
+        if (value.statut.includes('❌') || value.statut.includes('NC')) {
+            borderClass = 'border-red-200'; bgClass = 'bg-red-50/30';
+            icon = `<svg class="h-6 w-6 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+        } else if (value.statut.includes('✅') || value.statut.includes(' C ')) {
+            borderClass = 'border-green-200'; bgClass = 'bg-green-50/30';
+            icon = `<svg class="h-6 w-6 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+        } else {
+            borderClass = 'border-gray-200'; bgClass = 'bg-gray-50/50';
+            icon = `<svg class="h-6 w-6 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+        }
+
+        return `
+            <div class="rounded-xl border ${borderClass} ${bgClass} p-4 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-3">
+                    ${icon}
+                    <h3 class="text-sm font-semibold text-gray-900">${critName}</h3>
+                </div>
+                <p class="mt-1 text-xs font-medium text-gray-600 ml-9">${value.statut}</p>
+                ${value.violations && value.violations.length > 0 ? 
+                    `<div class="mt-3 ml-9 text-xs text-red-600 font-medium space-y-2">
+                        ${value.violations.map(v => `<p>• ${escapeHtml(v.raison || v.description || 'Erreur détectée')}</p>`).join('')}
+                    </div>` : ''}
+            </div>`;
+    }
+
+    async function loadAudit() {
+        try {
+            // Lancement des deux requêtes en parallèle (Les résultats + L'historique)
+            const [resultsResponse, historyResponse] = await Promise.all([
+                fetch('last_results.json').catch(() => null),
+                fetch('avant_apres.json').catch(() => null)
+            ]);
+
+            const data = resultsResponse ? await resultsResponse.json() : null;
+            const historyData = historyResponse ? await historyResponse.json() : null;
+
+            if (!data) throw new Error("JSON manquant");
+
+            // 1. En-tête et Stats
+            document.getElementById('target-url').innerText = data.metadata.url_auditee;
+            document.getElementById('target-url').href = data.metadata.url_auditee;
+            
+            // --- GESTION DU AVANT/APRÈS ---
+            let htmlEvolTaux = '';
+            let htmlEvolErreurs = '';
+
+            if (historyData && historyData.comparaison) {
+                // Créer le petit texte de date
+                const dateScanPrec = new Date(historyData.comparaison.precedent.date).toLocaleString('fr-FR');
+                document.getElementById('historique-info').innerHTML = `Comparé au scan du : <span class="font-medium">${dateScanPrec}</span>`;
+
+                // Badge Evolution Taux (Vert si 🟢 ou +, Rouge sinon)
+                const textTaux = historyData.comparaison.evolutions.taux;
+                const isTauxPositif = textTaux.includes('🟢') || textTaux.includes('+');
+                const badgeTauxColor = isTauxPositif ? 'bg-green-100 text-green-800 ring-green-600/20' : 'bg-red-100 text-red-800 ring-red-600/10';
+                const iconTaux = isTauxPositif ? '↗' : '↘';
+                htmlEvolTaux = `<span class="mt-2 inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${badgeTauxColor}">${iconTaux} ${textTaux.replace('🟢','').replace('🔴','')}</span>`;
+
+                // Badge Evolution Erreurs (Vert si Amélioration ou -, Rouge sinon)
+                const textErr = historyData.comparaison.evolutions.erreurs;
+                const isErrPositif = textErr.includes('Amélioration') || textErr.includes('-');
+                const badgeErrColor = isErrPositif ? 'bg-green-100 text-green-800 ring-green-600/20' : 'bg-red-100 text-red-800 ring-red-600/10';
+                const iconErr = isErrPositif ? '↘' : '↗';
+                htmlEvolErreurs = `<span class="mt-2 inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${badgeErrColor}">${iconErr} ${textErr.replace('(Amélioration 🟢)','').replace('(Régression 🔴)','')}</span>`;
+            } else if (historyData && historyData.message) {
+                document.getElementById('historique-info').innerText = "Premier scan pour cette page, pas d'historique disponible.";
+            }
+
+            const stats = data.statistiques;
+            const tauxAffiche = stats.score_rgaa_partiel ? stats.score_rgaa_partiel.taux_de_conformite : (stats.taux_de_conformite_automatique || "0%");
+            
+            document.getElementById('stats').innerHTML = `
+                <div class="mx-auto flex max-w-xs flex-col items-center gap-y-1">
+                    <dt class="text-base leading-7 text-gray-600 mb-2">Conformité RGAA</dt>
+                    <dd class="order-first text-5xl font-extrabold tracking-tight text-brand-600">${tauxAffiche}</dd>
+                    ${htmlEvolTaux}
+                </div>
+                <div class="mx-auto flex max-w-xs flex-col items-center gap-y-1 border-t border-gray-200 pt-8 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-8">
+                    <dt class="text-base leading-7 text-gray-600 mb-2">Éléments en Erreur</dt>
+                    <dd class="order-first text-5xl font-extrabold tracking-tight text-red-600">${stats.total_elements_en_erreur}</dd>
+                    ${htmlEvolErreurs}
+                </div>
+                <div class="mx-auto flex max-w-xs flex-col items-center gap-y-3 border-t border-gray-200 pt-8 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-8">
+                    <dt class="text-base leading-7 text-gray-600">Vérifications Humaines</dt>
+                    <dd class="order-first text-5xl font-extrabold tracking-tight text-yellow-500">${data.resultats.semi_automatique?.validation_manuelle?.theme_1_images?.length || 0}</dd>
+                </div>
+            `;
+
+            // 2. Remplissage des colonnes (Adaptation au format par thèmes)
+            let countAuto = 0; let countSemi = 0; let countManuelle = 0;
+            const colAuto = document.getElementById('col-auto');
+            const colSemi = document.getElementById('col-semi');
+            const colManuel = document.getElementById('col-manuel');
+
+            // On boucle sur les thèmes de data.resultats
+            if (data.resultats) {
+                for (const [themeKey, themeData] of Object.entries(data.resultats)) {
+                    if (themeData.criteres) {
+                        for (const [critKey, critData] of Object.entries(themeData.criteres)) {
+                            // On dispatch selon la méthode de détection
+                            const htmlCard = createCardHtml(critKey, critData);
+                            
+                            if (critData.methode_detection && critData.methode_detection.includes('Axe-Core')) {
+                                colAuto.innerHTML += htmlCard;
+                                countAuto++;
+                            } else if (critData.methode_detection && critData.methode_detection.includes('Gemini')) {
+                                colSemi.innerHTML += htmlCard;
+                                countSemi++;
+                            } else if (critData.methode_detection && critData.methode_detection.includes('Hybride')) {
+                                // S'il est hybride, on le met dans les deux ou dans le semi-auto
+                                colSemi.innerHTML += htmlCard;
+                                countSemi++;
+                            } else {
+                                colManuel.innerHTML += htmlCard;
+                                countManuelle++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            document.getElementById('count-auto').innerText = countAuto;
+            document.getElementById('count-semi').innerText = countSemi;
+
+            if (countManuelle === 0) {
+                colManuel.innerHTML = `
+                    <div class="rounded-xl border border-gray-200 border-dashed bg-gray-50 p-6 text-center">
+                        <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        <h3 class="mt-2 text-sm font-semibold text-gray-900">Aucun test manuel</h3>
+                        <p class="mt-1 text-xs text-gray-500">Aucun critère manuel n'a été rattaché à cet audit.</p>
+                    </div>`;
+            }
+            document.getElementById('count-manuel-col').innerText = countManuelle;
+
+
+            // 5. TRIAGE MANUEL DES IMAGES (On l'affiche en bas s'il y en a)
+            // Note: Ceci dépend de comment tu as formaté "validation_manuelle" dans ton json fusionné
+            const triageItems = data.resultats.semi_automatique?.validation_manuelle?.theme_1_images || [];
+            if (triageItems.length > 0) {
+                document.getElementById('section-triage').classList.remove('hidden');
+                document.getElementById('count-triage').innerText = triageItems.length;
+                const triageContainer = document.getElementById('manual-triage-list');
+
+                triageItems.forEach((item, index) => {
+                    const imgSrc = extractSrc(item.code_html, data.metadata.url_auditee);
+                    const hasLightData = !!item.screenshot_light;
+                    const hasDarkData = !!item.screenshot_dark;
+                    const isSameScreenshot = item.screenshot_light === item.screenshot_dark;
+                    const hasNativeDark = hasDarkData && !isSameScreenshot; 
+                    
+                    const base64Light = hasLightData ? `data:image/jpeg;base64,${item.screenshot_light}` : '';
+                    const base64Dark = hasNativeDark ? `data:image/jpeg;base64,${item.screenshot_dark}` : '';
+                    
+                    const style = item.contextStyle || {};
+                    let cssBgString = `background-color: ${style.backgroundColor || 'transparent'};`;
+                    if ((style.backgroundImage || 'none') !== 'none') {
+                        cssBgString += ` background-image: ${style.backgroundImage};`;
+                    }
+
+                    let buttonsHtml = hasNativeDark ? `
+                        <button class="rounded-md px-3 py-2 text-xs font-semibold ring-1 ring-inset bg-brand-50 text-brand-700 hover:bg-brand-100" onclick="switchView(${index}, 'light')">Site ☀️</button>
+                        <button class="rounded-md px-3 py-2 text-xs font-semibold ring-1 ring-inset bg-gray-900 text-white hover:bg-gray-800" onclick="switchView(${index}, 'dark')">Site 🌙</button>
+                        <button class="rounded-md px-3 py-2 text-xs font-semibold ring-1 ring-inset bg-white text-gray-900 hover:bg-gray-50" onclick="switchView(${index}, 'css')">Damier 🏁</button>
+                    ` : `
+                        <button class="rounded-md px-3 py-2 text-xs font-semibold ring-1 ring-inset ${hasLightData ? 'bg-brand-50 text-brand-700' : 'bg-gray-50 text-gray-400 cursor-not-allowed'}" ${hasLightData ? '' : 'disabled'} onclick="restoreDefault(${index})">Site 🎯</button>
+                        <button class="rounded-md px-3 py-2 text-xs font-semibold ring-1 ring-inset bg-white text-gray-900" onclick="forceColor(${index}, 'white')">Blanc ⬜</button>
+                        <button class="rounded-md px-3 py-2 text-xs font-semibold ring-1 ring-inset bg-gray-900 text-white" onclick="forceColor(${index}, '#111827')">Noir ⬛</button>
+                        <button class="rounded-md px-3 py-2 text-xs font-semibold ring-1 ring-inset bg-white text-gray-900" onclick="forceColor(${index}, 'transparent')">Damier 🏁</button>
+                    `;
+
+                    triageContainer.innerHTML += `
+                        <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 flex flex-col lg:flex-row transition-all duration-300" id="task-${index}">
+                            <div class="w-full lg:w-[420px] shrink-0 border-b lg:border-b-0 lg:border-r border-gray-200 bg-gray-50/50 p-6 flex flex-col">
+                                <div class="bg-checkerboard rounded-xl ring-1 ring-black/5 relative overflow-hidden flex items-center justify-center h-64 w-full shadow-inner mb-6" id="preview-${index}">
+                                    <div class="absolute inset-0 flex items-center justify-center w-full h-full" id="layer-css-${index}" style="${hasLightData ? 'display:none;' : cssBgString}">
+                                        <img src="${imgSrc}" alt="Aperçu isolé" class="max-w-[85%] max-h-[85%] object-contain drop-shadow-md">
+                                    </div>
+                                    ${hasLightData ? `<div class="absolute inset-0 flex items-center justify-center w-full h-full" id="layer-snap-light-${index}"><img src="${base64Light}" class="w-full h-full object-cover"></div>` : ''}
+                                    ${hasNativeDark ? `<div class="absolute inset-0 flex items-center justify-center w-full h-full hidden" id="layer-snap-dark-${index}"><img src="${base64Dark}" class="w-full h-full object-cover"></div>` : ''}
+                                </div>
+                                <div class="flex flex-wrap justify-center gap-2 mt-auto">${buttonsHtml}</div>
+                            </div>
+                            <div class="flex-1 p-8 flex flex-col gap-6 bg-gray-900 text-white">
+                                <div>
+                                    <h3 class="text-sm font-semibold text-brand-400">Alternative lue</h3>
+                                    <p class="mt-2 text-lg font-medium text-white break-all bg-gray-800 p-4 rounded-xl">"${item.texte_alt_actuel || 'VIDE'}"</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold text-gray-400 mb-2">Code source</h3>
+                                    <div class="bg-black/50 rounded-xl p-4 overflow-x-auto"><code class="text-xs font-mono text-gray-300 break-all">${escapeHtml(item.code_html)}</code></div>
+                                </div>
+                                <div class="mt-auto pt-4 flex gap-4">
+                                    <button onclick="resolve(${index})" class="rounded-lg bg-brand-600 px-6 py-2 text-sm font-semibold text-white hover:bg-brand-500">Valider conforme</button>
+                                    <button onclick="resolve(${index})" class="rounded-lg bg-gray-800 px-6 py-2 text-sm font-semibold text-white hover:bg-gray-700 ring-1 ring-inset ring-gray-700">Non-Conforme</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+        } catch (e) {
+            console.error(e);
+            document.getElementById('stats').innerHTML = `<div class="col-span-3 text-red-600 p-4 bg-red-50 rounded-xl border border-red-200">Erreur de chargement des données. Le serveur Node.js est-il lancé ?</div>`;
+        }
+    }
+
+    // --- Fonctions d'interaction UI ---
+    function switchView(id, viewType) {
+        const layerCss = document.getElementById(`layer-css-${id}`);
+        const layerLight = document.getElementById(`layer-snap-light-${id}`);
+        const layerDark = document.getElementById(`layer-snap-dark-${id}`);
+        if (layerCss) layerCss.style.display = 'none';
+        if (layerLight) layerLight.style.display = 'none';
+        if (layerDark) layerDark.style.display = 'none';
+        if (viewType === 'light' && layerLight) layerLight.style.display = 'flex';
+        else if (viewType === 'dark' && layerDark) layerDark.style.display = 'flex';
+        else if (viewType === 'css' && layerCss) { layerCss.style.display = 'flex'; layerCss.style.background = 'transparent'; }
+    }
+    function restoreDefault(id) { switchView(id, 'light'); }
+    function forceColor(id, color) {
+        switchView(id, 'css');
+        const layerCss = document.getElementById(`layer-css-${id}`);
+        if(layerCss) layerCss.style.background = color;
+    }
+    function extractSrc(html, baseUrl) {
+        const m = html.match(/(?:src|href)="([^"]+)"/);
+        if (!m) return '';
+        let src = m[1];
+        if (src.startsWith('/') && !src.startsWith('//')) { try { return new URL(baseUrl).origin + src; } catch(e) { return src; } }
+        return src;
+    }
+    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+    function resolve(id) { document.getElementById(`task-${id}`).classList.add('opacity-40', 'grayscale', 'pointer-events-none'); }
+
+    loadAudit();
+</script>
+</body>
+</html>

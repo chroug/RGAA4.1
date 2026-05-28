@@ -1,11 +1,11 @@
 // theme_5_tableaux/criteres/critere_5.1.js
 
 export default async function testerCritere5_1(tableaux) {
-    let resultat = { statut: "✅ Conforme (C)", violations: [] };
+    let resultat = { statut: "✅ Conforme (C)", violations: [], conformites: [] };
     const tableauxComplexes = tableaux.filter(t => t.estComplexe);
 
     if (tableauxComplexes.length === 0) {
-        return { statut: "➖ Non Applicable (NA)", violations: [] };
+        return { statut: "➖ Non Applicable (NA)", violations: [], conformites: [] };
     }
 
     let nbErreurs = 0;
@@ -14,8 +14,13 @@ export default async function testerCritere5_1(tableaux) {
         if (!table.aUnResume) {
             nbErreurs++;
             resultat.violations.push({
-                description: "Ce tableau complexe n'a aucun résumé (ni <caption>, ni attribut 'summary', ni 'aria-describedby').",
-                html: table.htmlComplet.substring(0, 300) + "..."
+                ...table,
+                raison: "Ce tableau complexe n'a aucun résumé (ni <caption>, ni attribut 'summary', ni 'aria-describedby')."
+            });
+        } else {
+            resultat.conformites.push({
+                ...table,
+                raison: "Ce tableau complexe possède un résumé."
             });
         }
     }

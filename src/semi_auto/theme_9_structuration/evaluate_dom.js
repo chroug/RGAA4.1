@@ -2,16 +2,13 @@ export default function extraireStructureDOM() {
     // ====================================================================
     // 📦 INITIALISATION DES RETOURS
     // ====================================================================
-    // Retours 9.1
     const erreursAlgo9_1 = [];
     const titresAAnalyser = [];
     const fauxTitresPotentiels = []; 
     
-    // Retours 9.2
     const erreursAlgo9_2 = [];
     const navsAAnalyser = [];
     const suspicions9_2 = [];
-
 
     // ====================================================================
     // 🟣 CRITÈRE 9.1 : LES TITRES (Hiérarchie et Pertinence)
@@ -31,23 +28,21 @@ export default function extraireStructureDOM() {
             if (ariaLevel && !isNaN(parseInt(ariaLevel))) {
                 niveau = parseInt(ariaLevel);
             } else {
-                erreursAlgo9_1.push({
-                    index: numeroElement,
-                    niveau: 'ARIA',
-                    html: el.outerHTML.substring(0, 150),
-                    raison: `Titre ARIA détecté mais l'attribut 'aria-level' est manquant ou invalide.`
-                });
+                const errData = window.RGAA_UTILS.extraireDonneesSaaS(el);
+                errData.index = numeroElement;
+                errData.niveau = 'ARIA';
+                errData.raison = `Titre ARIA détecté mais l'attribut 'aria-level' est manquant ou invalide.`;
+                erreursAlgo9_1.push(errData);
                 niveau = 2; 
             }
         }
 
         if (niveauPrecedent > 0 && niveau > niveauPrecedent + 1) {
-            erreursAlgo9_1.push({
-                index: numeroElement,
-                niveau: niveau,
-                html: el.outerHTML.substring(0, 150),
-                raison: `Saut de niveau de titre illogique : passage d'un niveau ${niveauPrecedent} à ${niveau}.`
-            });
+            const errData = window.RGAA_UTILS.extraireDonneesSaaS(el);
+            errData.index = numeroElement;
+            errData.niveau = niveau;
+            errData.raison = `Saut de niveau de titre illogique : passage d'un niveau ${niveauPrecedent} à ${niveau}.`;
+            erreursAlgo9_1.push(errData);
         }
         niveauPrecedent = niveau;
 
@@ -73,17 +68,15 @@ export default function extraireStructureDOM() {
             }
         }
 
-        titresAAnalyser.push({
-            index: numeroElement,
-            niveau: niveau,
-            label: tagName.startsWith('h') ? `H${niveau}` : 'ARIA',
-            titre: texteTitre,
-            texteSuivant: texteSuivant.substring(0, 500).trim(),
-            html: el.outerHTML.substring(0, 150)
-        });
+        const dataTitre = window.RGAA_UTILS.extraireDonneesSaaS(el);
+        dataTitre.index = numeroElement;
+        dataTitre.niveau = niveau;
+        dataTitre.label = tagName.startsWith('h') ? `H${niveau}` : 'ARIA';
+        dataTitre.titre = texteTitre;
+        dataTitre.texteSuivant = texteSuivant.substring(0, 500).trim();
+        titresAAnalyser.push(dataTitre);
     });
 
-    // Heuristique 9.1.3 (Faux Titres)
     const elementsSuspects = Array.from(document.querySelectorAll('p, div, span, strong, b'));
     elementsSuspects.forEach(el => {
         if (el.closest('h1, h2, h3, h4, h5, h6, [role="heading"]')) return;
@@ -112,7 +105,12 @@ export default function extraireStructureDOM() {
             estSuspect = true; raison = `Attribut role="${role}" invalide (devrait être role="heading")`;
         }
 
-        if (estSuspect) fauxTitresPotentiels.push({ texte: texte.substring(0, 60), raison: raison, html: el.outerHTML.substring(0, 150) });
+        if (estSuspect) {
+            const dataFauxTitre = window.RGAA_UTILS.extraireDonneesSaaS(el);
+            dataFauxTitre.texte = texte.substring(0, 60);
+            dataFauxTitre.raison = raison;
+            fauxTitresPotentiels.push(dataFauxTitre);
+        }
     });
 
     const uniquesFauxTitres = [];
@@ -121,20 +119,16 @@ export default function extraireStructureDOM() {
         if (!textesVus.has(ft.texte)) { textesVus.add(ft.texte); uniquesFauxTitres.push(ft); }
     });
 
-
     // ====================================================================
-    // 🟠 CRITÈRE 9.2 : STRUCTURE GLOBALE (Header, Main, Footer, Nav)
+    // 🟠 CRITÈRE 9.2 : STRUCTURE GLOBALE
     // ====================================================================
     
-    // 1. En-tête
     const headers = document.querySelectorAll('header');
     if (headers.length === 0) erreursAlgo9_2.push({ element: "En-tête", raison: "Aucune balise <header> trouvée." });
 
-    // 2. Pied de page
     const footers = document.querySelectorAll('footer');
     if (footers.length === 0) erreursAlgo9_2.push({ element: "Pied de page", raison: "Aucune balise <footer> trouvée." });
 
-    // 3. Contenu principal (Main)
     const mains = document.querySelectorAll('main');
     if (mains.length === 0) {
         erreursAlgo9_2.push({ element: "Contenu principal", raison: "Aucune balise <main> trouvée." });
@@ -144,49 +138,48 @@ export default function extraireStructureDOM() {
             return style.display !== 'none' && style.visibility !== 'hidden' && !main.hasAttribute('hidden');
         });
         if (mainsVisibles.length > 1) {
-            erreursAlgo9_2.push({ element: "Contenu principal", raison: `Présence de ${mainsVisibles.length} balises <main> visibles. Il ne doit y en avoir qu'une seule.` });
+            const errMain = window.RGAA_UTILS.extraireDonneesSaaS(mainsVisibles[1]);
+            errMain.element = "Contenu principal";
+            errMain.raison = `Présence de ${mainsVisibles.length} balises <main> visibles. Il ne doit y en avoir qu'une seule.`;
+            erreursAlgo9_2.push(errMain);
         }
     }
 
-    // 4. Extraction des Navigations (pour IA)
     const navs = document.querySelectorAll('nav');
     navs.forEach((nav, index) => {
         const liens = Array.from(nav.querySelectorAll('a')).map(a => a.textContent.trim()).join(' | ');
         const texteBrut = nav.textContent.replace(/\s+/g, ' ').trim().substring(0, 300);
-        navsAAnalyser.push({
-            index: index + 1,
-            labelAria: nav.getAttribute('aria-label') || 'Non défini',
-            liens: liens || 'Aucun lien trouvé',
-            texte: texteBrut,
-            html: nav.outerHTML.substring(0, 150)
-        });
+        
+        const navData = window.RGAA_UTILS.extraireDonneesSaaS(nav);
+        navData.index = index + 1;
+        navData.labelAria = nav.getAttribute('aria-label') || 'Non défini';
+        navData.liens = liens || 'Aucun lien trouvé';
+        navData.texte = texteBrut;
+        
+        navsAAnalyser.push(navData);
     });
 
-    // 5. Heuristique : Fausses zones structurelles
     const faussesZones = document.querySelectorAll('div, span, section');
     faussesZones.forEach(el => {
         const id = (el.id || '').toLowerCase();
         const className = (el.className || '').toString().toLowerCase();
 
         if ((id.includes('header') || className.includes('header')) && headers.length === 0) {
-            suspicions9_2.push({ zone: "En-tête", raison: "Utilisation d'une div/class 'header' au lieu de la balise <header>." });
+            const d = window.RGAA_UTILS.extraireDonneesSaaS(el); d.zone = "En-tête"; d.raison = "Utilisation d'une div/class 'header' au lieu de la balise <header>."; suspicions9_2.push(d);
         }
         if ((id.includes('footer') || className.includes('footer')) && footers.length === 0) {
-            suspicions9_2.push({ zone: "Pied de page", raison: "Utilisation d'une div/class 'footer' au lieu de la balise <footer>." });
+            const d = window.RGAA_UTILS.extraireDonneesSaaS(el); d.zone = "Pied de page"; d.raison = "Utilisation d'une div/class 'footer' au lieu de la balise <footer>."; suspicions9_2.push(d);
         }
         if ((id.includes('main') || className.includes('main') || id.includes('content')) && mains.length === 0) {
-            suspicions9_2.push({ zone: "Contenu principal", raison: "Utilisation d'une div/class 'main' au lieu de la balise <main>." });
+            const d = window.RGAA_UTILS.extraireDonneesSaaS(el); d.zone = "Contenu principal"; d.raison = "Utilisation d'une div/class 'main' au lieu de la balise <main>."; suspicions9_2.push(d);
         }
         if ((id.includes('menu') || id.includes('nav') || className.includes('menu') || className.includes('nav')) && el.tagName !== 'NAV') {
             if (!el.closest('nav')) {
-                suspicions9_2.push({ zone: "Navigation", raison: "Ce conteneur ressemble à un menu mais n'utilise pas la balise <nav>." });
+                const d = window.RGAA_UTILS.extraireDonneesSaaS(el); d.zone = "Navigation"; d.raison = "Ce conteneur ressemble à un menu mais n'utilise pas la balise <nav>."; suspicions9_2.push(d);
             }
         }
     });
 
-    // ====================================================================
-    // 📤 RETOUR GLOBAL DES DONNÉES AU SCRIPT NODE.JS
-    // ====================================================================
     return { 
         erreursAlgo9_1,
         titresAAnalyser,

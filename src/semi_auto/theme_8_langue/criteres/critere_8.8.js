@@ -5,15 +5,14 @@ import { promptCritere8_8 } from '../prompts.js';
 export default async function testerCritere8_8(passagesHTML, erreursAlgo8_8) {
     console.log(`\n ℹ️  [critere_8.8] Validité et Pertinence des codes langue...`);
     let violations = [];
+    let conformites = [];
 
     // 1️⃣ Erreurs algorithmiques
     if (erreursAlgo8_8 && erreursAlgo8_8.length > 0) {
         console.log(`    ⚡ Algo Analyse...`);
         erreursAlgo8_8.forEach(err => {
             violations.push({ 
-                html: err.html, 
-                xpath: "Non disponible", 
-                css: "Non applicable", 
+                ...err, 
                 raison: `[Erreur Algo] ${err.raison}` 
             });
             console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} : ${err.raison}`);
@@ -66,15 +65,17 @@ export default async function testerCritere8_8(passagesHTML, erreursAlgo8_8) {
                 if (resultat && resultat.statut === "NON_CONFORME") {
                     const explication = resultat.explication || "La langue déclarée est inappropriée.";
                     violations.push({ 
-                        html: extraitHTML, 
-                        xpath: "Non disponible", 
-                        css: "Non applicable", 
+                        ...passage, 
                         raison: `[Erreur IA] ${explication}` 
                     });
                     console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (Bloc ${currentIndex}) : ${explication}`);
                 }
                 else {
                     const justification = resultat.explication || "Code langue pertinent et valide.";
+                    conformites.push({
+                        ...passage,
+                        raison: justification
+                    });
                     console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} (Bloc ${currentIndex}) : ${justification}`);
                 }
             } catch (e) {
@@ -91,16 +92,16 @@ export default async function testerCritere8_8(passagesHTML, erreursAlgo8_8) {
     const nbErreursAlgo = erreursAlgo8_8 ? erreursAlgo8_8.length : 0;
 
     if (violations.length > 0) {
-        return { statut: "❌ NON CONFORME", violations };
+        return { statut: "❌ NON CONFORME", violations, conformites };
     } 
     // 💡 NOUVEAU : Si 0 erreur algo ET 0 bloc pertinent à tester pour l'IA
     else if (nbBlocsTestes === 0 && nbErreursAlgo === 0) {
         console.log(`       ➖ NON APPLICABLE : Aucun attribut 'lang' n'est présent sur cette page.`);
-        return { statut: "➖ NON APPLICABLE", violations: [] };
+        return { statut: "➖ NON APPLICABLE", violations: [], conformites: [] };
     } 
     else {
         console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} : Les codes langues sont valides et pertinents.`);
-        return { statut: "✅ CONFORME", violations: [] };
+        return { statut: "✅ CONFORME", violations: [], conformites };
     }
 
 }

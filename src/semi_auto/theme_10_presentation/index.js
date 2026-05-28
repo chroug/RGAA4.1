@@ -12,20 +12,20 @@ export default async function runTheme10(page, resultats_globaux) {
     if (!data) return;
 
     // 2. Lancement du 10.2
-    // const res10_2 = await testerCritere10_2(data.textesCSSAAnalyser, data.imagesDeFondAVerifier);
-    // resultats_globaux["critere_10.2"] = res10_2;
+    const res10_2 = await testerCritere10_2(data.textesCSSAAnalyser, data.imagesDeFondAVerifier);
+    resultats_globaux["critere_10.2"] = res10_2;
 
     // // 3. Lancement du 10.3
-    // const res10_3 = await testerCritere10_3(data.suspicionsOrdre);
-    // resultats_globaux["critere_10.3"] = res10_3;
+    const res10_3 = await testerCritere10_3(data.suspicionsOrdre);
+    resultats_globaux["critere_10.3"] = res10_3;
 
     // // 4. Lancement du 10.5
-    // const res10_5 = await testerCritere10_5(data.suspicionsCouleurs);
-    // resultats_globaux["critere_10.5"] = res10_5;
+    const res10_5 = await testerCritere10_5(data.suspicionsCouleurs);
+    resultats_globaux["critere_10.5"] = res10_5;
 
     // // 5. Lancement du 10.6 (On ne passe plus qu'un seul tableau !)
-    // const res10_6 = await testerCritere10_6(page, data.liensAAnalyser106);
-    // resultats_globaux["critere_10.6"] = res10_6;
+    const res10_6 = await testerCritere10_6(page, data.liensAAnalyser106);
+    resultats_globaux["critere_10.6"] = res10_6;
 
     // 6. Lancement du 10.7
     const res10_7 = await testerCritere10_7(page, data.elementsFocusables107);

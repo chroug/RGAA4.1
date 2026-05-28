@@ -13,22 +13,21 @@ export default function extraireNavigationDOM() {
     // ==========================================
     // 🧭 CRITÈRE 12.6 : Zones de regroupement
     // ==========================================
-    // On cherche les landmarks ARIA ou balises HTML5 (Condition 1 du RGAA)
     const landmarks = [
         { nom: "En-tête (Header)", selecteurs: 'header:not(header header), [role="banner"]' },
-        { nom: "Navigation (Nav)", selecteurs: 'nav:not(header nav), [role="navigation"]' }, // Petite correction ici aussi
+        { nom: "Navigation (Nav)", selecteurs: 'nav:not(header nav), [role="navigation"]' },
         { nom: "Contenu principal (Main)", selecteurs: 'main, [role="main"]' },
-        { nom: "Moteur de recherche (Search)", selecteurs: 'search, [role="search"]' }, // 👈 LA LIGNE MANQUANTE
+        { nom: "Moteur de recherche (Search)", selecteurs: 'search, [role="search"]' },
         { nom: "Pied de page (Footer)", selecteurs: 'footer:not(footer footer), [role="contentinfo"]' }
     ];
 
     landmarks.forEach(lm => {
         const element = document.querySelector(lm.selecteurs);
         if (element) {
-            resultats.data12_6.zones_trouvees.push({
-                nom: lm.nom,
-                html: element.outerHTML.substring(0, 80) + '...'
-            });
+            // 🚀 AJOUT SAAS : Injection des données
+            const donneesSaaS = window.RGAA_UTILS.extraireDonneesSaaS(element);
+            donneesSaaS.nom = lm.nom;
+            resultats.data12_6.zones_trouvees.push(donneesSaaS);
         } else {
             resultats.data12_6.zones_manquantes.push(lm.nom);
         }
@@ -48,11 +47,12 @@ export default function extraireNavigationDOM() {
             
             const isDisplayNone = window.getComputedStyle(a).display === 'none';
 
-            return {
-                html: a.outerHTML.substring(0, 150),
-                cible_existe: targetExists,
-                est_masque_display_none: isDisplayNone
-            };
+            // 🚀 AJOUT SAAS : Injection des données
+            const donneesSaaS = window.RGAA_UTILS.extraireDonneesSaaS(a);
+            donneesSaaS.cible_existe = targetExists;
+            donneesSaaS.est_masque_display_none = isDisplayNone;
+            
+            return donneesSaaS;
         });
     }
 

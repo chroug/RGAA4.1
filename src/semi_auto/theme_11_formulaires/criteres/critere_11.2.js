@@ -4,10 +4,17 @@ import { promptPertinenceEtiquette } from '../prompts.js';
 export default async function testerCritere11_2(champs11_2) {
     console.log(`\n ℹ️  [critere_11.2] Analyse de la pertinence des étiquettes (IA)...`);
     
-    let resultat = { statut: "✅ CONFORME", violations: [] };
+    let resultat = { statut: "✅ CONFORME", violations: [], conformites: [] };
 
     if (!champs11_2 || champs11_2.length === 0) {
         console.log(`       ✅ CONFORME : Aucun champ avec étiquette à analyser.`);
+        resultat.conformites.push({
+            html: "N/A",
+            selecteur_css: "N/A",
+            xpath: "N/A",
+            bounding_box: null,
+            raison: "Aucun champ de formulaire nécessitant une étiquette n'a été détecté."
+        });
         return resultat;
     }
 
@@ -26,11 +33,15 @@ export default async function testerCritere11_2(champs11_2) {
                 console.log(`❌ Non Conforme (${resIA.explication})`); 
                 resultat.statut = "❌ NON CONFORME";
                 resultat.violations.push({
-                    html: champ.html,
+                    ...champ,
                     raison: `[11.2] Erreur de pertinence : ${resIA.explication}`
                 });
             } else {
                 console.log(`✅ Conforme (${resIA.explication})`);
+                resultat.conformites.push({
+                    ...champ,
+                    raison: `[11.2] Pertinence de l'étiquette validée par l'IA : ${resIA.explication}`
+                });
             }
 
         } catch (error) {

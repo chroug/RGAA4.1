@@ -5,6 +5,7 @@ import { promptCritere10_2 } from '../prompts.js';
 export default async function testerCritere10_2(textesCSS, imagesBg) {
     console.log(`\n ℹ️  [critere_10.2] Indépendance de l'information vis-à-vis du CSS...`);
     let violations = [];
+    let conformites = [];
 
     // 1️⃣ Pertinence IA (Textes cachés dans le CSS)
     if (textesCSS && textesCSS.length > 0) {
@@ -51,9 +52,13 @@ export default async function testerCritere10_2(textesCSS, imagesBg) {
                 const resultat = typeof textePropre === 'string' ? JSON.parse(textePropre) : textePropre;
 
                 if (resultat && resultat.statut === "NON_CONFORME") {
-                    violations.push({ html: item.html, xpath: "N/A", css: item.texte, raison: `[Erreur IA - 10.2] ${resultat.explication}` });
+                    violations.push({ ...item, raison: `[Erreur IA - 10.2] ${resultat.explication}` });
                     console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (Texte CSS n°${currentIndex} : "${item.texte}") : ${resultat.explication}`);
                 } else {
+                    conformites.push({
+                        ...item,
+                        raison: `[10.2] Texte CSS jugé décoratif par l'IA : ${resultat.explication || "Élément purement décoratif."}`
+                    });
                     console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} (Texte CSS n°${currentIndex} : "${item.texte}") : ${resultat.explication || "Élément purement décoratif."}`);
                 }
             } catch (e) {
@@ -78,12 +83,21 @@ export default async function testerCritere10_2(textesCSS, imagesBg) {
 
     // BILAN FINAL
     if (violations.length > 0) {
-        return { statut: "❌ NON CONFORME", violations };
+        return { statut: "❌ NON CONFORME", violations, conformites };
     } else if (imagesBg && imagesBg.length > 0) {
-        return { statut: "⚠️ À VÉRIFIER MANUELLEMENT", violations: [] };
+        return { statut: "⚠️ À VÉRIFIER MANUELLEMENT", violations: [], conformites };
     } else {
         // NOUVEAU : On affiche clairement la conformité dans le terminal !
         console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} : Aucune information vitale n'est masquée dans le CSS ni dans les images de fond.`);
-        return { statut: "✅ CONFORME", violations: [] };
+        if (conformites.length === 0) {
+            conformites.push({
+                html: "N/A",
+                selecteur_css: "N/A",
+                xpath: "N/A",
+                bounding_box: null,
+                raison: "Aucune information vitale n'est masquée dans le CSS ni dans les images de fond."
+            });
+        }
+        return { statut: "✅ CONFORME", violations: [], conformites };
     }
 }

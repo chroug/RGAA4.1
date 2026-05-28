@@ -5,6 +5,7 @@ import { promptCritere8_7 } from '../prompts.js';
 export default async function testerCritere8_7(passagesHTML) {
     console.log(`\n ℹ️  [critere_8.7] Indication des changements de langue (Présence)...`);
     let violations = [];
+    let conformites = [];
 
     if (passagesHTML && passagesHTML.length > 0) {
         console.log(`    🧠 IA : Vérification de la présence de l'attribut pour ${passagesHTML.length} bloc(s) de texte...`);
@@ -41,9 +42,7 @@ export default async function testerCritere8_7(passagesHTML) {
                 if (resultat && resultat.statut === "NON_CONFORME") {
                     const explication = resultat.explication || "Changement de langue non balisé.";
                     violations.push({ 
-                        html: extraitHTML, 
-                        xpath: "Non disponible", 
-                        css: "Non applicable", 
+                        ...passage, // 👈 INJECTION DES DONNÉES SAAS
                         raison: `[Erreur IA] ${explication}` 
                     });
                     console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (Bloc ${currentIndex}) : ${explication}`);
@@ -51,6 +50,10 @@ export default async function testerCritere8_7(passagesHTML) {
                 else {
                     // ✅ Correction ici : on utilise une phrase générique ou l'explication de l'IA si elle existe
                     const justification = resultat.explication || "Aucun changement de langue non déclaré détecté.";
+                    conformites.push({
+                        ...passage, // 👈 INJECTION DES DONNÉES SAAS
+                        raison: justification
+                    });
                     console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} (Bloc ${currentIndex}) : ${justification}`);
                 }
             } catch (e) {
@@ -66,15 +69,15 @@ export default async function testerCritere8_7(passagesHTML) {
     const nbBlocsTestes = passagesHTML ? passagesHTML.length : 0;
 
     if (violations.length > 0) {
-        return { statut: "❌ NON CONFORME", violations };
+        return { statut: "❌ NON CONFORME", violations, conformites };
     } 
     // 💡 NOUVEAU : S'il n'y a aucun texte sur la page
     else if (nbBlocsTestes === 0) {
         console.log(`       ➖ NON APPLICABLE : Aucun bloc de texte n'a été détecté pour cette analyse.`);
-        return { statut: "➖ NON APPLICABLE", violations: [] };
+        return { statut: "➖ NON APPLICABLE", violations: [], conformites: [] };
     } 
     else {
         console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} : Les changements de langue sont bien indiqués.`);
-        return { statut: "✅ CONFORME", violations: [] };
+        return { statut: "✅ CONFORME", violations: [], conformites };
     }
 }

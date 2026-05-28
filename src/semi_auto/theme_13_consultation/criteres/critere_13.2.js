@@ -33,6 +33,10 @@ export default async function testerCritere13_2(page) {
         const raisonEchec = "Une nouvelle fenêtre (pop-up ou pop-under) s'est ouverte automatiquement au chargement sans action explicite de l'utilisateur.";
         
         resultat.violations.push({
+            html: "N/A",
+            selecteur_css: "N/A",
+            xpath: "N/A",
+            bounding_box: null,
             raison: `[13.2] ${raisonEchec}`
         });
         console.log(`       ❌ NON CONFORME : ${raisonEchec}`);
@@ -40,6 +44,10 @@ export default async function testerCritere13_2(page) {
         const raisonSucces = "Aucune ouverture de nouvelle fenêtre intempestive (pop-up) n'a été détectée lors du chargement de la page.";
         
         resultat.conformites.push({
+            html: "N/A",
+            selecteur_css: "N/A",
+            xpath: "N/A",
+            bounding_box: null,
             raison: `[13.2] ${raisonSucces}`
         });
         console.log(`       ✅ CONFORME : ${raisonSucces}`);

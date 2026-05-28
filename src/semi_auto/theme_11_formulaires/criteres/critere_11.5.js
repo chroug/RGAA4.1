@@ -2,10 +2,10 @@ import { askGemma } from '../../utils/ai_helper.js';
 import { promptRegroupement } from '../prompts.js';
 
 export default async function testerCritere11_5(champs11_5) {
-    let resultat = { statut: "✅ Conforme (C)", violations: [] };
+    let resultat = { statut: "✅ Conforme (C)", violations: [], conformites: [] };
 
     if (!champs11_5 || champs11_5.length === 0) {
-        return { statut: "➖ Non Applicable (NA)", violations: [] };
+        return { statut: "➖ Non Applicable (NA)", violations: [], conformites: [] };
     }
 
     for (let i = 0; i < champs11_5.length; i++) {
@@ -14,6 +14,10 @@ export default async function testerCritere11_5(champs11_5) {
         // 1. Cas 100% sûr : Le champ est bien dans un fieldset/group
         if (champ.estBienGroupe) {
             console.log(`   ⚡ Algo [critere_11.5] Analyse ${i + 1}/${champs11_5.length}... ✅ Conforme (Groupement détecté)`);
+            resultat.conformites.push({
+                ...champ,
+                raison: "[11.5] Le champ est correctement groupé dans un <fieldset> avec une <legend>."
+            });
             continue;
         }
 
@@ -30,11 +34,15 @@ export default async function testerCritere11_5(champs11_5) {
             console.log(`❌ Non Conforme (${resIA.explication})`);
             resultat.statut = "❌ Non Conforme (NC)";
             resultat.violations.push({
-                description: `Groupement manquant sur un champ qui le nécessite : ${resIA.explication}`,
-                html: champ.html
+                ...champ,
+                raison: `Groupement manquant sur un champ qui le nécessite : ${resIA.explication}`
             });
         } else {
             console.log(`✅ Conforme (${resIA.explication})`);
+            resultat.conformites.push({
+                ...champ,
+                raison: `[11.5] Regroupement jugé non nécessaire par l'IA : ${resIA.explication}`
+            });
         }
     }
 

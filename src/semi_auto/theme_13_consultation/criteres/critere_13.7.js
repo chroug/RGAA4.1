@@ -17,6 +17,13 @@ export default async function testerCritere13_7(contenus13_7) {
 
     if (!contenus13_7 || contenus13_7.length === 0) {
         console.log(`       ✅ CONFORME : Aucun élément animé ou multimédia (vidéo, gif, canvas, animation CSS) détecté.`);
+        resultat.conformites.push({
+            html: "N/A",
+            selecteur_css: "N/A",
+            xpath: "N/A",
+            bounding_box: null,
+            raison: "Aucun élément animé ou multimédia (vidéo, gif, canvas, animation CSS) n'a été détecté sur la page."
+        });
         return resultat;
     }
 
@@ -27,7 +34,7 @@ export default async function testerCritere13_7(contenus13_7) {
         if (item.surface_pixels <= LIMITE_PIXELS) {
             // Condition de surface validée
             const msg = `L'élément <${item.tag}> (${item.type_animation}) mesure ${item.surface_pixels} px² (<= ${LIMITE_PIXELS} px²). Sécurisé quelle que soit la fréquence.`;
-            resultat.conformites.push({ html: item.html, raison: `[13.7] ${msg}` });
+            resultat.conformites.push({ ...item, raison: `[13.7] ${msg}` });
             console.log(`       ✅ CONFORME : ${msg}`);
         } else {
             // Condition de surface non respectée -> On doit vérifier la fréquence (Humain)
@@ -36,7 +43,7 @@ export default async function testerCritere13_7(contenus13_7) {
             const actionRequise = `Vérification humaine requise : Assurez-vous que cet élément clignote ou s'anime à une fréquence INFÉRIEURE à 3 fois par seconde (< 3 Hz).`;
             
             resultat.a_verifier.push({
-                html: item.html,
+                ...item,
                 raison: `[13.7] ${msg} ${actionRequise}`
             });
             console.log(`       ⚠️ À VÉRIFIER : ${msg} -> Fréquence à vérifier manuellement.`);

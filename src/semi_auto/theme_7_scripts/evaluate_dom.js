@@ -11,11 +11,20 @@ export default function extraireScriptsDOM() {
         .filter(el => !['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'FORM', 'BODY', 'MAIN'].includes(el.tagName))
         // 🔥 NOUVEAU FILTRE : On ignore les conteneurs vides ! On ne veut que les messages VISIBLES.
         .filter(el => el.innerText && el.innerText.trim().length > 2)
-        // 🔥 CORRECTION : On ne coupe plus le HTML !
-        .map(el => el.outerHTML);
+        // 🚀 AJOUT SAAS : Injection des données au lieu de ne renvoyer que le HTML
+        .map(el => {
+            const donneesSaaS = window.RGAA_UTILS.extraireDonneesSaaS(el);
+            // On peut garder le outerHTML entier comme dans ton ancien code si besoin,
+            // (L'utilitaire SaaS tronque le HTML à 300 caractères par défaut)
+            donneesSaaS.html = el.outerHTML; 
+            return donneesSaaS;
+        });
 
-    // 3. On enlève les doublons
-    const messagesStatut = [...new Set(elementsBruts)];
+    // 3. On enlève les doublons (Basé sur le HTML complet pour identifier les objets uniques)
+    // On utilise un Map pour filtrer les objets identiques basés sur leur HTML
+    const messagesUniques = Array.from(
+        new Map(elementsBruts.map(item => [item.html, item])).values()
+    );
 
-    return { messagesStatut };
+    return { messagesStatut: messagesUniques };
 }

@@ -1,6 +1,6 @@
 import extraireStructureDOM from './evaluate_dom.js';
 import testerCritere9_1 from './criteres/critere_9.1.js';
-import testerCritere9_2 from './criteres/critere_9.2.js'; // 👈 Ajout de l'import pour le 9.2
+import testerCritere9_2 from './criteres/critere_9.2.js'; 
 
 export default async function runTheme9(page, resultats_globaux) {
     // 1. On injecte le script dans la page pour extraire TOUTES les données du Thème 9
@@ -9,12 +9,12 @@ export default async function runTheme9(page, resultats_globaux) {
     if (!data) return;
 
     // // 2. On lance l'évaluation du Critère 9.1
-    // const res9_1 = await testerCritere9_1(
-    //     data.erreursAlgo9_1, 
-    //     data.titresAAnalyser, 
-    //     data.fauxTitresPotentiels
-    // );
-    // resultats_globaux["critere_9.1"] = res9_1;
+    const res9_1 = await testerCritere9_1(
+        data.erreursAlgo9_1, 
+        data.titresAAnalyser, 
+        data.fauxTitresPotentiels
+    );
+    resultats_globaux["critere_9.1"] = res9_1;
 
     // 3. On lance l'évaluation du Critère 9.2 (NOUVEAU)
     const res9_2 = await testerCritere9_2(

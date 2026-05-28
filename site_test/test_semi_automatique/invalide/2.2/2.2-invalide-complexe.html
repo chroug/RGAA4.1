@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tests Invalides Complexes - Critère 2.2</title>
+    <style>iframe { display: block; margin-bottom: 20px; }</style>
+</head>
+<body>
+    <h1>Cadres avec titres NON pertinents (Cas Pièges)</h1>
+    
+    <!-- 1. Le titre est une description technique, pas sémantique -->
+    <h2>1. Titre purement technique</h2>
+    <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=2.25%2C48.8%2C2.4%2C48.9&layer=mapnik" 
+            title="widget_map_embed_v2_450px" 
+            width="600" height="400">
+    </iframe>
+
+    <!-- 2. Le titre est en totale contradiction avec le visuel (Le test ultime pour l'IA !) -->
+    <h2>2. Contradiction totale</h2>
+    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0" 
+            title="Formulaire de contact pour le support technique" 
+            width="560" height="315">
+    </iframe>
+
+    <!-- 3. Le titre est presque vide (juste des espaces) -->
+    <h2>3. Titre composé d'espaces invisibles</h2>
+    <iframe src="https://fr.wikipedia.org/wiki/Accessibilit%C3%A9_du_web" 
+            title="    " 
+            width="600" height="400">
+    </iframe>
+
+    <!-- 4. Le titre ment sur la nature du contenu -->
+    <h2>4. Mauvaise qualification du contenu</h2>
+    <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=2.25%2C48.8%2C2.4%2C48.9&layer=mapnik" 
+            title="Publicité pour un logiciel antivirus" 
+            width="600" height="400">
+    </iframe>
+
+    <!-- 5. Le fameux titre générique de développeur pressé -->
+    <h2>5. Titre générique bateau</h2>
+    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0" 
+            title="Contenu intégré" 
+            width="560" height="315">
+    </iframe>
+</body>
+</html>

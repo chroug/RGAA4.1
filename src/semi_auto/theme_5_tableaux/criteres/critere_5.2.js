@@ -4,13 +4,13 @@ import { askGemma } from '../../utils/ai_helper.js';
 import { promptPertinenceTableau } from '../prompts.js';
 
 export default async function testerCritere5_2(tableaux) {
-    let resultat = { statut: "✅ Conforme (C)", violations: [] };
+    let resultat = { statut: "✅ Conforme (C)", violations: [], conformites: [] };
     
     // On ne teste l'IA que sur les tableaux complexes qui ont effectivement un résumé (le 5.1 gère les absents)
     const tableauxATester = tableaux.filter(t => t.estComplexe && t.aUnResume);
 
     if (tableauxATester.length === 0) {
-        return { statut: "➖ Non Applicable (NA)", violations: [] };
+        return { statut: "➖ Non Applicable (NA)", violations: [], conformites: [] };
     }
 
     for (let i = 0; i < tableauxATester.length; i++) {
@@ -24,11 +24,15 @@ export default async function testerCritere5_2(tableaux) {
             console.log(`❌ Non Conforme (${resIA.explication})`);
             resultat.statut = "❌ Non Conforme (NC)";
             resultat.violations.push({
-                description: `Résumé non pertinent : ${resIA.explication}`,
-                html: `Résumé trouvé : "${table.texteResume}"`
+                ...table,
+                raison: `Résumé non pertinent : ${resIA.explication}`
             });
         } else {
             console.log(`✅ Conforme`);
+            resultat.conformites.push({
+                ...table,
+                raison: `Résumé pertinent : ${resIA.explication}`
+            });
         }
     }
 

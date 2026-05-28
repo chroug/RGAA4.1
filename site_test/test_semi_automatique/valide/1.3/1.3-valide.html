@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>RGAA 1.3 - Cas Valides</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-case { border-left: 5px solid #28a745; background-color: #f0fdf4; padding: 15px; margin-bottom: 20px; }
+        img, svg, canvas, object, embed, input { border: 1px dashed #28a745; display: block; margin-top: 10px; background: #e9ecef; }
+        .note { color: #155724; font-size: 0.9em; font-style: italic; margin-top: 5px;}
+    </style>
+</head>
+<body>
+
+    <h1>Critère 1.3 (Pertinence) : Exemples CONFORMES (Valides)</h1>
+
+    <div class="test-case">
+        <h2>1.3.1 : Balises &lt;img&gt; (Alternatives claires et directes)</h2>
+        <img src="photo_001.jpg" alt="L'équipe de direction devant les locaux" width="100" height="50">
+        <div class="note">Validé : Décrit exactement l'information véhiculée.</div>
+
+        <img src="voiture.jpg" alt="Renault Clio rouge" width="100" height="50">
+        <div class="note">Validé : Va droit au but, sans redondance.</div>
+        
+        <a href="/accueil"><img src="logo.png" alt="Accueil - Entreprise XYZ" width="100" height="50"></a>
+        <div class="note">Validé : Indique la destination du lien englobant.</div>
+    </div>
+
+    <div class="test-case">
+        <h2>1.3.3 : Boutons de type image (Orienté sur l'action)</h2>
+        <input type="image" src="disquette.png" alt="Sauvegarder les modifications" width="50" height="50">
+        <div class="note">Validé : Décrit l'action déclenchée par le bouton.</div>
+    </div>
+
+    <div class="test-case">
+        <h2>1.3.9 : Concision (Alternative courte, détails externalisés)</h2>
+        <img src="graphique.png" alt="Graphique de l'évolution des ventes en 2023" width="100" height="50">
+        <p>Détail du graphique : Les ventes du premier trimestre ont augmenté de 15%...</p>
+        <div class="note">Validé : L'alternative est courte, le texte long est accessible à tous dans la page.</div>
+    </div>
+
+</body>
+</html>

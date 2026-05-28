@@ -20,11 +20,19 @@ function getContrast(rgb1, rgb2) {
 export default async function testerCritere10_6(page, liensAAnalyser) { // 👈 On reçoit 'page' de Puppeteer
     console.log(`\n ℹ️  [critere_10.6] Visibilité des liens (Simulation Hover / Focus active)...`);
     let violations = [];
+    let conformites = [];
     let statutFinal = "✅ CONFORME";
 
     if (!liensAAnalyser || liensAAnalyser.length === 0) {
         console.log(`       ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} : Aucun lien suspect au milieu du texte.`);
-        return { statut: statutFinal, violations };
+        conformites.push({
+            html: "N/A",
+            selecteur_css: "N/A",
+            xpath: "N/A",
+            bounding_box: null,
+            raison: "Aucun lien suspect au milieu du texte détecté sur la page."
+        });
+        return { statut: statutFinal, violations, conformites };
     }
 
     for (const lien of liensAAnalyser) {
@@ -36,7 +44,7 @@ export default async function testerCritere10_6(page, liensAAnalyser) { // 👈 
         if (Number(ratio) < 3) {
             statutFinal = "❌ NON CONFORME";
             violations.push({
-                html: lien.html, css: "N/A", xpath: lien.chemin,
+                ...lien,
                 raison: `[10.6.1] Contraste insuffisant (${ratio}:1) avec le texte environnant.`
             });
             console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (Contraste raté : ${ratio}:1)`);
@@ -110,6 +118,10 @@ export default async function testerCritere10_6(page, liensAAnalyser) { // 👈 
                 // Le développeur a tout géré, on valide automatiquement !
                 // Le développeur a tout géré, on valide automatiquement !
                 console.log(`       ${COLORS.GREEN}✅ CONFORME AUTOMATIQUE${COLORS.RESET} (Contraste OK : ${ratio}:1)`);
+                conformites.push({
+                    ...lien,
+                    raison: `[10.6.1] Contraste OK (${ratio}:1) et modification de forme (soulignement/outline/fond) validée au survol et au focus.`
+                });
                 console.log(`         Forme modifiée validée au survol et au focus.`);
             } else {
                 // Il manque un des deux effets visuels de forme
@@ -119,7 +131,7 @@ export default async function testerCritere10_6(page, liensAAnalyser) { // 👈 
                 else if (!aChangeAuHover) raison += "survol (:hover).";
                 else raison += "focus (:focus).";
 
-                violations.push({ html: lien.html, css: "N/A", xpath: lien.chemin, raison });
+                violations.push({ ...lien, raison });
                 console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} (Contraste OK : ${ratio}:1)`);
                 console.log(`         ${COLORS.YELLOW}👉 ${raison.split('] ')[1]}${COLORS.RESET}`);
                 console.log(`         Chemin DOM : ${COLORS.CYAN}${lien.chemin}${COLORS.RESET}`);
@@ -133,5 +145,5 @@ export default async function testerCritere10_6(page, liensAAnalyser) { // 👈 
         }
     }
 
-    return { statut: statutFinal, violations };
+    return { statut: statutFinal, violations, conformites };
 }

@@ -6,13 +6,15 @@ export default function extraireCadresDOM() {
         // On récupère un peu de contexte texte parent pour aider l'IA
         const parentContext = frame.parentElement ? frame.parentElement.innerText.substring(0, 100) : '';
         
-        return {
-            tag: frame.tagName.toLowerCase(),
-            title: frame.getAttribute('title').trim(),
-            src: frame.getAttribute('src') || '',
-            parentContext: parentContext.trim(),
-            html: frame.outerHTML
-        };
+        // 🚀 AJOUT SAAS : Injection des données
+        const donneesSaaS = window.RGAA_UTILS.extraireDonneesSaaS(frame);
+        
+        donneesSaaS.tag = frame.tagName.toLowerCase();
+        donneesSaaS.title = frame.getAttribute('title').trim();
+        donneesSaaS.src = frame.getAttribute('src') || '';
+        donneesSaaS.parentContext = parentContext.trim();
+        
+        return donneesSaaS;
     });
 
     return cadresData;

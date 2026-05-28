@@ -7,6 +7,7 @@ export default async function testerCritere8_10(erreursAlgo, suspicionsIA) {
     console.log(`   ⚡ Algo Analyse...`);
 
     let violations = [];
+    let conformites = [];
 
     // 1️⃣ Ajout direct des erreurs algorithmiques (100% fiables)
     if (erreursAlgo && erreursAlgo.length > 0) {
@@ -15,9 +16,7 @@ export default async function testerCritere8_10(erreursAlgo, suspicionsIA) {
             const raisonText = err.raison || "Structure HTML non conforme pour l'attribut dir.";
             
             violations.push({
-                html: err.html || "Non disponible",
-                xpath: "Non disponible",
-                css: "Non applicable",
+                ...err,
                 raison: `[Erreur Algo] ${raisonText}`
             });
             console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} : ${raisonText}`);
@@ -64,15 +63,17 @@ export default async function testerCritere8_10(erreursAlgo, suspicionsIA) {
                     const explicationIA = resultat.explication || "L'IA a jugé ce bloc non pertinent (Hack visuel probable sans texte justifiant le rtl).";
                     
                     violations.push({
-                        html: suspicion.html,
-                        xpath: "Non disponible",
-                        css: "Non applicable",
+                        ...suspicion,
                         raison: `[Erreur IA] ${explicationIA}`
                     });
                     
                     console.log(`       ${COLORS.RED}❌ NON CONFORME${COLORS.RESET} : ${explicationIA}`);
                 } else if (resultat && resultat.statut === "CONFORME") {
                     // Optionnel : un petit message pour dire que l'IA a validé le bloc
+                    conformites.push({
+                        ...suspicion,
+                        raison: "Bloc suspect justifié et validé par l'IA."
+                    });
                     console.log(`       ${COLORS.GREEN}✅ Validation IA${COLORS.RESET} : Bloc suspect justifié (${currentIndex}/${suspicionsIA.length}).`);
                 }
             } catch (e) {
@@ -88,9 +89,18 @@ export default async function testerCritere8_10(erreursAlgo, suspicionsIA) {
 
     // 3️⃣ Bilan final
     if (violations.length > 0) {
-        return { statut: "❌ NON CONFORME", violations };
+        return { statut: "❌ NON CONFORME", violations, conformites };
     } else {
+        if (conformites.length === 0) {
+            conformites.push({
+                html: "N/A",
+                selecteur_css: "N/A",
+                xpath: "N/A",
+                bounding_box: null,
+                raison: "Aucune erreur d'attribut 'dir' ou de texte oriental non balisé n'a été détectée sur la page."
+            });
+        }
         console.log(`        ${COLORS.GREEN}✅ CONFORME${COLORS.RESET} : Le sens de lecture est valide et pertinent.`);
-        return { statut: "✅ CONFORME", violations: [] };
+        return { statut: "✅ CONFORME", violations: [], conformites };
     }
 }

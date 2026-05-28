@@ -55,6 +55,10 @@ export default async function testerCritere13_9(page) {
             resultat.statut = "❌ NON CONFORME";
             resultat.violations.push({
                 mode: "Portrait",
+                html: "N/A",
+                selecteur_css: "N/A",
+                xpath: "N/A",
+                bounding_box: null,
                 raison: "[13.9] Cas n°3 : Le défilement de la page est bloqué (overflow: hidden), rendant le contenu inaccessible."
             });
         }
@@ -63,6 +67,10 @@ export default async function testerCritere13_9(page) {
             resultat.statut = "❌ NON CONFORME";
             resultat.violations.push({
                 mode: "Paysage",
+                html: "N/A",
+                selecteur_css: "N/A",
+                xpath: "N/A",
+                bounding_box: null,
                 raison: "[13.9] Cas n°3 : Le défilement de la page est bloqué (overflow: hidden), rendant le contenu inaccessible."
             });
         }
@@ -88,6 +96,10 @@ export default async function testerCritere13_9(page) {
                 resultat.statut = "❌ NON CONFORME";
                 resultat.violations.push({
                     mode: mode,
+                html: "N/A",
+                selecteur_css: "N/A",
+                xpath: "N/A",
+                bounding_box: null,
                     raison: `[13.9] Cas n°1 : Message de blocage détecté : ${resIA.explication}`
                 });
             } else {
@@ -101,7 +113,13 @@ export default async function testerCritere13_9(page) {
         // --- BILAN FINAL ---
         if (resultat.statut === "✅ CONFORME") {
             console.log(`       ✅ CONFORME : Aucun blocage d'orientation (Message) ni de scroll bloqué détecté.`);
-            resultat.conformites.push({ raison: "[13.9] Navigation fluide en Portrait et Paysage (Pas de message bloquant, pas de scroll caché)." });
+            resultat.conformites.push({ 
+                html: "N/A",
+                selecteur_css: "N/A",
+                xpath: "N/A",
+                bounding_box: null,
+                raison: "[13.9] Navigation fluide en Portrait et Paysage (Pas de message bloquant, pas de scroll caché)." 
+            });
         }
 
     } catch (error) {

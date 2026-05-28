@@ -1,11 +1,11 @@
 // theme_6_liens/criteres/critere_6.2.js
 
 export default async function testerCritere6_2(dataLiens) {
-    let resultat = { statut: "✅ Conforme (C)", violations: [] };
+    let resultat = { statut: "✅ Conforme (C)", violations: [], conformites: [] };
 
     // Si aucun lien n'a été trouvé, le critère est Non Applicable
     if (!dataLiens || dataLiens.length === 0) {
-        return { statut: "➖ Non Applicable (NA)", violations: [] };
+        return { statut: "➖ Non Applicable (NA)", violations: [], conformites: [] };
     }
 
     let nbErreurs = 0;
@@ -17,8 +17,13 @@ export default async function testerCritere6_2(dataLiens) {
         if (!lien.aUnIntitule) {
             nbErreurs++;
             resultat.violations.push({
-                description: "Le lien n'a aucun intitulé (il est vide, ou l'image qu'il contient n'a pas d'attribut alt pertinent).",
-                html: lien.html
+                ...lien,
+                raison: "Le lien n'a aucun intitulé (il est vide, ou l'image qu'il contient n'a pas d'attribut alt pertinent)."
+            });
+        } else {
+            resultat.conformites.push({
+                ...lien,
+                raison: "Le lien possède un intitulé."
             });
         }
     }
