@@ -50,5 +50,12 @@ rapport.json
 # ==============================
 *.txt
 
-
 .env
+
+
+/captures_1.1/
+/captures_2.2/
+/captures_3.3/
+/captures_theme_1/
+
+audit_rgaa*.json
